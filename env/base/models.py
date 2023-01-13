@@ -3,16 +3,18 @@ from django.db import models
 # Create your models here.
 class ResPartner(models.Model):
     
-    active = modesl.BooleanField()
-    name = models.CharField()
+    active = models.BooleanField()
+    name = models.CharField(max_length=100)
     birth_date = models.DateField()
-    city = models.CharField()
-    country = modesl.CharField()
-    email = models.CharField()
-    is_company = modesl.BooleanField()
-    mobile = fiels.CharField()
-    parent_id = fields.ForeignKey(ResPartner, on_delete=models.CASCADE)
-    phone = fields.CharField()
-    ref = fields.CharField()
-    rfc = fields.CharField()
-    cp = fields.CharField()
+    city = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    is_company = models.BooleanField()
+    mobile = models.CharField(max_length=15)
+    parent_id = models.ForeignKey(
+        'self', 
+        on_delete=models.CASCADE)
+    phone = models.CharField(max_length=15)
+    ref = models.CharField(max_length=100)
+    rfc = models.CharField(max_length=15)
+    cp = models.CharField(max_length=5)
