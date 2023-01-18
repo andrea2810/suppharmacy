@@ -16,7 +16,9 @@ class PurchaseOrder(models.Model):
     amount_total = models.FloatField()
     amount_untaxed = models.FloatField()
     date = models.DateField()
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100,
+        unique=True)
     partner_id = models.ForeignKey(
         'base.ResPartner',
         on_delete=models.CASCADE)

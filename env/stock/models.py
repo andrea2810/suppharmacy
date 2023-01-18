@@ -5,11 +5,15 @@ from django.db import models
 # Create your models here.
 class ResLaboratory(models.Model):
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100,
+        unique=True)
 
 class DrugCategory(models.Model):
 
-    name = models.CharField(max_length=30)
+    name = models.CharField(
+        max_length=30,
+        unique=True)
     description = models.CharField(max_length=150)
 
 class StockPicking(models.Model):
@@ -28,7 +32,9 @@ class StockPicking(models.Model):
     }
 
     date = models.DateField()
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100,
+        unique=True)
     partner_id = models.ForeignKey(
         'base.ResPartner',
         on_delete=models.CASCADE)
@@ -88,7 +94,9 @@ class StockMove(models.Model):
     )
 
     date = models.DateField()
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100,
+        unique=True)
     origin = models.CharField(max_length=100)
     purchase_id = models.ForeignKey(
         'purchase.PurchaseOrder',
