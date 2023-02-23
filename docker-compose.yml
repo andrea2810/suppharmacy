@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+  api-db:
+    build: ./api-db
+    container_name: api-db  
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./api-db:/app"
+    stdin_open: true
+    tty: true
