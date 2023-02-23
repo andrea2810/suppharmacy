@@ -3,6 +3,12 @@ FROM python:3.10-slim-bullseye
 RUN mkdir /app
 WORKDIR /app
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libpq-dev \
+        build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY ./requirements.txt /tmp
 RUN \
     pip install --upgrade pip && \
