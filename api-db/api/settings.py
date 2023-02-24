@@ -137,3 +137,26 @@ LOGGING = {
         }
     }
 }
+
+POSTGRES = {
+    'master': {
+        'minconn': 2,
+        'maxconn': 10,
+            'database': 'demo',
+        'params': {
+            'user': 'postgres',
+            'password': 'admin',
+            'host': "192.168.32.1"
+        }
+    },
+    'hot-stanby': {
+        'minconn': 2,
+        'maxconn': 10,
+        'params': {
+            'database': 'demo',
+            'user': 'postgres',
+            'password': 'admin',
+            'host': "192.168.32.1"
+        }
+    },
+}

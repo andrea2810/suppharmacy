@@ -1,22 +1,40 @@
 # -*- coding: utf-8 -*-
 
 import psycopg2
+from .utils.db import DB
 
-class Partner:
+class BaseModel:
+
+    _table = ''
+    _fields = {}
+
     def __init__(self, **fields):
-        self.id = fields.get('id', 0)
-        self.name = fields.get('name', '')
+        for field, default_value in self._fields.items():
+            setattr(self, field, fields.get(field, default_value))
+
+    def read_query(self):
+        return f' \
+                SELECT \
+                    {", ".join(field for field in self._fields)} \
+                FROM {self._table}\
+            '
+
+    def create(self):
+        pass
+
+class Partner(BaseModel):
+
+    _table = 'partner'
+    _fields = {
+            'id': 0, # Integer
+            'name': '', # Varchar
+            # 'name1': '', # Varchar
+        }
 
     @staticmethod
     def get():
-        res = []
-
-        with psycopg2.connect(dbname='demo', user='postgres', password='admin', host="192.168.32.1") as conn:
-            with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-                cur.execute("SELECT * FROM partner")
-                res = [Partner(**rec) for rec in cur.fetchall()]
-
-        return res
+        db = DB()
+        return db.read(Partner())
 
     def create(self):
         with psycopg2.connect(dbname='demo', user='postgres', password='admin', host="192.168.32.1") as conn:
