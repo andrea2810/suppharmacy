@@ -7,5 +7,7 @@ services:
       - "8000:8000"
     volumes:
       - "./api-db:/app"
+
+    # For testing only
     stdin_open: true
     tty: true

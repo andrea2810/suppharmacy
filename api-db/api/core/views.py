@@ -11,7 +11,7 @@ from .serializers import PartnerSerializer
 class PartnerList(APIView):
 
     def get(self, request, format=None):
-        partners = Partner.get()
+        partners = Partner().get()
         serializer = PartnerSerializer(partners, many=True)
 
         return Response(serializer.data)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# import psycopg2
 
+from contextlib import contextmanager
 import logging
 from psycopg2 import pool
 from psycopg2.extras import DictCursor
@@ -25,12 +25,35 @@ class DB:
         if self._write_pool is None:
             DB._write_pool = _connect(settings.POSTGRES['master'])
 
-    def read(self, instance):
+    @contextmanager
+    def get_cursor(self, pool_name):
+        pool = getattr(self, pool_name)
+        conn = pool.getconn()
+        cur = conn.cursor(cursor_factory=DictCursor)
+
+        try:
+            yield cur
+            conn.commit()
+        except:
+            conn.rollback()
+        finally:
+            cur.close()
+            pool.putconn(conn)
+
+    def read_from_instance(self, instance):
         res = []
 
-        with self._read_pool.getconn() as conn:
-            with conn.cursor(cursor_factory=DictCursor) as cur:
-                cur.execute(instance.read_query())
-                res = [instance.__class__(**rec) for rec in cur.fetchall()]
+        with self.get_cursor('_read_pool') as cur:
+            cur.execute(instance.read_query())
+            res = [instance.__class__(**rec) for rec in cur.fetchall()]
 
         return res
+
+    def create_from_instance(self, instance):
+        with self.get_cursor('_write_pool') as cur:
+            query, params = instance.create_query()
+
+            cur.execute(query, params)
+            instance.id = cur.fetchone()['id']
+
+        return True

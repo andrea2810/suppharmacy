@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import copy
 import psycopg2
 from .utils.db import DB
 
@@ -12,6 +13,20 @@ class BaseModel:
         for field, default_value in self._fields.items():
             setattr(self, field, fields.get(field, default_value))
 
+    def _get_values(self):
+        fields = copy.deepcopy(self._fields)        
+        del fields['id']
+
+        return {field: getattr(self, field) for field in fields.keys()}
+
+    def get(self):
+        db = DB()
+        return db.read_from_instance(self)
+
+    def create(self):
+        db = DB()
+        return db.create_from_instance(self)
+
     def read_query(self):
         return f' \
                 SELECT \
@@ -19,8 +34,16 @@ class BaseModel:
                 FROM {self._table}\
             '
 
-    def create(self):
-        pass
+    def create_query(self):
+        vals = self._get_values()
+        fields = vals.keys()
+
+        return f'\
+                INSERT INTO \
+                    {self._table} ({", ".join(field for field in fields)}) \
+                VALUES ({", ".join("%({})s".format(field) for field in fields)}) \
+                RETURNING id \
+            ', vals
 
 class Partner(BaseModel):
 
@@ -28,21 +51,4 @@ class Partner(BaseModel):
     _fields = {
             'id': 0, # Integer
             'name': '', # Varchar
-            # 'name1': '', # Varchar
         }
-
-    @staticmethod
-    def get():
-        db = DB()
-        return db.read(Partner())
-
-    def create(self):
-        with psycopg2.connect(dbname='demo', user='postgres', password='admin', host="192.168.32.1") as conn:
-            with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-                cur.execute("INSERT INTO partner (name) VALUES(%(name)s) RETURNING id", {
-                        'name': self.name,
-                    })
-                self.id = cur.fetchone()['id']
-            conn.commit()
-        
-        return True

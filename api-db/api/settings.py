@@ -142,8 +142,8 @@ POSTGRES = {
     'master': {
         'minconn': 2,
         'maxconn': 10,
-            'database': 'demo',
         'params': {
+            'database': 'demo',
             'user': 'postgres',
             'password': 'admin',
             'host': "192.168.32.1"
