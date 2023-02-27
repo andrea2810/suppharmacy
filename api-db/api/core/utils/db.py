@@ -123,6 +123,17 @@ class DB:
                 OFFSET {offset} \
             ', params
 
+    def _create_query(self, instance):
+        vals = instance._get_values()
+        fields = vals.keys()
+
+        return f'\
+                INSERT INTO \
+                    {instance._table} ({", ".join(field for field in fields)}) \
+                VALUES ({", ".join("%({})s".format(field) for field in fields)}) \
+                RETURNING id \
+            ', vals
+
     def read_from_instance(self, instance, args):
         res = {}
 
@@ -138,7 +149,7 @@ class DB:
 
     def create_from_instance(self, instance):
         with self.get_cursor('_write_pool') as cur:
-            query, params = instance.create_query()
+            query, params = self._create_query(instance)
 
             cur.execute(query, params)
             instance.id = cur.fetchone()['id']

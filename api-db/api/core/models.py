@@ -27,17 +27,6 @@ class BaseModel:
         db = DB()
         return db.create_from_instance(self)
 
-    def create_query(self):
-        vals = self._get_values()
-        fields = vals.keys()
-
-        return f'\
-                INSERT INTO \
-                    {self._table} ({", ".join(field for field in fields)}) \
-                VALUES ({", ".join("%({})s".format(field) for field in fields)}) \
-                RETURNING id \
-            ', vals
-
 class Partner(BaseModel):
 
     _table = 'partner'
