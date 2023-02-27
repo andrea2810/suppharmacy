@@ -19,20 +19,13 @@ class BaseModel:
 
         return {field: getattr(self, field) for field in fields.keys()}
 
-    def get(self):
+    def get(self, args={}):
         db = DB()
-        return db.read_from_instance(self)
+        return db.read_from_instance(self, args)
 
     def create(self):
         db = DB()
         return db.create_from_instance(self)
-
-    def read_query(self):
-        return f' \
-                SELECT \
-                    {", ".join(field for field in self._fields)} \
-                FROM {self._table}\
-            '
 
     def create_query(self):
         vals = self._get_values()
