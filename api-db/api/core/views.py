@@ -71,7 +71,7 @@ class PartnerDetail(APIView):
             return Response({'error': e.args[0].split('\n')[0]},
                 status=status.HTTP_400_BAD_REQUEST)
 
-    # def delete(self, request, pk, format=None):
-    #     snippet = self.get_object(pk)
-    #     snippet.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, pk, format=None):
+        partner = self.get_object(pk)
+        partner.delete()
+        return Response(status=status.HTTP_200_OK)

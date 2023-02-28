@@ -145,6 +145,15 @@ class DB:
                 {where} \
             ', {**data, **params}
 
+    def _delete_query(self, instance):
+        where, params = self._format_where_params(instance, [['id', '=', instance.id]])
+
+        return f'\
+                DELETE FROM \
+                    {instance._table} \
+                {where} \
+            ', params
+
     def read_from_instance(self, instance, args):
         res = {}
 
@@ -170,6 +179,14 @@ class DB:
     def update_from_instance(self, instance, data):
         with self.get_cursor('_write_pool') as cur:
             query, params = self._update_query(instance, data)
+
+            cur.execute(query, params)
+
+        return True
+
+    def delete_from_instance(self, instance):
+        with self.get_cursor('_write_pool') as cur:
+            query, params = self._delete_query(instance)
 
             cur.execute(query, params)
 

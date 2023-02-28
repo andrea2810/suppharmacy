@@ -31,6 +31,10 @@ class BaseModel:
         db = DB()
         return db.update_from_instance(self, data)
 
+    def delete(self):
+        db = DB()
+        return db.delete_from_instance(self)
+
 class Partner(BaseModel):
 
     _table = 'partner'
