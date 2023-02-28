@@ -134,6 +134,17 @@ class DB:
                 RETURNING id \
             ', vals
 
+    def _update_query(self, instance, data):
+        fields = data.keys()
+        where, params = self._format_where_params(instance, [['id', '=', instance.id]])
+
+        return f'\
+                UPDATE \
+                    {instance._table} \
+                SET {", ".join("{0} = %({0})s".format(field) for field in fields)} \
+                {where} \
+            ', {**data, **params}
+
     def read_from_instance(self, instance, args):
         res = {}
 
@@ -153,5 +164,13 @@ class DB:
 
             cur.execute(query, params)
             instance.id = cur.fetchone()['id']
+
+        return True
+
+    def update_from_instance(self, instance, data):
+        with self.get_cursor('_write_pool') as cur:
+            query, params = self._update_query(instance, data)
+
+            cur.execute(query, params)
 
         return True
