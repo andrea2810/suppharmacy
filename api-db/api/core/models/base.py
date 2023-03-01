@@ -2,7 +2,8 @@
 
 import copy
 import psycopg2
-from .utils.db import DB
+
+from api.core.utils import DB
 
 class BaseModel:
 
@@ -34,12 +35,3 @@ class BaseModel:
     def delete(self):
         db = DB()
         return db.delete_from_instance(self)
-
-class Partner(BaseModel):
-
-    _table = 'partner'
-    _fields = {
-            'id': 0, # Integer
-            'name': '', # Varchar
-            'last_name': '' # Varchar 
-        }

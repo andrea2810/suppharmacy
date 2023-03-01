@@ -7,71 +7,84 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Partner
-from .serializers import PartnerSerializer
 
-
-class PartnerList(APIView):
+class APIViewList(APIView):
+    _model = None
+    _serializer = None
 
     def get(self, request, format=None):
         try:
-            partners = Partner().get(request.data)
+            records = self._model().get(request.data)
 
             if not request.data.get('count'):
-                serializer = PartnerSerializer(partners, many=True)
+                serializer = self._serializer(records, many=True)
 
                 return Response(serializer.data)
 
-            return Response(partners)
+            return Response(records)
+
         except PGError as e:
             return Response({'error': e.args[0].split('\n')[0]},
                 status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, format=None):
         try:
-            serializer = PartnerSerializer(data=request.data)
+            serializer = self._serializer(data=request.data)
+
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         except PGError as e:
             return Response({'error': e.args[0].split('\n')[0]},
                 status=status.HTTP_400_BAD_REQUEST)
 
-class PartnerDetail(APIView):
+
+class APIViewDetail(APIView):
+    _model = None
+    _serializer = None
     
     def get_object(self, pk):
-        partners =  Partner().get({
+        record = self._model().get({
                 'where_params': [['id', '=', pk]]
             })
 
-        return partners[0]
-
-        if not partners:
+        if not record:
             raise Http404
+
+        return record[0]
+
 
     def get(self, request, pk, format=None):
         try:
-            partner = self.get_object(pk)
-            serializer = PartnerSerializer(partner)
+            record = self.get_object(pk)
+            serializer = self._serializer(record)
+
             return Response(serializer.data)
+
         except PGError as e:
             return Response({'error': e.args[0].split('\n')[0]},
                 status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, format=None):
         try:
-            partner = self.get_object(pk)
-            serializer = PartnerSerializer(partner, data=request.data)
+            record = self.get_object(pk)
+            serializer = self._serializer(record, data=request.data)
+
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
+
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         except PGError as e:
             return Response({'error': e.args[0].split('\n')[0]},
                 status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        partner = self.get_object(pk)
-        partner.delete()
+        record = self.get_object(pk)
+        record.delete()
+
         return Response(status=status.HTTP_200_OK)
