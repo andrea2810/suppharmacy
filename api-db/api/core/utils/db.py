@@ -49,7 +49,7 @@ class DB:
                 if arg not in BOOLEAN_OPERATORS:
                     raise PGError(f"The argument '{arg}' is not a valid operator")
 
-                res += arg
+                res += f'{arg} '
 
             elif isinstance(arg, list):
                 field = None
