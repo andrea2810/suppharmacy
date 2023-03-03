@@ -143,20 +143,20 @@ POSTGRES = {
         'minconn': 2,
         'maxconn': 10,
         'params': {
-            'database': 'demo',
-            'user': 'postgres',
+            'database': 'suppharmacy',
+            'user': 'suppharmacy',
             'password': 'admin',
-            'host': "192.168.32.1"
+            'host': "db-master"
         }
     },
     'hot-stanby': {
         'minconn': 2,
         'maxconn': 10,
         'params': {
-            'database': 'demo',
-            'user': 'postgres',
+            'database': 'suppharmacy',
+            'user': 'suppharmacy',
             'password': 'admin',
-            'host': "192.168.32.1"
+            'host': "db-master"
         }
     },
 }
