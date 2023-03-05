@@ -20,6 +20,10 @@ from api.core import views
 urlpatterns = [
     path('partner', views.ResPartnerList.as_view()),
     path('partner/<int:pk>', views.ResPartnerDetail.as_view()),
+    path('user', views.ResUsersList.as_view()),
+    path('user/<int:pk>', views.ResUsersDetail.as_view()),
+    path('laboratory', views.ResLaboratoryList.as_view()),
+    path('laboratory/<int:pk>', views.ResLaboratoryDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
