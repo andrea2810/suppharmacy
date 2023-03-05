@@ -3,10 +3,10 @@
 from rest_framework import serializers
 
 from .base import APISerializer
-from api.core.models import Partner
+from api.core.models import ResPartner
 
-class PartnerSerializer(APISerializer):
-    _model = Partner
+class ResPartnerSerializer(APISerializer):
+    _model = ResPartner
 
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=100, label='Name', required=False)

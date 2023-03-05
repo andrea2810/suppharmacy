@@ -18,8 +18,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from api.core import views
 
 urlpatterns = [
-    path('partner', views.PartnerList.as_view()),
-    path('partner/<int:pk>', views.PartnerDetail.as_view()),
+    path('partner', views.ResPartnerList.as_view()),
+    path('partner/<int:pk>', views.ResPartnerDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

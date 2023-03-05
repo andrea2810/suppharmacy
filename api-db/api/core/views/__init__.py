@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from .partner import PartnerList, PartnerDetail
+from .partner import ResPartnerList, ResPartnerDetail

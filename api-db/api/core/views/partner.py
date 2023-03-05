@@ -2,15 +2,15 @@
 
 from .base import APIViewList, APIViewDetail
 
-from api.core.models import Partner
-from api.core.serializers import PartnerSerializer
+from api.core.models import ResPartner
+from api.core.serializers import ResPartnerSerializer
 
 
-class PartnerList(APIViewList):
-    _model = Partner
-    _serializer = PartnerSerializer
+class ResPartnerList(APIViewList):
+    _model = ResPartner
+    _serializer = ResPartnerSerializer
 
 
-class PartnerDetail(APIViewDetail):
-    _model = Partner
-    _serializer = PartnerSerializer
+class ResPartnerDetail(APIViewDetail):
+    _model = ResPartner
+    _serializer = ResPartnerSerializer

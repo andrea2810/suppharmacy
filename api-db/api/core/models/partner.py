@@ -2,7 +2,7 @@
 
 from .base import BaseModel
 
-class Partner(BaseModel):
+class ResPartner(BaseModel):
 
     _table = 'res_partner'
     _fields = {

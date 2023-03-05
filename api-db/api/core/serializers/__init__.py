@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from .partner import PartnerSerializer
+from .partner import ResPartnerSerializer
