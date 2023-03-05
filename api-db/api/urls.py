@@ -30,6 +30,8 @@ urlpatterns = [
     path('product/<int:pk>', views.ProductProductDetail.as_view()),
     path('purchase-order', views.PurchaseOrderList.as_view()),
     path('purchase-order/<int:pk>', views.PurchaseOrderDetail.as_view()),
+    path('purchase-order-line', views.PurchaseOrderLineList.as_view()),
+    path('purchase-order-line/<int:pk>', views.PurchaseOrderLineDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
