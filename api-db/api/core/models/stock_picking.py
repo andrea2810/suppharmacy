@@ -13,6 +13,6 @@ class StockPicking(BaseModel):
             'sale_id': 0, #Integer
             'purchase_id': 0, #Integer
             'state': '', # Varchar
-            'type_picking': 0.0, # Numeric
+            'type_picking': '', # Varchar
             'user_id': 0, #Integer
         }

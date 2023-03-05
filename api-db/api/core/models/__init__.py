@@ -9,3 +9,5 @@ from .users import ResUsers
 from .sale_order import SaleOrder
 from .sale_order_line import SaleOrderLine
 from .stock_picking import StockPicking
+from .stock_move import StockMove
+from .stock_quant import StockQuant
