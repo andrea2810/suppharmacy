@@ -32,6 +32,12 @@ urlpatterns = [
     path('purchase-order/<int:pk>', views.PurchaseOrderDetail.as_view()),
     path('purchase-order-line', views.PurchaseOrderLineList.as_view()),
     path('purchase-order-line/<int:pk>', views.PurchaseOrderLineDetail.as_view()),
+    path('sale-order', views.SaleOrderList.as_view()),
+    path('sale-order/<int:pk>', views.SaleOrderDetail.as_view()),
+    path('sale-order-line', views.SaleOrderLineList.as_view()),
+    path('sale-order-line/<int:pk>', views.SaleOrderLineDetail.as_view()),
+    path('stock-picking', views.StockPickingList.as_view()),
+    path('stock-picking/<int:pk>', views.StockPickingDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
