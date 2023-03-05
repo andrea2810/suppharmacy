@@ -28,6 +28,8 @@ urlpatterns = [
     path('drug-category/<int:pk>', views.DrugCategoryDetail.as_view()),
     path('product', views.ProductProductList.as_view()),
     path('product/<int:pk>', views.ProductProductDetail.as_view()),
+    path('purchase-order', views.PurchaseOrderList.as_view()),
+    path('purchase-order/<int:pk>', views.PurchaseOrderDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
