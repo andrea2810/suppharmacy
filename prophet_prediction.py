@@ -1,3 +1,10 @@
+# Requirements
+# numpy
+# pandas
+# sklearn
+# statsmodels
+# prophet
+
 import warnings
 
 import numpy as np
