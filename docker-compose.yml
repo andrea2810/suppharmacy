@@ -1,0 +1,26 @@
+version: '3.3'
+services:
+  api-db:
+    build: ./docker/api
+    container_name: api-db  
+    depends_on:
+      - db-master
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./api-db:/app"
+
+    # For testing only
+    stdin_open: true
+    tty: true
+
+  db-master:
+    image: postgres:14-bullseye
+    container_name: db-master
+    environment:
+      POSTGRES_USER: suppharmacy
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: suppharmacy
+    volumes:
+      - "./pg-data:/var/lib/postgresql/data"
+      - "./db-entrypoint:/docker-entrypoint-initdb.d/"

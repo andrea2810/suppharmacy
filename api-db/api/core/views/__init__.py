@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+from .drug_category import DrugCategoryList, DrugCategoryDetail
+from .product import ProductProductList, ProductProductDetail
+from .purchase_order import PurchaseOrderList, PurchaseOrderDetail
+from .purchase_order_line import PurchaseOrderLineList, PurchaseOrderLineDetail
+from .laboratory import ResLaboratoryList, ResLaboratoryDetail
+from .partner import ResPartnerList, ResPartnerDetail
+from .users import ResUsersList, ResUsersDetail
+from .sale_order import SaleOrderList, SaleOrderDetail
+from .sale_order_line import SaleOrderLineList, SaleOrderLineDetail
+from .stock_picking import StockPickingList, StockPickingDetail
+from .stock_move import StockMoveList, StockMoveDetail
+from .stock_quant import StockQuantList, StockQuantDetail
