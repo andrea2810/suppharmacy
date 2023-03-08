@@ -9,7 +9,7 @@ RUN apt-get update && \
         build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-COPY ./requirements.txt /tmp
+COPY ./requirements.txt /tmp/requirements.txt
 RUN \
     pip install --upgrade pip && \
     pip install -r /tmp/requirements.txt --no-cache-dir

@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   api-db:
-    build: ./
+    build: ./docker/api
     container_name: api-db  
     depends_on:
       - db-master
@@ -24,4 +24,3 @@ services:
     volumes:
       - "./pg-data:/var/lib/postgresql/data"
       - "./db-entrypoint:/docker-entrypoint-initdb.d/"
-
