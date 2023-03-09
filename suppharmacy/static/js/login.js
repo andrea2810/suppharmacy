@@ -1,9 +1,5 @@
 "use strict";
 
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-
-
 let app = Vue.createApp({
     delimiters: ["[[", "]]"],
     data() {

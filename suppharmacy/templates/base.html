@@ -29,7 +29,12 @@
         {% endblock %}
     </div>
     {% endblock body %}
-
+    
+    <!-- CSRF Axios -->
+    <script>
+        axios.defaults.xsrfCookieName = 'csrftoken';
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    </script>
 
     {% block javascript %}{% endblock %}
 
