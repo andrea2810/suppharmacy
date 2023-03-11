@@ -1,6 +1,9 @@
 # Postgres Data
 pg-data
 
+# Session Data
+sessions
+
 # Django #
 *.log
 *.pot
