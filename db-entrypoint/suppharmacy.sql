@@ -54,42 +54,6 @@ ALTER TABLE public.drug_category_id_seq OWNER TO suppharmacy;
 
 ALTER SEQUENCE public.drug_category_id_seq OWNED BY public.drug_category.id;
 
-
---
--- Name: partner; Type: TABLE; Schema: public; Owner: suppharmacy
---
-
-CREATE TABLE public.partner (
-    id integer NOT NULL,
-    name character varying(100),
-    last_name character varying(100)
-);
-
-
-ALTER TABLE public.partner OWNER TO suppharmacy;
-
---
--- Name: partner_id_seq; Type: SEQUENCE; Schema: public; Owner: suppharmacy
---
-
-CREATE SEQUENCE public.partner_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.partner_id_seq OWNER TO suppharmacy;
-
---
--- Name: partner_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: suppharmacy
---
-
-ALTER SEQUENCE public.partner_id_seq OWNED BY public.partner.id;
-
-
 --
 -- Name: product_product; Type: TABLE; Schema: public; Owner: suppharmacy
 --
@@ -306,8 +270,8 @@ CREATE TABLE public.res_users (
     id integer NOT NULL,
     active boolean NOT NULL,
     name character varying(100) NOT NULL,
-    username character varying(50) NOT NULL,
-    password character varying(50) NOT NULL
+    username character varying(50) NOT NULL UNIQUE,
+    password character varying(131) NOT NULL
 );
 
 
@@ -542,14 +506,6 @@ ALTER SEQUENCE public.stock_quant_id_seq OWNED BY public.stock_quant.id;
 
 ALTER TABLE ONLY public.drug_category ALTER COLUMN id SET DEFAULT nextval('public.drug_category_id_seq'::regclass);
 
-
---
--- Name: partner id; Type: DEFAULT; Schema: public; Owner: suppharmacy
---
-
-ALTER TABLE ONLY public.partner ALTER COLUMN id SET DEFAULT nextval('public.partner_id_seq'::regclass);
-
-
 --
 -- Name: product_product id; Type: DEFAULT; Schema: public; Owner: suppharmacy
 --
@@ -632,14 +588,6 @@ ALTER TABLE ONLY public.stock_quant ALTER COLUMN id SET DEFAULT nextval('public.
 --
 
 COPY public.drug_category (id, active, name) FROM stdin;
-\.
-
-
---
--- Data for Name: partner; Type: TABLE DATA; Schema: public; Owner: suppharmacy
---
-
-COPY public.partner (id, name, last_name) FROM stdin;
 \.
 
 
@@ -739,13 +687,6 @@ SELECT pg_catalog.setval('public.drug_category_id_seq', 1, false);
 
 
 --
--- Name: partner_id_seq; Type: SEQUENCE SET; Schema: public; Owner: suppharmacy
---
-
-SELECT pg_catalog.setval('public.partner_id_seq', 1, false);
-
-
---
 -- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: suppharmacy
 --
 
@@ -828,15 +769,6 @@ SELECT pg_catalog.setval('public.stock_quant_id_seq', 1, false);
 
 ALTER TABLE ONLY public.drug_category
     ADD CONSTRAINT drug_category_pkey PRIMARY KEY (id);
-
-
---
--- Name: partner partner_pkey; Type: CONSTRAINT; Schema: public; Owner: suppharmacy
---
-
-ALTER TABLE ONLY public.partner
-    ADD CONSTRAINT partner_pkey PRIMARY KEY (id);
-
 
 --
 -- Name: product_product product_product_pkey; Type: CONSTRAINT; Schema: public; Owner: suppharmacy

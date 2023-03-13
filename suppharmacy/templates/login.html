@@ -13,12 +13,16 @@
             {% csrf_token %}
             <div class="mb-3">
                 <label for="user" class="form-label">Usuario</label>
-                <input type="text" class="form-control" id="user" v-model="user">
+                <input type="text" class="form-control" id="user" v-model="user" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" v-model="password">
+                <input type="password" class="form-control" id="password" v-model="password" required>
             </div>
+            <div class="mb-3 text-danger-emphasis" v-if="errors.length > 0">
+                <p v-for="error in errors">[[ error ]]</p>
+            </div>
+
             <a href="#" class="btn btn-info" @click="login">Enviar</a>
         </form>
     </div>
