@@ -2,7 +2,7 @@
 from django.shortcuts import redirect
 
 PATHS_TO_EXCLUDE = [
-    '/login/',
+    '/login',
 ]
 
 class SuppharmacyMiddleware:

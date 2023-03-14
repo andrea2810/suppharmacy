@@ -18,7 +18,7 @@ let app = Vue.createApp({
             }
 
             axios({
-                url: '/login/',
+                url: '/login',
                 method: 'post',
                 data: {
                     user: this.user,
