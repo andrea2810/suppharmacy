@@ -6,25 +6,27 @@
 
 {% block content %}
 
-<div id="vue-app" class="card mx-auto rounded w-50 text-bg-light shadow mt-5">
-    <div class="card-body">
-        <h2 class="card-title text-center">Suppharmacy</h2>
-        <form class="mt-5">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="user" class="form-label">Usuario</label>
-                <input type="text" class="form-control" id="user" v-model="user" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" v-model="password" required>
-            </div>
-            <div class="mb-3 text-danger-emphasis" v-if="errors.length > 0">
-                <p v-for="error in errors">[[ error ]]</p>
-            </div>
-
-            <a href="#" class="btn btn-info" @click="login">Enviar</a>
-        </form>
+<div class="container">
+    <div id="vue-app" class="card mx-auto rounded w-35 text-bg-light shadow mt-5">
+        <div class="card-body">
+            <h2 class="card-title text-center">Suppharmacy</h2>
+            <form class="mt-5">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="user" class="form-label">Usuario</label>
+                    <input type="text" class="form-control" id="user" v-model="user" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="password" v-model="password" required>
+                </div>
+                <div class="mb-3 text-danger-emphasis" v-if="errors.length > 0">
+                    <p v-for="error in errors">[[ error ]]</p>
+                </div>
+    
+                <a href="#" class="btn btn-info" @click="login">Enviar</a>
+            </form>
+        </div>
     </div>
 </div>
 
