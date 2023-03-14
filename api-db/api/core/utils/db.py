@@ -169,25 +169,19 @@ class DB:
 
     def create_from_instance(self, instance):
         with self.get_cursor('_write_pool') as cur:
-            query, params = self._create_query(instance)
-
-            cur.execute(query, params)
+            cur.execute(*self._create_query(instance))
             instance.id = cur.fetchone()['id']
 
         return True
 
     def update_from_instance(self, instance, data):
         with self.get_cursor('_write_pool') as cur:
-            query, params = self._update_query(instance, data)
-
-            cur.execute(query, params)
+            cur.execute(*self._update_query(instance, data))
 
         return True
 
     def delete_from_instance(self, instance):
         with self.get_cursor('_write_pool') as cur:
-            query, params = self._delete_query(instance)
-
-            cur.execute(query, params)
+            cur.execute(*self._delete_query(instance))
 
         return True
