@@ -6,7 +6,19 @@
 
 {% block view %}
 
-USUARIOS :D
+<div id="vue-list">
+    <div class="row" style="font-weight: bold;">
+        <div class="col-6">
+            Nombre
+        </div>
+        <div class="col-6">
+            Usuario
+        </div>
+    </div>
+    <div>
+        <user-row v-for="user in users" :key="user.name" :user="user"></user-row>
+    </div>
+</div>
 
 {% endblock %}
 
