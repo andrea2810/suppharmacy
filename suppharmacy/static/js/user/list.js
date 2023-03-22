@@ -1,12 +1,11 @@
 "use strict";
 
-let listApp = Vue.createApp({
+const listApp = Vue.createApp({
     delimiters: ["[[", "]]"],
     data() {
         return {
-            users: [
-                {name: "Saulson", username: "Saulson"}
-            ],
+            users: [],
+            loading: false
         }
     },
     methods: {
@@ -19,15 +18,16 @@ let listApp = Vue.createApp({
                 },
             }).then(res => {
                 if (res.data.ok === true) {
+                    this.loading = true;
                     this.users = res.data.data;
-                    console.log(this.users);
                 }
             });
-        }
+            this.loading = true;
+        },
     },
     mounted() {
-        this.fetchUsers()
-    }
+        this.fetchUsers();
+    },
 });
 
 listApp.component('user-row', {
@@ -39,7 +39,7 @@ listApp.component('user-row', {
         }
     },
     mounted() {
-        console.log(this.user);
+
     },
     template: `
         <div class="row">
