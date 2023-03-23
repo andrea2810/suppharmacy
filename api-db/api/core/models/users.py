@@ -12,3 +12,6 @@ class ResUsers(BaseModel):
             'username': '', #Varchar
             'password': '' #Varchar
         }
+
+    def _get_read_fields(self):
+        return ['id', 'active', 'name', 'username']

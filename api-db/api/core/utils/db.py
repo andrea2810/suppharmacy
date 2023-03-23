@@ -115,7 +115,7 @@ class DB:
 
         return f' \
                 SELECT \
-                    {", ".join(field for field in instance._fields)} \
+                    {", ".join(field for field in instance._get_read_fields())} \
                 FROM {instance._table} \
                 {where} \
                 ORDER BY {order} \
