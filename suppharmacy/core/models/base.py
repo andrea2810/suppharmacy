@@ -58,8 +58,11 @@ class BaseModel:
     def _add_class(self, txt, cls):
         self.__classes[txt] = cls()
 
-    def __getitem__(cls, key):
-        return cls.__classes[key]
+    def __getitem__(self, key):
+        return self.__classes[key]
+
+    def __contains__(self, key):
+        return key in self.__classes
 
     def get(self, args=[], count=False, order="id ASC", limit=80, offset=0):
         reqm = RequestManager()

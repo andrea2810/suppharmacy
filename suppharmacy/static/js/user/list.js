@@ -11,7 +11,7 @@ const listApp = Vue.createApp({
     methods: {
         fetchUsers() {
             axios({
-                url: '/user/data',
+                url: '/dataset/user',
                 method: 'get',
                 data: {
                     
@@ -22,7 +22,6 @@ const listApp = Vue.createApp({
                     this.users = res.data.data;
                 }
             });
-            this.loading = true;
         },
     },
     mounted() {
@@ -42,14 +41,10 @@ listApp.component('user-row', {
 
     },
     template: `
-        <div class="row">
-            <div class="col-6">
-                [[ user.name ]]
-            </div>
-            <div class="col-6">
-                [[ user.username ]]
-            </div>
-        </div>
+        <tr>
+            <td>[[ user.name ]]</td>
+            <td>[[ user.username ]]</td>
+        </tr>
     `
 })
 

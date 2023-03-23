@@ -35,3 +35,21 @@ def logout_view(request):
         pass
 
     return JsonResponse({}, status=200)
+
+def dataset_view(request, table):
+    if table not in model:
+        return JsonResponse({
+                'ok': False,
+                'erorr': f"Model {table} is not defined"
+            }, status=200)
+
+    data = json.loads(request.body.decode("utf-8") or '{}')
+
+    if request.method == 'GET':
+
+        return JsonResponse(model[table].get())
+
+    return JsonResponse({
+            'ok': False,
+            'error': "Method not allow"
+        }, status=200)

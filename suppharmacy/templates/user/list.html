@@ -11,17 +11,17 @@
         CARGANDO DATOS
     </div>
     <div v-else>
-        <div class="row" style="font-weight: bold;">
-            <div class="col-6">
-                Nombre
-            </div>
-            <div class="col-6">
-                Usuario
-            </div>
-        </div>
-        <div>
-            <user-row v-for="user in users" :key="user.id" :user="user"></user-row>
-        </div>
+        <table class="table table-striped list_view" >
+            <thead class="text-bg-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Usuario</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr is="vue:user-row" v-for="user in users" :key="user.id" :user="user"></tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
