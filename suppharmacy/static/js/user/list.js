@@ -5,7 +5,7 @@ const listApp = Vue.createApp({
     data() {
         return {
             users: [],
-            loading: false
+            loading: true
         }
     },
     methods: {
@@ -18,7 +18,7 @@ const listApp = Vue.createApp({
                 },
             }).then(res => {
                 if (res.data.ok === true) {
-                    this.loading = true;
+                    this.loading = false;
                     this.users = res.data.data;
                 }
             });
