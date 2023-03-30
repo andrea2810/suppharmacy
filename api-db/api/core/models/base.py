@@ -21,7 +21,7 @@ class BaseModel:
         return {field: getattr(self, field) for field in fields.keys()}
 
     def _get_read_fields(self):
-        return self._fields()
+        return self._fields
 
     def get(self, args={}):
         db = DB()
