@@ -7,14 +7,7 @@
 {% block view %}
 
 <div id="vue-list" >
-    <div v-if="loading" class="loading d-flex flex-column flex-wrap align-content-center justify-content-center">
-        <div class="spinner-border text-light" role="status">
-            <span class="visually-hidden"></span>
-        </div>
-        <div>
-            Cargando...
-        </div>
-    </div>
+    <loading :loading="loading"></loading>
     <div class="row m-3">
         <div class="col-12 text-center">
             <!-- Filtros -->

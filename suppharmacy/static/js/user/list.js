@@ -29,6 +29,8 @@ const listApp = Vue.createApp({
     },
 });
 
+listApp.component('loading', loadingComponent);
+
 listApp.component('user-row', {
     delimiters: ["[[", "]]"],
     props: {
