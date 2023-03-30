@@ -13,7 +13,7 @@ const listApp = Vue.createApp({
             axios({
                 url: '/dataset/user',
                 method: 'get',
-                data: {
+                params: {
                     
                 },
             }).then(res => {

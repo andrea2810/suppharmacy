@@ -36,7 +36,7 @@ def logout_view(request):
 
     return JsonResponse({}, status=200)
 
-def dataset_view(request, table):
+def dataset_view(request, table, **params):
     if table not in model:
         return JsonResponse({
                 'ok': False,
@@ -46,8 +46,7 @@ def dataset_view(request, table):
     data = json.loads(request.body.decode("utf-8") or '{}')
 
     if request.method == 'GET':
-
-        return JsonResponse(model[table].get())
+        return JsonResponse(model[table].get(**request.GET))
 
     return JsonResponse({
             'ok': False,
