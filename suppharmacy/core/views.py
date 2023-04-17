@@ -40,13 +40,19 @@ def dataset_view(request, table, **params):
     if table not in model:
         return JsonResponse({
                 'ok': False,
-                'erorr': f"Model {table} is not defined"
+                'error': f"Model {table} is not defined"
             }, status=200)
 
     data = json.loads(request.body.decode("utf-8") or '{}')
 
     if request.method == 'GET':
-        return JsonResponse(model[table].get(**request.GET))
+        return JsonResponse(model[table].get(
+            args=[],
+            count=bool(request.GET.get('count', 0)),
+            order="id ASC",
+            limit=int(request.GET.get('limit', 80)),
+            offset=0
+        ))
 
     return JsonResponse({
             'ok': False,

@@ -5,26 +5,56 @@ const listApp = Vue.createApp({
     data() {
         return {
             users: [],
-            loading: true
+            loading: true,
+            limit: 80,
+            count: 0,
         }
     },
     methods: {
-        fetchUsers() {
-            axios({
-                url: '/dataset/user',
-                method: 'get',
-                params: {
-                    
-                },
-            }).then(res => {
-                if (res.data.ok === true) {
-                    this.loading = false;
-                    this.users = res.data.data;
+        async fetchUsers() {
+            this.loading = true;
+
+            try {
+                let res;
+                res = await axios({
+                    url: '/dataset/user',
+                    method: 'get',
+                    params: {
+                        count: 1
+                    }
+                });
+
+                if (res.data.ok == false) {
+                    throw res.data.error;
                 }
-            });
+
+                this.count = res.data.data.count;
+
+                if (this.count == 0) {
+                    return;
+                }
+
+                res = await axios({
+                    url: '/dataset/user',
+                    method: 'get',
+                    params: {
+                        limit: this.limit,
+                    },
+                });
+
+                if (res.data.ok == false) {
+                    throw res.data.error;
+                }
+
+                this.users = res.data.data;
+            } catch (error) {
+                alert(error);
+            } finally {
+                this.loading = false;
+            }
         },
     },
-    mounted() {
+    async mounted() {
         this.fetchUsers();
     },
 });

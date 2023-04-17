@@ -9,8 +9,13 @@
 <div id="vue-list" >
     <loading :loading="loading"></loading>
     <div class="row m-3">
-        <div class="col-12 text-center">
-            <!-- Filtros -->
+        <!-- Filtros -->
+        <div class="col-2 text-center">
+            <select v-model="limit" class="form-select" @change="fetchUsers">
+                <option value="80" selected>80</option>
+                <option value="200">200</option>
+                <option value="500">500</option>
+            </select>
         </div>
     </div>
     <table class="table table-striped list_view" >
