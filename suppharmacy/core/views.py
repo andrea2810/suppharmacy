@@ -46,12 +46,18 @@ def dataset_view(request, table, **params):
     data = json.loads(request.body.decode("utf-8") or '{}')
 
     if request.method == 'GET':
+        fields = request.GET.get('fields', '').split(',')
+
+        if fields:
+            fields.append('id')
+
         return JsonResponse(model[table].get(
             args=[],
             count=bool(request.GET.get('count', 0)),
             order="id ASC",
             limit=int(request.GET.get('limit', 80)),
-            offset=0
+            offset=0,
+            fields=fields
         ))
 
     return JsonResponse({

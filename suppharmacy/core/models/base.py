@@ -64,7 +64,7 @@ class BaseModel:
     def __contains__(self, key):
         return key in self.__classes
 
-    def get(self, args=[], count=False, order="id ASC", limit=80, offset=0):
+    def get(self, args=[], count=False, order="id ASC", limit=80, offset=0, fields=[]):
         reqm = RequestManager()
 
         with reqm as _:
@@ -73,7 +73,8 @@ class BaseModel:
                 'count': count,
                 'order': order,
                 'limit': limit,
-                'offset': offset
+                'offset': offset,
+                'fields': fields
             }
             response = requests.get(f'{self._URL}{self._name}',
                 json=data)

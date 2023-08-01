@@ -11,7 +11,7 @@ class ResUser(BaseModel):
     def login(self, data):
         user = self.get([
             ['username', '=', data.get('user', '')],
-        ])
+        ], fields=['name', 'password'])
 
         if user.get('ok') and user.get('data'):
             user = user['data'][0]

@@ -38,6 +38,7 @@ const listApp = Vue.createApp({
                     url: '/dataset/user',
                     method: 'get',
                     params: {
+                        fields: 'name,username',
                         limit: this.limit,
                     },
                 });
