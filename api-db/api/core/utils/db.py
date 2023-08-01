@@ -102,6 +102,7 @@ class DB:
         order = args.get('order', 'id ASC')
         limit = args.get('limit', 80)
         offset = args.get('offset', 0)
+        fields = set(args.get('fields', []))
 
         where, params = self._format_where_params(instance, where_params)
 
@@ -115,7 +116,7 @@ class DB:
 
         return f' \
                 SELECT \
-                    {", ".join(field for field in instance._get_read_fields())} \
+                    {", ".join(field for field in instance._get_read_fields(fields))} \
                 FROM {instance._table} \
                 {where} \
                 ORDER BY {order} \
