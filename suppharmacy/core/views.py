@@ -56,7 +56,7 @@ def dataset_view(request, table, **params):
             count=bool(request.GET.get('count', 0)),
             order="id ASC",
             limit=int(request.GET.get('limit', 80)),
-            offset=0,
+            offset=int(request.GET.get('offset', 0)),
             fields=fields
         ))
 

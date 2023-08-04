@@ -10,13 +10,6 @@
     <loading :loading="loading"></loading>
     <div class="row m-3">
         <!-- Filtros -->
-        <div class="col-2 text-center">
-            <select v-model="limit" class="form-select" @change="fetchUsers">
-                <option value="80" selected>80</option>
-                <option value="200">200</option>
-                <option value="500">500</option>
-            </select>
-        </div>
     </div>
     <table class="table table-striped list_view" >
         <thead class="text-bg-dark">
@@ -29,6 +22,38 @@
             <tr is="vue:user-row" v-for="user in users" :key="user.id" :user="user"></tr>
         </tbody>
     </table>
+    <div class="row m-3">
+        <!-- Pagination -->
+        <div class="col-12">
+            <nav>
+                <ul class="pagination justify-content-end">
+                    <li class="page-item" :class="paginationEnableClass">
+                        <a class="page-link" @click="changePage(-1)" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link">[[ pagination ]]</a>
+                    </li>
+                    <li class="page-item" :class="paginationEnableClass">
+                        <a class="page-link" @click="changePage(1)" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <select v-model="limit" class="form-select" @change="fetchUsers">
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </li>
+                </ul>
+              </nav>
+        </div>
+        <div class="col-2 text-center">
+            
+        </div>
+    </div>
 </div>
 
 {% endblock %}
