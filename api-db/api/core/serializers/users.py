@@ -12,4 +12,4 @@ class ResUsersSerializer(APISerializer):
     active = serializers.BooleanField(required=False)
     name = serializers.CharField(max_length=50, label='Name', required=False)
     username = serializers.CharField(max_length=50, required=False)
-    password = serializers.CharField(max_length=50, required=False)
+    password = serializers.CharField(max_length=131, required=False)
