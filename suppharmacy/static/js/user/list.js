@@ -10,7 +10,8 @@ const listApp = Vue.createApp({
             count: 0,
             page: 1,
             pages: 1,
-            pagination: '- /'
+            pagination: '- /',
+            nameFilter: "",
         }
     },
     computed: {
@@ -21,18 +22,30 @@ const listApp = Vue.createApp({
         }
     },
     methods: {
+        __getArgs() {
+            const args = [];
+
+            if (this.nameFilter) {
+                args.push(['name', 'ilike', `%${this.nameFilter}%`]);
+            }
+
+            return JSON.stringify(args);
+        },
         async fetchUsers() {
             this.loading = true;
             this.page = 1;
             this.pages = 1;
 
             try {
+                const args = this.__getArgs();
+
                 let res;
                 res = await axios({
                     url: '/dataset/user',
                     method: 'get',
                     params: {
-                        count: 1
+                        count: 1,
+                        args
                     }
                 });
 
@@ -51,6 +64,7 @@ const listApp = Vue.createApp({
                     url: '/dataset/user',
                     method: 'get',
                     params: {
+                        args,
                         fields: 'name,username',
                         limit: this.limit,
                     },
@@ -89,6 +103,7 @@ const listApp = Vue.createApp({
                     url: '/dataset/user',
                     method: 'get',
                     params: {
+                        args: this.__getArgs(),
                         fields: 'name,username',
                         limit: this.limit,
                         offset: (this.page - 1) * this.limit,

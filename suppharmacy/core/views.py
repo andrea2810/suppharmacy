@@ -52,7 +52,7 @@ def dataset_view(request, table, **params):
             fields.append('id')
 
         return JsonResponse(model[table].get(
-            args=[],
+            args=json.loads(request.GET.get('args', '[]')),
             count=bool(request.GET.get('count', 0)),
             order="id ASC",
             limit=int(request.GET.get('limit', 80)),

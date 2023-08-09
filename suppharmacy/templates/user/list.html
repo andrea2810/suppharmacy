@@ -9,37 +9,19 @@
 <div id="vue-list" >
     <loading :loading="loading"></loading>
     <div class="row m-3">
-        <!-- Filtros -->
-        <!-- <div class="col-3">
-            <div class="input-group">
-                <span class="input-group-text">Nombre</span>
-                <input class="form-control" type="text"/>
-            </div>
-        </div>
+        <!-- Filters -->
         <div class="col-3">
             <div class="input-group">
-                <span class="input-group-text">Fecha</span>
-                <input class="form-control" type="date"/>
-                <input class="form-control" type="date"/>
+                <span class="input-group-text">Nombre</span>
+                <input class="form-control" type="text" v-model="nameFilter"
+                    @change="fetchUsers()"/>
             </div>
-        </div> -->
-    </div>
-    <div class="table-wrapper">
-        <table class="table table-striped list_view table-reponsive" >
-            <thead class="text-bg-dark sticky-top">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Usuario</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr is="vue:user-row" v-for="user in users" :key="user.id" :user="user"></tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="row m-3">
+        </div>
+        <div class="col-6">
+            
+        </div>
         <!-- Pagination -->
-        <div class="col-12 fixed-bottom">
+        <div class="col-3">
             <nav>
                 <ul class="pagination justify-content-end">
                     <li class="page-item" :class="paginationEnableClass">
@@ -65,9 +47,19 @@
                 </ul>
               </nav>
         </div>
-        <div class="col-2 text-center">
-            
-        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="table table-striped list_view table-reponsive" >
+            <thead class="text-bg-dark sticky-top">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Usuario</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr is="vue:user-row" v-for="user in users" :key="user.id" :user="user"></tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
