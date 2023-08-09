@@ -10,21 +10,36 @@
     <loading :loading="loading"></loading>
     <div class="row m-3">
         <!-- Filtros -->
+        <!-- <div class="col-3">
+            <div class="input-group">
+                <span class="input-group-text">Nombre</span>
+                <input class="form-control" type="text"/>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="input-group">
+                <span class="input-group-text">Fecha</span>
+                <input class="form-control" type="date"/>
+                <input class="form-control" type="date"/>
+            </div>
+        </div> -->
     </div>
-    <table class="table table-striped list_view" >
-        <thead class="text-bg-dark">
-            <tr>
-                <th>Nombre</th>
-                <th>Usuario</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr is="vue:user-row" v-for="user in users" :key="user.id" :user="user"></tr>
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table class="table table-striped list_view table-reponsive" >
+            <thead class="text-bg-dark sticky-top">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Usuario</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr is="vue:user-row" v-for="user in users" :key="user.id" :user="user"></tr>
+            </tbody>
+        </table>
+    </div>
     <div class="row m-3">
         <!-- Pagination -->
-        <div class="col-12">
+        <div class="col-12 fixed-bottom">
             <nav>
                 <ul class="pagination justify-content-end">
                     <li class="page-item" :class="paginationEnableClass">

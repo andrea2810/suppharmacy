@@ -28,6 +28,11 @@ image {
     fill: white !important;
 }
 
+.table-wrapper {
+    max-height: 85vh;
+    overflow: auto;
+}
+
 table.list_view {
     width: 100%;
     border-top: 1px solid black;
