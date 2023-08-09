@@ -18,6 +18,7 @@ LOGICAL_OPERATORS = (
     '=',
     '!=',
     'like',
+    'ilike',
     '>',
     '>=',
     '<',
