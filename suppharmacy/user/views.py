@@ -6,5 +6,18 @@ from django.shortcuts import render, redirect
 
 from core.models import model
 
-def user_view(request):
+def user_list_view(request):
     return render(request, 'user/list.html', {})
+
+def user_form_view(request, record):
+    data = {}
+
+    if record != 0:
+        data = model['user'].browse(record)
+
+        if not data['ok'] or not data['data']:
+            return redirect('list-user')
+
+        data = data['data']
+
+    return render(request, 'user/form.html', data)

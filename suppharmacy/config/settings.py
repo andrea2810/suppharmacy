@@ -25,7 +25,14 @@ SECRET_KEY = 'django-insecure-b5!0*g6&jie7b5v&yzip(1w!^q-uymz1inkh^lzdgu6$*rtg_=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = ['http://*.casita']
+    SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+else:
+    CSRF_TRUSTED_ORIGINS = ['http://*.casita']
+    SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
 
 
 # Application definition
@@ -51,6 +58,8 @@ MIDDLEWARE = [
 
     'core.middleware.SuppharmacyMiddleware'
 ]
+
+APPEND_SLASH = False
 
 ROOT_URLCONF = 'config.urls'
 

@@ -18,7 +18,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" class="form-control" id="password" v-model="password" required>
+                    <input @change="login" type="password" class="form-control" id="password" v-model="password" required>
                 </div>
                 <div class="mb-3 text-danger-emphasis" v-if="errors.length > 0">
                     <p v-for="error in errors">[[ error ]]</p>

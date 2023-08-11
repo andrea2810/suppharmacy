@@ -5,6 +5,7 @@ const listApp = Vue.createApp({
     data() {
         return {
             users: [],
+            fields: 'name,username',
             loading: true,
             limit: 10,
             count: 0,
@@ -65,7 +66,7 @@ const listApp = Vue.createApp({
                     method: 'get',
                     params: {
                         args,
-                        fields: 'name,username',
+                        fields: this.fields,
                         limit: this.limit,
                     },
                 });
@@ -104,7 +105,7 @@ const listApp = Vue.createApp({
                     method: 'get',
                     params: {
                         args: this.__getArgs(),
-                        fields: 'name,username',
+                        fields: this.fields,
                         limit: this.limit,
                         offset: (this.page - 1) * this.limit,
                     },
@@ -145,11 +146,23 @@ listApp.component('user-row', {
             required: true
         }
     },
+    computed: {
+        url() {
+            return `/user/${this.user.id}`;
+        }
+    },
     mounted() {
 
     },
     template: `
         <tr>
+            <td>
+                <a :href="url">
+                    <svg class="bi bi bi-pencil-fill me-2" width="16" height="16">
+                        <image xlink:href="/static/img/icons/pencill-fill.svg"/>
+                    </svg>
+                </a>
+            </td>
             <td>[[ user.name ]]</td>
             <td>[[ user.username ]]</td>
         </tr>
