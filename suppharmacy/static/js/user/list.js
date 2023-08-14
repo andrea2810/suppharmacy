@@ -58,6 +58,8 @@ const listApp = Vue.createApp({
                 this.pages = Math.ceil(this.count / this.limit);
                 
                 if (this.count == 0) {
+                    this.users = [];
+                    this.__updatePagination();
                     return;
                 }
 

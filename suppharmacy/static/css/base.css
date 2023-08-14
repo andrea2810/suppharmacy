@@ -58,3 +58,11 @@ table.list_view {
     opacity: 1;
     color: black;
 }
+
+#vue-form {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: 100vh;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+}

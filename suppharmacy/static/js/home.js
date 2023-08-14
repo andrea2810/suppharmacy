@@ -25,9 +25,9 @@ let homeApp = Vue.createApp({
 let loadingComponent = {
     delimiters: ["[[", "]]"],
     props: ['loading'],
-    watch: { 
-        loading: function(newVal, oldVal) { } // watch it
-    }, 
+    // watch: { 
+    //     // loading: function(newVal, oldVal) { } // watch it
+    // }, 
     template: `
         <div v-if="loading" class="loading d-flex flex-column flex-wrap align-content-center justify-content-center">
             <div class="spinner-border text-light" role="status">
