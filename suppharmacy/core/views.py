@@ -46,9 +46,10 @@ def dataset_view(request, table, **params):
     data = json.loads(request.body.decode("utf-8") or '{}')
 
     if request.method == 'GET':
-        fields = request.GET.get('fields', '').split(',')
+        fields = request.GET.get('fields', [])
 
         if fields:
+            fields = fields.split(',')
             fields.append('id')
 
         return JsonResponse(model[table].get(
