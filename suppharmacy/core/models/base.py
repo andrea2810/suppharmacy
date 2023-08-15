@@ -64,6 +64,12 @@ class BaseModel:
     def __contains__(self, key):
         return key in self.__classes
 
+    def _add_default_values(self, data):
+        return data
+
+    def _format_values(self, data):
+        return data
+
     def get(self, args=[], count=False, order="id ASC", limit=80, offset=0, fields=[]):
         reqm = RequestManager()
 
@@ -104,6 +110,62 @@ class BaseModel:
             response = None
 
             response = requests.get(f'{self._URL}{self._name}/{ids}')
+            response.raise_for_status()
+
+            return {
+                'ok': True,
+                'data': response.json()
+                }
+
+        return reqm.error
+
+    def create(self, data):
+        if not isinstance(data, dict):
+            return {
+                'ok': False,
+                'error': 'Bad Data'
+            }
+
+        data = self._add_default_values(data)
+        data = self._format_values(data)
+
+        reqm = RequestManager()
+
+        with reqm as _:
+            response = None
+
+            response = requests.post(f'{self._URL}{self._name}', data=data)
+            response.raise_for_status()
+
+            return {
+                'ok': True,
+                'data': response.json()
+                }
+
+        return reqm.error
+
+    def update(self, data):
+        if not isinstance(data, dict):
+            return {
+                'ok': False,
+                'error': 'Bad Data'
+            }
+
+        if not data.get('id'):
+            return {
+                'ok': False,
+                'error': 'Missing ID'
+            }
+
+        data = self._format_values(data)
+
+        reqm = RequestManager()
+
+        with reqm as _:
+            response = None
+
+            response = requests.put(f'{self._URL}{self._name}/{data["id"]}',
+                data=data)
             response.raise_for_status()
 
             return {

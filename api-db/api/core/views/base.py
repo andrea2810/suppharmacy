@@ -56,7 +56,6 @@ class APIViewDetail(APIView):
 
         return record[0]
 
-
     def get(self, request, pk, format=None):
         try:
             record = self.get_object(pk)

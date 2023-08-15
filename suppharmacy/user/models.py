@@ -8,6 +8,12 @@ from core.models import BaseModel, model
 class ResUser(BaseModel):
     _name = 'user'
 
+    def _format_values(self, data):
+        if 'password' in data:
+            data['password'] = self.__get_crypt_context().hash(data['password'])
+
+        return data
+
     def login(self, data):
         user = self.get([
             ['username', '=', data.get('user', '')],

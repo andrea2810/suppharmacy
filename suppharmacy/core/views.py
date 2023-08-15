@@ -17,7 +17,11 @@ def login_view(request):
         return render(request, 'login.html', {})
 
     if request.method == 'POST':
-        data = json.loads(request.body.decode("utf-8"))
+        data = {}
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+        except:
+            return JsonResponse({'ok': False, 'error': "Bad Body"})
         user = model['user'].login(data)
 
         if user:
@@ -43,8 +47,6 @@ def dataset_view(request, table, **params):
                 'error': f"Model {table} is not defined"
             }, status=200)
 
-    data = json.loads(request.body.decode("utf-8") or '{}')
-
     if request.method == 'GET':
         fields = request.GET.get('fields', [])
 
@@ -60,6 +62,25 @@ def dataset_view(request, table, **params):
             offset=int(request.GET.get('offset', 0)),
             fields=fields
         ))
+
+    if request.method == 'POST':
+        data = {}
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+        except:
+            return JsonResponse({'ok': False, 'error': "Bad Body"})
+
+        return JsonResponse(model[table].create(data))
+
+    
+    if request.method == 'PUT':
+        data = {}
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+        except:
+            return JsonResponse({'ok': False, 'error': "Bad Body"})
+
+        return JsonResponse(model[table].update(data))
 
     return JsonResponse({
             'ok': False,
