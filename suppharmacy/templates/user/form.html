@@ -8,6 +8,9 @@
 
 <div id="vue-form" rec-id="{{id}}">
     <loading :loading="loading"></loading>
+    <modal-password :visible="modalPassword"
+        @update-password="updatePassword"
+        @toggle-visible="toggleModalPassword"></modal-password>
     <!-- Header -->
     <div class="row m-3 sticky-top bg-body">
         <div class="col-3">
@@ -32,7 +35,7 @@
             <div class="input-group m-3">
                 <span class="input-group-text">Contraseña</span>
                 <input class="form-control" type="password" v-model="user.password" :disabled="user.id != 0"/>
-                <button v-if="user.id != 0" class="btn btn-outline-secondary" type="button" @click="updatePassword">Actualizar</button>
+                <button v-if="user.id != 0" class="btn btn-outline-secondary" type="button" @click="toggleModalPassword">Actualizar</button>
             </div>
         </div>
         <div class="col-6">

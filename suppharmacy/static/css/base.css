@@ -66,3 +66,8 @@ table.list_view {
     height: -webkit-fill-available;
     max-height: 100vh;
 }
+
+#vue-form div.modal {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.5);
+}
