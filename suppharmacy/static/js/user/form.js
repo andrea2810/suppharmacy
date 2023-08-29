@@ -9,7 +9,7 @@ const formApp = Vue.createApp({
                 name: '',
                 username: '',
                 active: true,
-                password: '"*****',
+                password: '*****',
             },
             loading: true,
             modalPassword: false,
@@ -89,11 +89,15 @@ const formApp = Vue.createApp({
         toggleModalPassword() {
             this.modalPassword = !this.modalPassword;
         },
+        userChange(data) {
+            console.log("userChanged", data);
+        },
         async __fetchUser() {
             const id = Number(this.$el.parentElement.attributes['rec-id'].value);
 
             try {
                 if (!id) {
+                    this.user.password = '';
                     return;
                 }
 
@@ -118,7 +122,6 @@ const formApp = Vue.createApp({
             } finally {
                 this.loading = false;
             }
-
         },
     },
     async mounted() {
@@ -127,6 +130,8 @@ const formApp = Vue.createApp({
 });
 
 formApp.component('loading', loadingComponent);
+
+formApp.component('field-relational', fieldRelationalComponent);
 
 formApp.component('modal-password', {
     delimiters: ["[[", "]]"],
