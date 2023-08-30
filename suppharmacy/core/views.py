@@ -72,7 +72,6 @@ def dataset_view(request, table, **params):
 
         return JsonResponse(model[table].create(data))
 
-    
     if request.method == 'PUT':
         data = {}
         try:
@@ -81,6 +80,17 @@ def dataset_view(request, table, **params):
             return JsonResponse({'ok': False, 'error': "Bad Body"})
 
         return JsonResponse(model[table].update(data))
+
+    if request.method == 'DELETE':
+        data = {}
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+        except:
+            return JsonResponse({'ok': False, 'error': "Bad Body"})
+
+        print(data)
+        return JsonResponse(model[table].delete([data['id']]))
+
 
     return JsonResponse({
             'ok': False,

@@ -174,3 +174,25 @@ class BaseModel:
                 }
 
         return reqm.error
+
+    def delete(self, ids):
+        if not isinstance(ids, list):
+            return {
+                'ok': False,
+                'error': 'Bad ids'
+            }
+
+        reqm = RequestManager()
+
+        with reqm as _:
+            response = None
+
+            for ID in ids:
+                response = requests.delete(f'{self._URL}{self._name}/{ID}')
+                response.raise_for_status()
+
+            return {
+                'ok': True
+                }
+
+        return reqm.error

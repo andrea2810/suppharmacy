@@ -123,6 +123,36 @@ const formApp = Vue.createApp({
                 this.loading = false;
             }
         },
+        async deleteUser() {
+            try {
+                this.loading = true;
+                const userConfirms = confirm(
+                    `¿Está seguro que desea eliminar el usuario ${this.user.name}?`);
+
+                if (!userConfirms) {
+                    return;
+                }
+
+                const res= await axios({
+                    url: '/dataset/user',
+                    method: 'delete',
+                    data: {
+                        id: this.user.id,
+                    }
+                });
+
+                if (res.data.ok == false) {
+                    throw res.data.error;
+                }
+
+                window.location.href = `/user`;
+
+            } catch (error) {
+                alert(error);
+            } finally {
+                this.loading = false;
+            }
+        },
     },
     async mounted() {
         this.__fetchUser();
@@ -148,10 +178,12 @@ formApp.component('modal-password', {
     },
     methods: {
         update() {
-            this.$emit('update-password', this.password);
+            this.$parent.updatePassword(this.password);
+            // this.$emit('update-password', this.password);
         },
         close() {
-            this.$emit("toggle-visible");
+            this.$parent.toggleModalPassword();
+            // this.$emit("toggle-visible");
         }
     },
     mounted() {

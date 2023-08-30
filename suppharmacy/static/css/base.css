@@ -60,7 +60,6 @@ table.list_view {
 }
 
 #vue-form {
-    overflow-x: hidden !important;
     overflow-y: auto !important;
     height: 100vh;
     height: -webkit-fill-available;
@@ -70,4 +69,13 @@ table.list_view {
 #vue-form div.modal {
     display: block;
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+#vue-form .input-group {
+    width: 70%;
+}
+
+#vue-form .row {
+    margin-right: 0;
 }

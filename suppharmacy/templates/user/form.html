@@ -8,9 +8,7 @@
 
 <div id="vue-form" rec-id="{{id}}">
     <loading :loading="loading"></loading>
-    <modal-password :visible="modalPassword"
-        @update-password="updatePassword"
-        @toggle-visible="toggleModalPassword"></modal-password>
+    <modal-password :visible="modalPassword"></modal-password>
     <!-- Header -->
     <div class="row m-3 sticky-top bg-body">
         <div class="col-3">
@@ -19,6 +17,9 @@
                 <span v-else>Crear</span>
             </button>
             <a href="#" class="btn btn-outline-info m-1" @click="discard">Descartar</a>
+        </div>
+        <div class="col-1 offset-8">
+            <a v-if="user.id != 0" href="#" class="btn btn-danger m-1" @click="deleteUser">Borrar</a>
         </div>
     </div>
     <!-- Body -->
@@ -45,21 +46,6 @@
                     <input class="form-check-input mt-0" type="checkbox" v-model="user.active" >
                 </div>
             </div>
-            <field-relational
-                v-if="user.id"
-                string="Usuarios"
-                field="name"
-                table="user"
-                :initial="user.id"
-                @value-changed="userChange"
-            ></field-relational>
-            <field-relational
-                v-else=""
-                string="Usuarios"
-                field="name"
-                table="user"
-                @value-changed="userChange"
-            ></field-relational>
         </div>
     </div>
 </div>

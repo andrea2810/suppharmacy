@@ -87,10 +87,6 @@ const listApp = Vue.createApp({
             this.__updatePagination();
         },
         async changePage (page) {
-            if (this.count < this.limit){
-                return;
-            }
-
             this.page += page;
             if (this.page > this.pages) {
                 this.page = 1;
@@ -131,7 +127,39 @@ const listApp = Vue.createApp({
                 `${this.users.length ? (this.limit * (this.page - 1)) + 1 : 0}`
                 + `-${this.users.length ? (this.limit * (this.page - 1)) + this.users.length : 0}`
                 + ` / ${this.count}`
-        }
+        },
+        async deleteUser(user) {
+            try {
+                this.loading = true;
+                const userConfirms = confirm(
+                    `¿Está seguro que desea eliminar el usuario ${user.name}?`);
+
+                if (!userConfirms) {
+                    return;
+                }
+
+                const res= await axios({
+                    url: '/dataset/user',
+                    method: 'delete',
+                    data: {
+                        id: user.id,
+                    }
+                });
+
+                if (res.data.ok == false) {
+                    throw res.data.error;
+                }
+
+                this.count -= 1;
+                this.pages = Math.ceil(this.count / this.limit);
+                this.changePage(0);
+
+            } catch (error) {
+                alert(error);
+            } finally {
+                this.loading = false;
+            }
+        },
     },
     async mounted() {
         this.fetchUsers();
@@ -151,7 +179,12 @@ listApp.component('user-row', {
     computed: {
         url() {
             return `/user/${this.user.id}`;
-        }
+        },
+    },
+    methods: {
+        deleteUser() {
+            this.$parent.deleteUser(this.user);
+        },
     },
     mounted() {
 
@@ -162,6 +195,13 @@ listApp.component('user-row', {
                 <a :href="url">
                     <svg class="bi bi bi-pencil-fill me-2" width="16" height="16">
                         <image xlink:href="/static/img/icons/pencill-fill.svg"/>
+                    </svg>
+                </a>
+            </td>
+            <td>
+                <a href="#" @click="deleteUser">
+                    <svg class="bi bi bi-pencil-fill me-2" width="16" height="16">
+                        <image xlink:href="/static/img/icons/trash-fill.svg"/>
                     </svg>
                 </a>
             </td>
