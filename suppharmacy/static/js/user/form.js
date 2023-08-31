@@ -89,9 +89,6 @@ const formApp = Vue.createApp({
         toggleModalPassword() {
             this.modalPassword = !this.modalPassword;
         },
-        userChange(data) {
-            console.log("userChanged", data);
-        },
         async __fetchUser() {
             const id = Number(this.$el.parentElement.attributes['rec-id'].value);
 
@@ -160,8 +157,6 @@ const formApp = Vue.createApp({
 });
 
 formApp.component('loading', loadingComponent);
-
-formApp.component('field-relational', fieldRelationalComponent);
 
 formApp.component('modal-password', {
     delimiters: ["[[", "]]"],

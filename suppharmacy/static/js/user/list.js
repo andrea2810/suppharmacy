@@ -161,7 +161,7 @@ const listApp = Vue.createApp({
             }
         },
     },
-    async mounted() {
+    mounted() {
         this.fetchUsers();
     },
 });

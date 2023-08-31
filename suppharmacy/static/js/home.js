@@ -138,8 +138,6 @@ let fieldRelationalComponent = {
                         id: 0,
                     }
                 }
-
-                this.input;
             }, 300);
         },
     },
@@ -171,7 +169,7 @@ let fieldRelationalComponent = {
                 @keyup="keyup"
                 @blur="blur"/>
             <datalist :id="'data-list-' + table">
-                <option v-for="item in items" :key="item.id" :value="item.name"></option>
+                <option v-for="item in items" :key="item.id" :value="item[field]"></option>
             </datalist>
         </div>
     `,

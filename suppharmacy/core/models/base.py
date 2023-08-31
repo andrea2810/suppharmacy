@@ -103,7 +103,6 @@ class BaseModel:
         if isinstance(ids, list):
             return self.get([['id', 'in', ids]])
 
-
         reqm = RequestManager()
 
         with reqm as _:

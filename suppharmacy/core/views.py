@@ -88,7 +88,6 @@ def dataset_view(request, table, **params):
         except:
             return JsonResponse({'ok': False, 'error': "Bad Body"})
 
-        print(data)
         return JsonResponse(model[table].delete([data['id']]))
 
 
