@@ -1,0 +1,45 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %} {{ name|default:"Nuevo" }} {% endblock %}
+
+{% block view %}
+
+<div id="vue-form" rec-id="{{id}}">
+    <loading :loading="loading"></loading>
+    <!-- Header -->
+    <div class="row m-3 sticky-top bg-body">
+        <div class="col-3">
+            <button type="button" class="btn btn-info m-1" @click="save">
+                <span v-if="laboratory.id != 0">Guardar</span>
+                <span v-else>Crear</span>
+            </button>
+            <a href="#" class="btn btn-outline-info m-1" @click="discard">Descartar</a>
+        </div>
+        <div class="col-1 offset-8">
+            <a v-if="laboratory.id != 0" href="#" class="btn btn-danger m-1" @click="deleteLaboratory">Borrar</a>
+        </div>
+    </div>
+    <!-- Body -->
+    <div class="row">
+        <div class="col-6">
+            <div class="input-group m-3">
+                <span class="input-group-text">Nombre</span>
+                <input class="form-control" type="text" v-model="laboratory.name"/>
+            </div>
+            <div class="input-group m-3">
+                <span class="input-group-text">Activo</span>
+                <div class="input-group-text">
+                    <input class="form-check-input mt-0" type="checkbox" v-model="laboratory.active" >
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/laboratory/form.js' %}"></script>
+{% endblock %}
