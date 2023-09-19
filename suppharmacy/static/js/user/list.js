@@ -13,6 +13,7 @@ const listApp = Vue.createApp({
             pages: 1,
             pagination: '- /',
             nameFilter: "",
+            order: ['id', 'ASC'],
         }
     },
     computed: {
@@ -20,9 +21,33 @@ const listApp = Vue.createApp({
             return {
                 disabled: this.count < this.limit,
             }
+        },
+        orderFieldClass() {
+            const caret = this.order[1] == 'ASC'? 'dropdown' : 'dropup';
+
+            return {
+                name: this.order[0] == 'name' ? [caret] : [],
+                username: this.order[0] == 'username' ? [caret] : [],
+            }
         }
     },
     methods: {
+        changeOrder(field) {
+            if(field == this.order[0]) {
+                if (this.order[1] == 'ASC') {
+                    this.order[1] = 'DESC';
+                } else {
+                    this.order[1] = 'ASC';
+                }
+            } else {
+                this.order[0] = field;
+                this.order[1] = 'ASC';
+            }
+
+            if (this.count) {
+                this.changePage(0);
+            }
+        },
         __getArgs() {
             const args = [];
 
@@ -70,6 +95,7 @@ const listApp = Vue.createApp({
                         args,
                         fields: this.fields,
                         limit: this.limit,
+                        order: this.order.join(' '),
                     },
                 });
 
@@ -106,6 +132,7 @@ const listApp = Vue.createApp({
                         fields: this.fields,
                         limit: this.limit,
                         offset: (this.page - 1) * this.limit,
+                        order: this.order.join(' '),
                     },
                 });
 

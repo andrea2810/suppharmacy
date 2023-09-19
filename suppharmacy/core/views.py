@@ -57,7 +57,7 @@ def dataset_view(request, table, **params):
         return JsonResponse(model[table].get(
             args=json.loads(request.GET.get('args', '[]')),
             count=bool(request.GET.get('count', 0)),
-            order="id ASC",
+            order=request.GET.get('order', "id ASC"),
             limit=int(request.GET.get('limit', 80)),
             offset=int(request.GET.get('offset', 0)),
             fields=fields

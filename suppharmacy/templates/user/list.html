@@ -60,8 +60,16 @@
                         </a>
                     </th>
                     <th style="width: 20px;"></th>
-                    <th>Nombre</th>
-                    <th>Usuario</th>
+                    <th :class="orderFieldClass.name"
+                        style="width: 47%;"
+                        @click="changeOrder('name')">
+                        Nombre
+                    </th>
+                    <th :class="orderFieldClass.username"
+                        style="width: 47%;"
+                        @click="changeOrder('username')">
+                        Usuario
+                    </th>
                 </tr>
             </thead>
             <tbody>
