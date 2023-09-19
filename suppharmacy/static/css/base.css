@@ -79,3 +79,15 @@ table.list_view {
 #vue-form .row {
     margin-right: 0;
 }
+
+.dropdown::after {
+    content: "\2b9f";
+    color: white;
+    font-family: sans-serif;
+}
+
+.dropup::after {
+    content: "\2b9d";
+    color: white;
+    font-family: sans-serif;
+}
