@@ -22,3 +22,7 @@ class ProductProduct(BaseModel):
             'drug_category_id': 0, #Integer
             'is_antibiotic': False #Boolean
         }
+    _relational_fields = {
+            'laboratory_id': 'res_laboratory',
+            'drug_category_id': 'drug_category'
+        }

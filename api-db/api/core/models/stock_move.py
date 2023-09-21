@@ -17,3 +17,8 @@ class StockMove(BaseModel):
             'product_qty': 0, # Numeric
             'state': '', # Varchar
         }
+    _relational_fields = {
+            'purchase_id': 'purchase_order',
+            'sale_id': 'sale_order',
+            'picking_id': 'stock_picking'
+        }

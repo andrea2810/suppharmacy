@@ -16,3 +16,7 @@ class SaleOrder(BaseModel):
             'state': '', #Varchar
             'user_id': 0, #Integer
         }
+    _relational_fields = {
+            'partner_id': 'res_partner',
+            'user_id': 'res_users'
+        }

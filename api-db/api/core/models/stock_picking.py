@@ -16,3 +16,10 @@ class StockPicking(BaseModel):
             'type_picking': '', # Varchar
             'user_id': 0, #Integer
         }
+
+    _relational_fields = {
+            'partner_id': 'res_partner',
+            'sale_id': 'sale_order',
+            'purchase_id': 'purchase_order',
+            'user_id': 'res_users'
+        }

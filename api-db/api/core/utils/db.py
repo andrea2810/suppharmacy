@@ -13,19 +13,6 @@ def _connect(config_params):
     return pool.ThreadedConnectionPool(config_params['minconn'],
         config_params['maxconn'], **config_params['params'])
 
-BOOLEAN_OPERATORS = ('AND', 'OR')
-LOGICAL_OPERATORS = (
-    '=',
-    '!=',
-    'like',
-    'ilike',
-    '>',
-    '>=',
-    '<',
-    '<=',
-    'in'
-)
-
 
 class DB:
     _read_pool = None
@@ -37,48 +24,6 @@ class DB:
 
         if self._write_pool is None:
             DB._write_pool = _connect(settings.POSTGRES['master'])
-
-    def _format_where_params(self, instance, args):
-        res = ''
-        params = {}
-
-        if not isinstance(args, list):
-            raise PGError(f"The where_params must be a list")
-
-        for arg in args:
-            if isinstance(arg, str):
-                if arg not in BOOLEAN_OPERATORS:
-                    raise PGError(f"The argument '{arg}' is not a valid operator")
-
-                res += f'{arg} '
-
-            elif isinstance(arg, list):
-                field = None
-                operator = None
-                value = None
-
-                try:
-                    field, operator, value = arg
-                except:
-                    raise PGError("The list of parameters must have 3 elements")
-
-                if not field in instance._fields:
-                    raise PGError(f"The field {field} is not declared in "\
-                        f"the table {instance._table}")
-
-                if not operator in LOGICAL_OPERATORS:
-                    raise PGError(f"The operator {operator} is not valid")
-
-                res += f'{field} {operator} {"%({})s".format(field)} '
-                params.update({field: value})
-
-            else:
-                raise PGError(f"The argument '{arg}' is unknown")
-
-        if res:
-            res = f'WHERE {res}'
-
-        return res, params
 
     @contextmanager
     def get_cursor(self, pool_name):
@@ -105,7 +50,11 @@ class DB:
         offset = args.get('offset', 0)
         fields = set(args.get('fields', []))
 
-        where, params = self._format_where_params(instance, where_params)
+        if instance._relational_fields and order:
+            if not '.' in order:
+                order = f'{instance._table}.{order}'
+
+        where, params = instance._format_where_params(where_params)
 
         if count:
             return f' \
@@ -119,6 +68,7 @@ class DB:
                 SELECT \
                     {", ".join(field for field in instance._get_read_fields(fields))} \
                 FROM {instance._table} \
+                {instance._get_joins()} \
                 {where} \
                 ORDER BY {order} \
                 LIMIT {limit} \

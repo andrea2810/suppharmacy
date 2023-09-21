@@ -15,3 +15,7 @@ class SaleOrderLine(BaseModel):
             'product_qty': 0.0, # Numeric
             'taxes': 0.0, # Numeric
         }
+    _relational_fields = {
+            'order_id': 'sale_order',
+            'product_id': 'product_product'
+        }

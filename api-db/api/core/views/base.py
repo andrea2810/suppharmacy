@@ -16,10 +16,10 @@ class APIViewList(APIView):
         try:
             records = self._model().get(request.data)
 
-            if not request.data.get('count'):
-                serializer = self._serializer(records, many=True)
+            # if not request.data.get('count'):
+            #     serializer = self._serializer(records, many=True)
 
-                return Response(serializer.data)
+            #     return Response(serializer.data)
 
             return Response(records)
 
