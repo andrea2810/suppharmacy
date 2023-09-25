@@ -113,7 +113,7 @@ class DB:
             cur.execute(*self._read_query(instance, args))
 
             if not args.get('count'):
-                res = [instance.__class__(**rec) for rec in cur.fetchall()]
+                res = [{ k:v for k,v in rec.items() } for rec in cur.fetchall()]
             else:
                 res = {'count': cur.fetchone()[0]}
 
