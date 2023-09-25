@@ -18,8 +18,8 @@ class ProductProduct(BaseModel):
             'sale_ok': True, #Boolean
             'taxes': 0.0, # Numeric
             'presentation': '', #Varchar
-            'laboratory_id': 0, #Integer
-            'drug_category_id': 0, #Integer
+            'laboratory_id': None, #Integer
+            'drug_category_id': None, #Integer
             'is_antibiotic': False #Boolean
         }
     _relational_fields = {

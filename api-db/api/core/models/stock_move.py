@@ -10,9 +10,9 @@ class StockMove(BaseModel):
             'date': '', #Date
             'name': '', # Varchar
             'origin': '', # Varchar
-            'purchase_id': 0, #Integer
-            'sale_id': 0, #Integer
-            'picking_id': 0, #Integer
+            'purchase_id': None, #Integer
+            'sale_id': None, #Integer
+            'picking_id': None, #Integer
             'quantity_done': 0, # Numeric
             'product_qty': 0, # Numeric
             'state': '', # Varchar

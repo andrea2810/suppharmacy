@@ -12,9 +12,9 @@ class SaleOrder(BaseModel):
             'amount_untaxed': 0.0, #Numeric
             'date': '', #Date
             'name': '', # Varchar
-            'partner_id': 0, #Integer
+            'partner_id': None, #Integer
             'state': '', #Varchar
-            'user_id': 0, #Integer
+            'user_id': None, #Integer
         }
     _relational_fields = {
             'partner_id': 'res_partner',

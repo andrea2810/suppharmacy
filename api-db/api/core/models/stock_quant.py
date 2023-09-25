@@ -9,7 +9,7 @@ class StockQuant(BaseModel):
             'id': 0, # Integer
             'available_quantity': 0, # Numeric
             'in_date': '', #Date
-            'product_id': 0, #Integer
+            'product_id': None, #Integer
             'quantity': 0, # Numeric
         }
     _relational_fields = {
