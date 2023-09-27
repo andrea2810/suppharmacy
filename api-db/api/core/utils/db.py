@@ -50,10 +50,6 @@ class DB:
         offset = args.get('offset', 0)
         fields = set(args.get('fields', []))
 
-        if instance._relational_fields and order:
-            if not '.' in order:
-                order = f'{instance._table}.{order}'
-
         where, params = instance._format_where_params(where_params)
 
         if count:
@@ -63,6 +59,18 @@ class DB:
                     FROM {instance._table} \
                     {where} \
                 ', params
+
+        if instance._relational_fields and order:
+            if not '.' in order:
+                order = f'{instance._table}.{order}'
+            else:
+                try: 
+                    relational_field, join_field = order.split('.')
+
+                    if relational_field in instance._relational_fields:
+                        order = f'{instance._relational_fields[relational_field]}.{join_field}'
+                except:
+                    raise PGError(f"The relational field {order} has to be separated by 1 dot")
 
         return f' \
                 SELECT \
@@ -75,8 +83,8 @@ class DB:
                 OFFSET {offset} \
             ', params
 
-    def _create_query(self, instance):
-        vals = instance._get_values()
+    def _create_query(self, instance, fields):
+        vals = instance._get_values(fields)
         fields = vals.keys()
 
         return f'\
@@ -119,9 +127,9 @@ class DB:
 
         return res
 
-    def create_from_instance(self, instance):
+    def create_from_instance(self, instance, fields):
         with self.get_cursor('_write_pool') as cur:
-            cur.execute(*self._create_query(instance))
+            cur.execute(*self._create_query(instance, fields))
             instance.id = cur.fetchone()['id']
 
         return True

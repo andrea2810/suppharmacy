@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import copy
 import psycopg2
 
 from api.core.utils import DB
@@ -29,11 +28,11 @@ class BaseModel:
         for field, default_value in self._fields.items():
             setattr(self, field, fields.get(field, default_value))
 
-    def _get_values(self):
-        fields = copy.deepcopy(self._fields)        
-        del fields['id']
+    def _get_values(self, fields):
+        if 'id' in fields:  
+            del fields['id']
 
-        return {field: getattr(self, field) for field in fields.keys()}
+        return {field: getattr(self, field) for field in fields}
 
     def _get_read_fields(self, fields=set()):
         res = None
@@ -143,9 +142,9 @@ class BaseModel:
         db = DB()
         return db.read_from_instance(self, args)
 
-    def create(self):
+    def create(self, fields):
         db = DB()
-        return db.create_from_instance(self)
+        return db.create_from_instance(self, fields)
 
     def update(self, data):
         db = DB()
