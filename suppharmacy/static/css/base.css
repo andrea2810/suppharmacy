@@ -80,14 +80,16 @@ table.list_view {
     margin-right: 0;
 }
 
-.dropdown::after {
+th.dropdown::after {
     content: "\2b9f";
     color: white;
     font-family: sans-serif;
+    font-size: 12px;
 }
 
-.dropup::after {
+th.dropup::after {
     content: "\2b9d";
     color: white;
     font-family: sans-serif;
+    font-size: 12px;
 }
