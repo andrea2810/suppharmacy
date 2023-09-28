@@ -57,6 +57,7 @@ class DB:
                     SELECT \
                         COUNT(1) \
                     FROM {instance._table} \
+                    {instance._get_joins()} \
                     {where} \
                 ', params
 
