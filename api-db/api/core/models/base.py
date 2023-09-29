@@ -77,7 +77,7 @@ class BaseModel:
 
     def _format_where_params(self, args):
         res = ''
-        params = {}
+        params = []
         condition_added = False
 
         if not isinstance(args, list):
@@ -125,8 +125,11 @@ class BaseModel:
                         except:
                             raise PGError(f"The relational field {field} has to be separated by 1 dot")
 
-                res += f'{field} {operator} {"%({})s".format(field)} '
-                params.update({field: value})
+                res += f'{field} {operator} %s '
+                if operator == 'in':
+                    params.append(tuple(value))
+                else:
+                    params.append(value)
 
                 condition_added = True
 
@@ -136,7 +139,7 @@ class BaseModel:
         if res:
             res = f'WHERE {res}'
 
-        return res, params
+        return res, tuple(params)
 
     def get(self, args={}):
         db = DB()
