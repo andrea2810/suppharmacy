@@ -93,3 +93,7 @@ th.dropup::after {
     font-family: sans-serif;
     font-size: 12px;
 }
+
+.input-group-date {
+    flex-wrap: nowrap !important;
+}

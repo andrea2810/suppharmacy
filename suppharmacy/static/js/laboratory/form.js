@@ -28,7 +28,6 @@ const formApp = Vue.createApp({
                         data,
                     });
                 } else {
-                    delete data['password'];
                     res = await axios({
                         url: '/dataset/laboratory',
                         method: 'put',
