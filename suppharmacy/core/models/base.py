@@ -74,6 +74,9 @@ class BaseModel:
         reqm = RequestManager()
 
         with reqm as _:
+            if fields:
+                fields.append('id')
+
             data = {
                 'where_params': args,
                 'count': count,
