@@ -9,7 +9,7 @@
 <div id="vue-form" rec-id="{{id}}">
     <loading :loading="loading"></loading>
     <!-- Header -->
-    <div class="row m-3 sticky-top bg-body">
+    <div class="row m-3 sticky-top bg-body form-header">
         <div class="col-3">
             <button type="button" class="btn btn-info m-1" @click="save">
                 <span v-if="laboratory.id != 0">Guardar</span>
@@ -22,16 +22,18 @@
         </div>
     </div>
     <!-- Body -->
-    <div class="row">
-        <div class="col-6">
-            <div class="input-group m-3">
-                <span class="input-group-text">Nombre</span>
-                <input class="form-control" type="text" v-model="laboratory.name"/>
-            </div>
-            <div class="input-group m-3">
-                <span class="input-group-text">Activo</span>
-                <div class="input-group-text">
-                    <input class="form-check-input mt-0" type="checkbox" v-model="laboratory.active" >
+    <div class="form-body">
+        <div class="form-body">
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Nombre</span>
+                    <input class="form-control" type="text" v-model="laboratory.name"/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Activo</span>
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="checkbox" v-model="laboratory.active" >
+                    </div>
                 </div>
             </div>
         </div>

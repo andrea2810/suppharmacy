@@ -97,3 +97,11 @@ th.dropup::after {
 .input-group-date {
     flex-wrap: nowrap !important;
 }
+
+.form-header {
+    height: 5vh !important;
+}
+
+.form-body {
+    height: 90vh !important;
+}

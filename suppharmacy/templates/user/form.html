@@ -10,7 +10,7 @@
     <loading :loading="loading"></loading>
     <modal-password :visible="modalPassword"></modal-password>
     <!-- Header -->
-    <div class="row m-3 sticky-top bg-body">
+    <div class="row m-3 sticky-top bg-body form-header">
         <div class="col-3">
             <button type="button" class="btn btn-info m-1" @click="save">
                 <span v-if="user.id != 0">Guardar</span>
@@ -23,27 +23,29 @@
         </div>
     </div>
     <!-- Body -->
-    <div class="row">
-        <div class="col-6">
-            <div class="input-group m-3">
-                <span class="input-group-text">Nombre</span>
-                <input class="form-control" type="text" v-model="user.name"/>
+    <div class="form-body">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Nombre</span>
+                    <input class="form-control" type="text" v-model="user.name"/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Usuario</span>
+                    <input class="form-control" type="text" v-model="user.username"/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Contraseña</span>
+                    <input class="form-control" type="password" v-model="user.password" :disabled="user.id != 0"/>
+                    <button v-if="user.id != 0" class="btn btn-outline-secondary" type="button" @click="toggleModalPassword">Actualizar</button>
+                </div>
             </div>
-            <div class="input-group m-3">
-                <span class="input-group-text">Usuario</span>
-                <input class="form-control" type="text" v-model="user.username"/>
-            </div>
-            <div class="input-group m-3">
-                <span class="input-group-text">Contraseña</span>
-                <input class="form-control" type="password" v-model="user.password" :disabled="user.id != 0"/>
-                <button v-if="user.id != 0" class="btn btn-outline-secondary" type="button" @click="toggleModalPassword">Actualizar</button>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="input-group m-3">
-                <span class="input-group-text">Activo</span>
-                <div class="input-group-text">
-                    <input class="form-check-input mt-0" type="checkbox" v-model="user.active" >
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Activo</span>
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="checkbox" v-model="user.active" >
+                    </div>
                 </div>
             </div>
         </div>
