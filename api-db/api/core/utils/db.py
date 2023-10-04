@@ -97,17 +97,16 @@ class DB:
 
     def _update_query(self, instance, data):
         fields = data.keys()
-        where, params = self._format_where_params(instance, [['id', '=', instance.id]])
 
         return f'\
                 UPDATE \
                     {instance._table} \
                 SET {", ".join("{0} = %({0})s".format(field) for field in fields)} \
-                {where} \
-            ', {**data, **params}
+                WHERE id = %(id)s \
+            ', {'id': instance.id, **data}
 
     def _delete_query(self, instance):
-        where, params = self._format_where_params(instance, [['id', '=', instance.id]])
+        where, params = instance._format_where_params([['id', '=', instance.id]])
 
         return f'\
                 DELETE FROM \

@@ -54,7 +54,7 @@ class APIViewDetail(APIView):
         if not record:
             raise Http404
 
-        return record[0]
+        return self._model(**record[0])
 
     def get(self, request, pk, format=None):
         try:
