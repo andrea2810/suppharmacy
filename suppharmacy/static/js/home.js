@@ -115,7 +115,7 @@ let fieldRelationalComponent = {
             } else {
                 this.input = '';
                 this.keyup();
-                this.$emit('value-changed', {id: 0});
+                this.$emit('value-changed', {id: null});
             }
         },
         async keyup() {
