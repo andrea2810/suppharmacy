@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'user',
     'laboratory',
     'partner',
+    'product',
 ]
 
 MIDDLEWARE = [

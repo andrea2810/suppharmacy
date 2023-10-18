@@ -1,0 +1,108 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %} {{ name|default:"Nuevo" }} {% endblock %}
+
+{% block view %}
+
+<div id="vue-form" rec-id="{{id}}">
+    <loading :loading="loading"></loading>
+    <!-- Header -->
+    <div class="row sticky-top bg-body form-header">
+        <div class="col-3">
+            <button type="button" class="btn btn-info m-1" @click="save">
+                <span v-if="product.id != 0">Guardar</span>
+                <span v-else>Crear</span>
+            </button>
+            <a href="#" class="btn btn-outline-info m-1" @click="discard">Descartar</a>
+        </div>
+        <div class="col-1 ms-auto">
+            <a v-if="product.id != 0" href="#" class="btn btn-danger m-1" @click="deleteProduct">Borrar</a>
+        </div>
+    </div>
+    <!-- Body -->
+    <div class="form-body">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Nombre</span>
+                    <input class="form-control" type="text" v-model="product.name"/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Código</span>
+                    <input class="form-control" type="text" v-model="product.code"/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Presentación</span>
+                    <input class="form-control" type="text" v-model="product.presentation"/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Descripción</span>
+                    <input class="form-control" type="text" v-model="product.description"/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Antibiótico</span>
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="checkbox" v-model="product.is_antibiotic" >
+                    </div>
+                </div>
+                <field-relational
+                    v-if="product.laboratory_id"
+                    string="Laboratorio"
+                    field="name"
+                    table="laboratory"
+                    :initial="product.laboratory_id"
+                    @value-changed="labChange"
+                ></field-relational>
+                <field-relational
+                    v-else=""
+                    string="Laboratorio"
+                    field="name"
+                    table="laboratory"
+                    @value-changed="labChange"
+                ></field-relational>
+                <field-relational
+                    v-if="product.drug_category_id"
+                    string="Categoría"
+                    field="name"
+                    table="drug-category"
+                    :initial="product.drug_category_id"
+                    @value-changed="categoryChange"
+                ></field-relational>
+                <field-relational
+                    v-else=""
+                    string="Categoría"
+                    field="name"
+                    table="drug-category"
+                    @value-changed="categoryChange"
+                ></field-relational>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Costo</span>
+                    <input class="form-control" type="number" v-model="product.dealer_price" min="0"/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Precio al Público</span>
+                    <input class="form-control" type="number" v-model="product.list_price"/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Impuesto</span>
+                    <input class="form-control" type="number" v-model="product.taxes"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/product/form.js' %}"></script>
+{% endblock %}
