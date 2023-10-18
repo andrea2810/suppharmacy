@@ -1,0 +1,81 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %} {{ name|default:"Nuevo" }} {% endblock %}
+
+{% block view %}
+
+<div id="vue-form" rec-id="{{id}}">
+    <loading :loading="loading"></loading>
+    <!-- Header -->
+    <div class="row sticky-top bg-body form-header">
+        <div class="col-3">
+            <button type="button" class="btn btn-info m-1" @click="save">
+                <span v-if="partner.id != 0">Guardar</span>
+                <span v-else>Crear</span>
+            </button>
+            <a href="#" class="btn btn-outline-info m-1" @click="discard">Descartar</a>
+        </div>
+        <div class="col-1 ms-auto">
+            <a v-if="partner.id != 0" href="#" class="btn btn-danger m-1" @click="deletePartner">Borrar</a>
+        </div>
+    </div>
+    <!-- Body -->
+    <div class="form-body">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Nombre</span>
+                    <input class="form-control" type="text" v-model="partner.name"/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Referencia</span>
+                    <input class="form-control" type="text" v-model="partner.ref"/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Compañía</span>
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="checkbox" v-model="partner.is_company"/>
+                    </div>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">RFC</span>
+                    <input class="form-control" type="text" v-model="partner.rfc">
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Correo Electrónico</span>
+                    <input class="form-control" type="text" v-model="partner.email">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Teléfono</span>
+                    <input class="form-control" type="text" v-model="partner.phone">
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Teléfono Móvil</span>
+                    <input class="form-control" type="text" v-model="partner.mobile">
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Código Postal</span>
+                    <input class="form-control" type="text" v-model="partner.cp">
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Ciudad</span>
+                    <input class="form-control" type="text" v-model="partner.city">
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">País</span>
+                        <input class="form-control" type="text" v-model="partner.country">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/partner/form.js' %}"></script>
+{% endblock %}
