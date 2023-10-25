@@ -109,16 +109,15 @@ let fieldRelationalComponent = {
             } 
         },
         blur() {
-            if (this.data.id && this.input 
-                && this.data[this.field] == this.input) {
-                this.$emit('value-changed', JSON.parse(JSON.stringify(this.data)));
-            } else {
-                this.input = '';
-                this.keyup();
-                this.$emit('value-changed', {id: null});
+            if (!this.data.id || !this.input 
+                || this.data[this.field] != this.input) {
+                    this.input = '';
+                    this.keyup();
             }
+
+            this.$emit('value-changed', JSON.parse(JSON.stringify(this.data)));
         },
-        async keyup() {
+        keyup() {
             this.__debounce(async () => {
                 let value = this.input;
     
@@ -135,29 +134,42 @@ let fieldRelationalComponent = {
                     this.data = this.items[0];
                 } else {
                     this.data = {
-                        id: 0,
+                        id: null,
                     }
                 }
             }, 300);
         },
+        initialChanged() {
+            this.__debounce(async () => {
+                const args = JSON.stringify([['id', '=', this.initial]]);
+                const data = await this.__getData(args);
+    
+                this.items = data;
+    
+                if (this.items.length) {
+                    this.data = this.items[0];
+                    this.input = this.data[this.field];
+                } else {
+                    this.data = {
+                        id: 0,
+                    }
+                }
+            }, 300);
+        }
     },
-    async mounted() {
-        if (this.initial) {
-            const args = JSON.stringify([['id', '=', this.initial]]);
-            const data = await this.__getData(args);
-
-            this.items = data;
-
-            if (this.items.length) {
-                this.data = this.items[0];
-                this.input = this.data[this.field];
-            } else {
-                this.data = {
-                    id: 0,
+    mounted() {
+        this.keyup();
+    },
+    watch: {
+        initial: {
+            handler: function (val, oldVal) {
+                if (val != this.data.id) {
+                    this.initialChanged();
+                } else if (!val) {
+                    this.input = '';
+                    this.keyup();
                 }
             }
-        } else {
-            this.keyup();
         }
     },
     template: `

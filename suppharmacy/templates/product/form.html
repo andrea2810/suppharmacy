@@ -50,7 +50,6 @@
                     </div>
                 </div>
                 <field-relational
-                    v-if="product.laboratory_id"
                     string="Laboratorio"
                     field="name"
                     table="laboratory"
@@ -58,25 +57,10 @@
                     @value-changed="labChange"
                 ></field-relational>
                 <field-relational
-                    v-else=""
-                    string="Laboratorio"
-                    field="name"
-                    table="laboratory"
-                    @value-changed="labChange"
-                ></field-relational>
-                <field-relational
-                    v-if="product.drug_category_id"
                     string="Categoría"
                     field="name"
                     table="drug-category"
                     :initial="product.drug_category_id"
-                    @value-changed="categoryChange"
-                ></field-relational>
-                <field-relational
-                    v-else=""
-                    string="Categoría"
-                    field="name"
-                    table="drug-category"
                     @value-changed="categoryChange"
                 ></field-relational>
             </div>
