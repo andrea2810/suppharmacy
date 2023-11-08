@@ -15,9 +15,7 @@ def laboratory_form_view(request, record):
     if record != 0:
         data = model['laboratory'].browse(record)
 
-        if not data['ok'] or not data['data']:
+        if not data:
             return redirect('list-laboratory')
-
-        data = data['data']
 
     return render(request, 'laboratory/form.html', data)

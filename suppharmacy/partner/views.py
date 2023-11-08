@@ -15,9 +15,7 @@ def partner_form_view(request, record):
     if record != 0:
         data = model['partner'].browse(record)
 
-        if not data['ok'] or not data['data']:
+        if not data:
             return redirect('list-partner')
-
-        data = data['data']
 
     return render(request, 'partner/form.html', data)

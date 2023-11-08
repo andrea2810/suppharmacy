@@ -15,9 +15,7 @@ def product_form_view(request, record):
     if record != 0:
         data = model['product'].browse(record)
 
-        if not data['ok'] or not data['data']:
+        if not data:
             return redirect('list-product')
-
-        data = data['data']
 
     return render(request, 'product/form.html', data)

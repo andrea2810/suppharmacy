@@ -81,22 +81,24 @@ class BaseModel:
 
         raise Exception(reqm.error)
 
-    def browse(self, ids):
+    def browse(self, ids, fields=[]):
         if not isinstance(ids, list) and not isinstance(ids, int):
             raise Exception("bad ids")
 
         if isinstance(ids, list):
-            return self.get([['id', 'in', ids]])
+            return self.get([['id', 'in', ids]], fields=fields)
 
         reqm = RequestManager()
 
         with reqm as _:
             response = None
 
-            response = requests.get(f'{self._URL}{self._name}/{ids}')
-            response.raise_for_status()
+            data = self.get([['id', '=', ids]], fields=fields)
 
-            return response.json()
+            if not data:
+                return {}
+
+            return data[0]
 
         raise Exception(reqm.error)
 
