@@ -11,7 +11,7 @@ from django.conf import settings
 class RequestManager:
 
     def __init__(self):
-        self.error = {}
+        self.error = ''
 
     def __enter__(self):
         return True
@@ -21,28 +21,16 @@ class RequestManager:
             status_code = exc_value.response.status_code
 
             if status_code == 400:
-                self.error = {
-                    'ok': False,
-                    'error': exc_value.response.json()['error']
-                }
+                self.error = exc_value.response.json()['error']
 
             elif status_code == 404:
-                self.error = {
-                    'ok': False,
-                    'error': 'No data found'
-                }
+                self.error = "No data found"
             
             else:
-                self.error = {
-                    'ok': False,
-                    'error': 'Fatal Error API'
-                }
+                self.error = "Fatal Error API"
 
         if exc_type == ConnectionError:
-            self.error = {
-                    'ok': False,
-                    'error': "No Connection to API"
-                }
+            self.error = "No Connection to API"
         
         if self.error:
             return True
@@ -89,19 +77,13 @@ class BaseModel:
                 json=data)
             response.raise_for_status()
 
-            return {
-                'ok': True,
-                'data': response.json()
-                }
+            return response.json()
 
-        return reqm.error
+        raise Exception(reqm.error)
 
     def browse(self, ids):
         if not isinstance(ids, list) and not isinstance(ids, int):
-            return {
-                'ok': False,
-                'error': 'bad ids'
-            }
+            raise Exception("bad ids")
 
         if isinstance(ids, list):
             return self.get([['id', 'in', ids]])
@@ -114,19 +96,13 @@ class BaseModel:
             response = requests.get(f'{self._URL}{self._name}/{ids}')
             response.raise_for_status()
 
-            return {
-                'ok': True,
-                'data': response.json()
-                }
+            return response.json()
 
-        return reqm.error
+        raise Exception(reqm.error)
 
     def create(self, data):
         if not isinstance(data, dict):
-            return {
-                'ok': False,
-                'error': 'Bad Data'
-            }
+            raise Exception("Bad Data")
 
         data = self._add_default_values(data)
         data = self._format_values(data)
@@ -139,25 +115,16 @@ class BaseModel:
             response = requests.post(f'{self._URL}{self._name}', data=data)
             response.raise_for_status()
 
-            return {
-                'ok': True,
-                'data': response.json()
-                }
+            return response.json()
 
-        return reqm.error
+        raise Exception(reqm.error)
 
     def update(self, data):
         if not isinstance(data, dict):
-            return {
-                'ok': False,
-                'error': 'Bad Data'
-            }
+            raise Exception("Bad Data")
 
         if not data.get('id'):
-            return {
-                'ok': False,
-                'error': 'Missing ID'
-            }
+            raise Exception("Missing ID")
 
         data = self._format_values(data)
 
@@ -170,19 +137,13 @@ class BaseModel:
                 data=data)
             response.raise_for_status()
 
-            return {
-                'ok': True,
-                'data': response.json()
-                }
+            return response.json()
 
-        return reqm.error
+        raise Exception(reqm.error)
 
     def delete(self, ids):
         if not isinstance(ids, list):
-            return {
-                'ok': False,
-                'error': 'Bad ids'
-            }
+            raise Exception("Bad ids")
 
         reqm = RequestManager()
 
@@ -193,8 +154,6 @@ class BaseModel:
                 response = requests.delete(f'{self._URL}{self._name}/{ID}')
                 response.raise_for_status()
 
-            return {
-                'ok': True
-                }
+            return True
 
-        return reqm.error
+        raise Exception(reqm.error)

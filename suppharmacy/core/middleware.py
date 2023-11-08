@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.http import JsonResponse
 from django.shortcuts import redirect
 
 PATHS_TO_EXCLUDE = [
@@ -17,6 +18,9 @@ class SuppharmacyMiddleware:
 
         response = self.get_response(request)
 
+        if 'dataset' in request.path and not isinstance(response, JsonResponse):
+            return JsonResponse({'ok': True, 'data': response})
+
         return response
 
     def process_view(self, request, view_func, view_args, view_kwargs):
@@ -24,8 +28,10 @@ class SuppharmacyMiddleware:
         pass
 
     def process_exception(self, request, exception):
-        # This code is executed if an exception is raised
-        pass
+        if 'dataset' in request.path:
+            return JsonResponse({'ok': False, 'error': str(exception)}, status=200)
+
+        return None
 
     def process_template_response(self, request, response):
         # This code is executed if the response contains a render() method

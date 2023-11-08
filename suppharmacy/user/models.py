@@ -19,8 +19,8 @@ class ResUser(BaseModel):
             ['username', '=', data.get('user', '')],
         ], fields=['name', 'password'])
 
-        if user.get('ok') and user.get('data'):
-            user = user['data'][0]
+        if user:
+            user = user[0]
             if self.__get_crypt_context().verify(data.get('password', ''),
                 user.get('password', '')):
                 return user

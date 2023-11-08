@@ -42,10 +42,7 @@ def logout_view(request):
 
 def dataset_view(request, table, **params):
     if table not in model:
-        return JsonResponse({
-                'ok': False,
-                'error': f"Model {table} is not defined"
-            }, status=200)
+        raise Exception(f"Model {table} is not defined")
 
     if request.method == 'GET':
         fields = request.GET.get('fields', [])
@@ -53,44 +50,40 @@ def dataset_view(request, table, **params):
         if fields:
             fields = fields.split(',')
 
-        return JsonResponse(model[table].get(
+        return model[table].get(
             args=json.loads(request.GET.get('args', '[]')),
             count=bool(request.GET.get('count', 0)),
             order=request.GET.get('order', "id ASC"),
             limit=int(request.GET.get('limit', 80)),
             offset=int(request.GET.get('offset', 0)),
             fields=fields
-        ))
+        )
 
     if request.method == 'POST':
         data = {}
         try:
             data = json.loads(request.body.decode("utf-8"))
         except:
-            return JsonResponse({'ok': False, 'error': "Bad Body"})
+            raise Exception("Bad Body")
 
-        return JsonResponse(model[table].create(data))
+        return model[table].create(data)
 
     if request.method == 'PUT':
         data = {}
         try:
             data = json.loads(request.body.decode("utf-8"))
         except:
-            return JsonResponse({'ok': False, 'error': "Bad Body"})
+            raise Exception("Bad Body")
 
-        return JsonResponse(model[table].update(data))
+        return model[table].update(data)
 
     if request.method == 'DELETE':
         data = {}
         try:
             data = json.loads(request.body.decode("utf-8"))
         except:
-            return JsonResponse({'ok': False, 'error': "Bad Body"})
+            raise Exception("Bad Body")
 
-        return JsonResponse(model[table].delete([data['id']]))
+        return model[table].delete([data['id']])
 
-
-    return JsonResponse({
-            'ok': False,
-            'error': "Method not allow"
-        }, status=200)
+    raise Exception("Method not allow")
