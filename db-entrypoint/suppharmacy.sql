@@ -887,7 +887,7 @@ ALTER TABLE ONLY public.product_product
 --
 
 ALTER TABLE ONLY public.purchase_order_line
-    ADD CONSTRAINT purchase_order_line_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.purchase_order(id);
+    ADD CONSTRAINT purchase_order_line_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.purchase_order(id) ON DELETE CASCADE;
 
 
 --
@@ -919,7 +919,7 @@ ALTER TABLE ONLY public.purchase_order
 --
 
 ALTER TABLE ONLY public.sale_order_line
-    ADD CONSTRAINT sale_order_line_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.purchase_order(id);
+    ADD CONSTRAINT sale_order_line_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.sale_order(id) ON DELETE CASCADE;
 
 
 --
@@ -951,7 +951,7 @@ ALTER TABLE ONLY public.sale_order
 --
 
 ALTER TABLE ONLY public.stock_move
-    ADD CONSTRAINT stock_move_picking_id_fkey FOREIGN KEY (picking_id) REFERENCES public.stock_picking(id);
+    ADD CONSTRAINT stock_move_picking_id_fkey FOREIGN KEY (picking_id) REFERENCES public.stock_picking(id) ON DELETE CASCADE;
 
 
 --
