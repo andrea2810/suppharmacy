@@ -87,3 +87,24 @@ def dataset_view(request, table, **params):
         return model[table].delete([data['id']])
 
     raise Exception("Method not allow")
+
+def dataset_call_view(request, table, **params):
+    if table not in model:
+        raise Exception(f"Model {table} is not defined")
+
+    if request.method != 'POST':
+        raise Exception("Method not allow")
+
+    data = {}
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except:
+        raise Exception("Bad Body")
+
+    if not 'method' in data or not 'args' in data:
+        raise Exception("Missing fields in body")
+
+    if not isinstance(data['args'], list):
+        raise Exception("Parameters must be a list")
+
+    return getattr(model[table], data['method'])(*data['args'])

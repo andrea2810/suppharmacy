@@ -158,7 +158,11 @@ let fieldRelationalComponent = {
         }
     },
     mounted() {
-        this.keyup();
+        if (this.initial) {
+            this.initialChanged();
+        } else {
+            this.keyup();
+        }
     },
     watch: {
         initial: {
@@ -201,4 +205,4 @@ const formatDateToArgs = function(date) {
     }
 
     return `${date.getFullYear()}-${month}-${day}`;
-}
+};
