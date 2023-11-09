@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from passlib.context import CryptContext
-
 from core.models import BaseModel, model
 
 
