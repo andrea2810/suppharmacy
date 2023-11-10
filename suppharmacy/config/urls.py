@@ -22,4 +22,5 @@ urlpatterns = [
     path('partner', include('partner.urls')),
     path('product', include('product.urls')),
     path('sale', include('sale.urls')),
+    path('drug-category', include('category.urls')),
 ]
