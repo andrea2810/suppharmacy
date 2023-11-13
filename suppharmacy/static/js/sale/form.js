@@ -92,7 +92,7 @@ const formApp = Vue.createApp({
                     url: '/dataset/sale-order',
                     method: 'get',
                     params: {
-                        fields: 'name,date,state,partner_id,user_id',
+                        fields: 'name,date,state,partner_id,user_id,amount_untaxed,amount_total',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });
@@ -290,7 +290,6 @@ const formApp = Vue.createApp({
     watch: {
         lines: {
             handler: function (val, oldVal) {
-                console.log("changed lines");
                 this._onchangeLines();
             },
             deep: true
