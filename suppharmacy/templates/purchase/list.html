@@ -1,0 +1,139 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}Compras{% endblock %}
+
+{% block view %}
+
+<div id="vue-list" >
+    <loading :loading="loading"></loading>
+    <div class="row m-3">
+        <!-- Filters -->
+        <div class="col-2">
+            <div class="input-group">
+                <span class="input-group-text">Folio</span>
+                <input class="form-control" type="text" v-model="nameFilter"
+                    @change="fetchPurchases()"/>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="input-group">
+                <span class="input-group-text">Cliente</span>
+                <input class="form-control" type="text" v-model="partnerFilter"
+                    @change="fetchPurchases()"/>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="input-group input-group-date">
+                <span class="input-group-text">Fecha</span>
+                <date-picker 
+                    @update:model-value="(date) => {dateStartFilter = date;fetchPurchases()}"
+                    placeholder="Inicio"
+                    :enable-time-picker="false"
+                    :max-date="new Date()"
+                    select-text="Seleccionar"
+                    cancel-text="Cancelar"
+                    v-model="dateStartFilter"
+                    locale="es"
+                    format="dd/MM/yyyy">
+                </date-picker>
+                <date-picker 
+                    @update:model-value="(date) => {dateEndFilter = date;fetchPurchases()}"
+                    placeholder="Fin"
+                    :enable-time-picker="false"
+                    :max-date="new Date()"
+                    select-ext="Seleccionar"
+                    cancel-text="Cancelar"
+                    v-model="dateEndFilter"
+                    locale="es"
+                    format="dd/MM/yyyy">
+                </date-picker>
+            </div>
+        </div>
+        <!-- Pagination -->
+        <div class="col-3 ms-auto">
+            <nav>
+                <ul class="pagination justify-content-end">
+                    <li class="page-item" :class="paginationEnableClass">
+                        <a class="page-link" @click="changePage(-1)" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link">[[ pagination ]]</a>
+                    </li>
+                    <li class="page-item" :class="paginationEnableClass">
+                        <a class="page-link" @click="changePage(1)" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <select v-model="limit" class="form-select" @change="fetchPurchases">
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </li>
+                </ul>
+              </nav>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="table table-striped list_view table-reponsive" >
+            <thead class="text-bg-dark sticky-top">
+                <tr>
+                    <th style="width: 20px;">
+                        <a href="purchase/0">
+                            <svg class="bi bi bi-plus-square me-2" width="16" height="16">
+                                <image xlink:href="{% static 'img/icons/plus-square.svg' %}"/>
+                            </svg>
+                        </a>
+                    </th>
+                    <th style="width: 20px;"></th>
+                    <th style="width: 17%;"
+                        :class="orderFieldClass.name"
+                        @click="changeOrder('name')">
+                        Folio
+                    </th>
+                    <th style="width: 10%;"
+                        :class="orderFieldClass.date"
+                        @click="changeOrder('date')">
+                        Fecha
+                    </th>
+                    <th style="width: 18%;"
+                        :class="orderFieldClass.partner_name"
+                        @click="changeOrder('partner_id.name')">
+                        Cliente
+                    </th>
+                    <th style="width: 17%;"
+                        :class="orderFieldClass.user_name"
+                        @click="changeOrder('user_id.name')">
+                        Usuario
+                    </th>
+                    <th style="width: 17%;"
+                        :class="orderFieldClass.amount_total"
+                        @click="changeOrder('amount_total')">
+                        Total
+                    </th>
+                    <th style="width: 17%;"
+                        :class="orderFieldClass.state"
+                        @click="changeOrder('state')">
+                        Estado
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr is="vue:purchase-row" v-for="purchase in purchases" :key="purchase.id" :purchase="purchase"></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/purchase/list.js' %}"></script>
+{% endblock %}
+
+

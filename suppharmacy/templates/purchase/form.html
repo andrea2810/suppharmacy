@@ -1,0 +1,111 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %} {{ name|default:"Nuevo" }} {% endblock %}
+
+{% block view %}
+
+<div id="vue-form" rec-id="{{id}}">
+    <loading :loading="loading"></loading>
+    <!-- Header -->
+    <div class="row sticky-top bg-body align-items-center form-header">
+        <div class="col-3">
+            <button type="button" class="btn btn-info m-1" @click="save">
+                <span v-if="purchase.id != 0">Guardar</span>
+                <span v-else>Crear</span>
+            </button>
+            <a href="#" class="btn btn-outline-info m-1" @click="discard">Descartar</a>
+        </div>
+        <div class="col-1 ms-auto text-center fs-4">
+            <span class="badge text-bg-secondary">Estado</span>
+        </div>
+        <div class="col-1">
+            <a v-if="purchase.id != 0" href="#" class="btn btn-danger m-1" @click="deletePurchase">Borrar</a>
+        </div>
+    </div>
+    <!-- Body -->
+    <div class="form-body">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Nombre</span>
+                    <input class="form-control" type="text" v-model="purchase.name"/>
+                </div>
+                <field-relational
+                    string="Cliente"
+                    field="name"
+                    table="partner"
+                    :initial="purchase.partner_id"
+                    @value-changed="partnerChange"
+                ></field-relational>
+            </div>
+            <div class="col-6">
+                <div class="input-group input-group-date m-3">
+                    <span class="input-group-text">Fecha</span>
+                    <date-picker 
+                        @update:model-value="(date) => {purchase.date = date}"
+                        :enable-time-picker="false"
+                        :max-date="new Date()"
+                        select-text="Seleccionar"
+                        cancel-text="Cancelar"
+                        v-model="purchase.date"
+                        locale="es"
+                        format="dd/MM/yyyy">
+                    </date-picker>
+                </div>
+                <field-relational
+                    string="Usuario"
+                    field="name"
+                    table="user"
+                    :initial="purchase.user_id"
+                    @value-changed="userChange"
+                ></field-relational>
+            </div>
+        </div>
+        <div >
+            <table class="table table-striped list_view table-reponsive">
+                <thead class="text-bg-dark">
+                    <tr style="display: block;">
+                        <th style="width: 2%;">
+                            <a href="#" @click="openLine(0)">
+                                <svg class="bi bi bi-plus-square me-2" width="16" height="16">
+                                    <image xlink:href="{% static 'img/icons/plus-square.svg' %}"/>
+                                </svg>
+                            </a>
+                        </th>
+                        <th style="width: 2%;"></th>
+                        <th style="width: 16%;">Producto</th>
+                        <th style="width: 16%;">Cantidad</th>
+                        <th style="width: 16%;">Precio Unitario</th>
+                        <th style="width: 16%;">Impuesto</th>
+                        <th style="width: 16%;">Subtotal</th>
+                        <th style="width: 16%;">Total</th>
+                    </tr>
+                </thead>
+                <tbody style="height: 50vh; overflow-y: auto; display: block;">
+                    <tr is="vue:purchase-line-row" v-for="line in lines" :key="line.id" :line="line"></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-3 ms-auto">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Subtotal</span>
+                    <input class="form-control" type="text" v-model="purchase.amount_untaxed" disabled/>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Total</span>
+                    <input class="form-control" type="text" v-model="purchase.amount_total" disabled/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <modal-line :visible="visibleModalLine" :line="modalLine"></modal-line>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/purchase/form.js' %}"></script>
+{% endblock %}
