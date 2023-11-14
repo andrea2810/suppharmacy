@@ -389,12 +389,10 @@ CREATE TABLE public.stock_move (
     date date,
     name character varying(100) NOT NULL,
     origin character varying(100),
-    purchase_id integer,
-    sale_id integer,
     picking_id integer,
     quantity_done numeric,
+    product_id integer,
     product_qty numeric,
-    state character varying(15)
 );
 
 
@@ -955,20 +953,11 @@ ALTER TABLE ONLY public.stock_move
 
 
 --
--- Name: stock_move stock_move_purchase_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: suppharmacy
+-- Name: stock_move stock_move_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: suppharmacy
 --
 
 ALTER TABLE ONLY public.stock_move
-    ADD CONSTRAINT stock_move_purchase_id_fkey FOREIGN KEY (purchase_id) REFERENCES public.purchase_order(id);
-
-
---
--- Name: stock_move stock_move_sale_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: suppharmacy
---
-
-ALTER TABLE ONLY public.stock_move
-    ADD CONSTRAINT stock_move_sale_id_fkey FOREIGN KEY (sale_id) REFERENCES public.sale_order(id);
-
+    ADD CONSTRAINT stock_move_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.product_product(id);
 
 --
 -- Name: stock_picking stock_picking_partner_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: suppharmacy
