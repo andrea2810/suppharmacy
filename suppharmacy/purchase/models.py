@@ -37,13 +37,13 @@ class Purchase(BaseModel):
 
         return res
 
-    def _process_lines(self, sale_id, lines):
+    def _process_lines(self, purchase_id, lines):
         lineModel = model['purchase-order-line']
 
         for operation, line_id, data in lines:
             if operation == 0: # Create
                 del data['id']
-                data['order_id'] = sale_id
+                data['order_id'] = purchase_id_id
 
                 lineModel.create(data)
 

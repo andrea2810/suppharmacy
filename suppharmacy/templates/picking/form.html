@@ -1,0 +1,97 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %} {{ name|default:"Nuevo" }} {% endblock %}
+
+{% block view %}
+
+<div id="vue-form" rec-id="{{id}}">
+    <loading :loading="loading"></loading>
+    <!-- Header -->
+    <div class="row sticky-top bg-body align-items-center form-header">
+        <div class="col-3">
+            <button type="button" class="btn btn-info m-1" @click="save">
+                <span v-if="picking.id != 0">Guardar</span>
+                <span v-else>Crear</span>
+            </button>
+            <a href="#" class="btn btn-outline-info m-1" @click="discard">Descartar</a>
+        </div>
+        <div class="col-1 ms-auto text-center fs-4">
+            <span class="badge text-bg-secondary">Estado</span>
+        </div>
+        <div class="col-1">
+            <a v-if="picking.id != 0" href="#" class="btn btn-danger m-1" @click="deletePicking">Borrar</a>
+        </div>
+    </div>
+    <!-- Body -->
+    <div class="form-body">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Nombre</span>
+                    <input class="form-control" type="text" v-model="picking.name"/>
+                </div>
+                <field-relational
+                    string="Partner"
+                    field="name"
+                    table="partner"
+                    :initial="picking.partner_id"
+                    @value-changed="partnerChange"
+                ></field-relational>
+            </div>
+            <div class="col-6">
+                <div class="input-group input-group-date m-3">
+                    <span class="input-group-text">Fecha</span>
+                    <date-picker 
+                        @update:model-value="(date) => {picking.date = date}"
+                        :enable-time-picker="false"
+                        :max-date="new Date()"
+                        select-text="Seleccionar"
+                        cancel-text="Cancelar"
+                        v-model="picking.date"
+                        locale="es"
+                        format="dd/MM/yyyy">
+                    </date-picker>
+                </div>
+                <field-relational
+                    string="Usuario"
+                    field="name"
+                    table="user"
+                    :initial="picking.user_id"
+                    @value-changed="userChange"
+                ></field-relational>
+            </div>
+        </div>
+        <div >
+            <table class="table table-striped list_view table-reponsive">
+                <thead class="text-bg-dark">
+                    <tr style="display: block;">
+                        <th style="width: 2%;">
+                            <a href="#" @click="openMove(0)">
+                                <svg class="bi bi bi-plus-square me-2" width="16" height="16">
+                                    <image xlink:href="{% static 'img/icons/plus-square.svg' %}"/>
+                                </svg>
+                            </a>
+                        </th>
+                        <th style="width: 2%;"></th>
+                        <th style="width: 32%;">Producto</th>
+                        <th style="width: 32%;">Cantidad</th>
+                        <th style="width: 32%;">Cantidad Hecha</th>
+                    </tr>
+                </thead>
+                <tbody style="height: 50vh; overflow-y: auto; display: block;">
+                    <tr is="vue:stock-move-row" v-for="move in moves" :key="move.id" :move="move"></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <modal-move :visible="visibleModalMove" :move="modalMove"></modal-move>
+    <span>[[visibleModalMove]]</span>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/picking/form.js' %}"></script>
+{% endblock %}
