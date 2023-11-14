@@ -13,5 +13,5 @@ class StockQuant(BaseModel):
             'quantity': 0, # Numeric
         }
     _relational_fields = {
-            'product_id': 'produdct_product'
+            'product_id': 'product_product'
         }

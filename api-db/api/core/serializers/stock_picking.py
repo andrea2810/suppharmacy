@@ -14,7 +14,7 @@ class StockPickingSerializer(APISerializer):
     partner_id = serializers.IntegerField(required=False)
     sale_id = serializers.IntegerField(required=False)
     purchase_id = serializers.IntegerField(required=False)
-    state = serializers.CharField(required=False, max_length=20)
-    type_picking = serializers.CharField(
+    state = serializers.CharField(required=False, allow_blank=True, max_length=20)
+    type_picking = serializers.CharField(required=False, allow_blank=True,
         max_length=50)
     user_id = serializers.IntegerField(required=False)
