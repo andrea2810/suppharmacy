@@ -77,5 +77,10 @@ class StockMove(BaseModel):
             'quantity_done': move.get('quantity_done', 0),
         }
 
+
+class StockQuant(BaseModel):
+    _name = 'stock-quant'
+
 model._add_class('stock-picking', StockPicking)
 model._add_class('stock-move', StockMove)
+model._add_class('stock-quant', StockQuant)

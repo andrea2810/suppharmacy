@@ -6,16 +6,19 @@ from django.shortcuts import render, redirect
 
 from core.models import model
 
-def stock_list_view(request):
+def picking_list_view(request):
     return render(request, 'picking/list.html', {})
 
-def stock_form_view(request, record):
+def picking_form_view(request, record):
     data = {}
 
     if record != 0:
-        data = model['stock-picking'].browse(record)
+        data = model['picking-picking'].browse(record)
 
         if not data:
-            return redirect('list-stock')
+            return redirect('list-picking')
 
     return render(request, 'picking/form.html', data)
+
+def quant_list_view(request):
+    return render(request, 'quant/list.html', {})
