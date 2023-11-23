@@ -8,6 +8,12 @@ from core.models import BaseModel, model
 class Sale(BaseModel):
     _name = 'sale-order'
 
+    state = {
+        'draft': 'Borrador',
+        'sale': 'Validado',
+        'cancel': 'Cancelado',
+    }
+
     def onchange_lines(self, lines):
         amount_untaxed = 0
         amount_total = 0

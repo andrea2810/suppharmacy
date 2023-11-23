@@ -64,10 +64,8 @@ CREATE TABLE public.product_product (
     code character varying(15),
     dealer_price numeric,
     description character varying(150),
-    expiration_time date,
     list_price numeric,
     name character varying(100) NOT NULL,
-    qty_available integer,
     sale_ok boolean NOT NULL,
     taxes numeric,
     presentation character varying(100),
@@ -468,7 +466,8 @@ ALTER SEQUENCE public.stock_picking_id_seq OWNED BY public.stock_picking.id;
 CREATE TABLE public.stock_quant (
     id integer NOT NULL,
     available_quantity numeric,
-    in_date date,
+    expiration_time date,
+    lot_number character varying(100),
     product_id integer,
     quantity numeric
 );

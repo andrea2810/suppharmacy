@@ -8,6 +8,13 @@ from core.models import BaseModel, model
 class Purchase(BaseModel):
     _name = 'purchase-order'
 
+    state = {
+        'draft': 'Borrador',
+        'purchase': 'Validado',
+        'done': 'Terminado',
+        'cancel': 'Cancelado',
+    }
+
     def onchange_lines(self, lines):
         amount_untaxed = 0
         amount_total = 0

@@ -8,6 +8,19 @@ from core.models import BaseModel, model
 class StockPicking(BaseModel):
     _name = 'stock-picking'
 
+    state = {
+        'draft': 'Borrador',
+        'ready': 'Preparado',
+        'done': 'Hecho',
+        'cancel': 'Cancelado',
+    }
+
+    type_picking = {
+        'sale': 'Ingreso',
+        'purchase': 'Salida',
+        'expired': 'Expirado',
+    }
+
     # def onchange_lines(self, lines):
     #     amount_untaxed = 0
     #     amount_total = 0

@@ -11,10 +11,8 @@ class ProductProduct(BaseModel):
             'code': '', # Varchar
             'dealer_price': 0.0, # Numeric
             'description': '', # Varchar
-            'expiration_time': '', #Date
             'list_price': 0.0, # Numeric
             'name': '', # Varchar
-            'qty_available': 0.0, # Numeric
             'sale_ok': True, #Boolean
             'taxes': 0.0, # Numeric
             'presentation': '', #Varchar
