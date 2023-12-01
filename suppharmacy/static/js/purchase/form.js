@@ -1,5 +1,12 @@
 "use strict";
 
+const STATES = {
+    draft: 'Borrador',
+    purchase: 'Validado',
+    done: 'Terminado',
+    cancel: 'Cancelado',
+}
+
 const formApp = Vue.createApp({
     delimiters: ["[[", "]]"],
     data() {
@@ -8,7 +15,7 @@ const formApp = Vue.createApp({
                 id: 0,
                 name: '',
                 date: new Date(),
-                state: '',
+                state: 'draft',
                 partner_id: null,
                 user_id: null,
                 line_ids: [],
@@ -27,6 +34,9 @@ const formApp = Vue.createApp({
         }
     },
     computed: {
+        nameState() {
+            return STATES[this.purchase.state];
+        },
     },
     methods: {
         async save () {

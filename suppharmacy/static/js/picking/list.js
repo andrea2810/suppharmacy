@@ -1,5 +1,12 @@
 "use strict";
 
+const STATES = {
+    draft: 'Borrador',
+    ready: 'Preparado',
+    done: 'Hecho',
+    cancel: 'Cancelado',
+}
+
 const listApp = Vue.createApp({
     delimiters: ["[[", "]]"],
     data() {
@@ -232,7 +239,10 @@ listApp.component('picking-row', {
         },
         displayDate() {
             return moment(this.picking.date).format('DD/MM/YYYY');
-        }
+        },
+        nameState() {
+            return STATES[this.picking.state];
+        },
     },
     methods: {
         deletePicking() {
@@ -259,7 +269,7 @@ listApp.component('picking-row', {
             <td>[[ displayDate ]]</td>
             <td>[[ picking.user_name ]]</td>
             <td>[[ picking.type_picking ]]</td>
-            <td>[[ picking.state ]]</td>
+            <td>[[ nameState ]]</td>
         </tr>
     `
 })

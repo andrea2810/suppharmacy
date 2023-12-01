@@ -1,5 +1,11 @@
 "use strict";
 
+const STATES = {
+    draft: 'Borrador',
+    sale: 'Validado',
+    cancel: 'Cancelado',
+}
+
 const listApp = Vue.createApp({
     delimiters: ["[[", "]]"],
     data() {
@@ -232,7 +238,10 @@ listApp.component('sale-row', {
         },
         displayDate() {
             return moment(this.sale.date).format('DD/MM/YYYY');
-        }
+        },
+        nameState() {
+            return STATES[this.sale.state];
+        },
     },
     methods: {
         deleteSale() {
@@ -260,7 +269,7 @@ listApp.component('sale-row', {
             <td>[[ sale.partner_name ]]</td>
             <td>[[ sale.user_name ]]</td>
             <td>[[ sale.amount_total ]]</td>
-            <td>[[ sale.state ]]</td>
+            <td>[[ nameState ]]</td>
         </tr>
     `
 })

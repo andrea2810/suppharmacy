@@ -1,5 +1,12 @@
 "use strict";
 
+const STATES = {
+    draft: 'Borrador',
+    ready: 'Preparado',
+    done: 'Hecho',
+    cancel: 'Cancelado',
+}
+
 const formApp = Vue.createApp({
     delimiters: ["[[", "]]"],
     data() {
@@ -8,7 +15,7 @@ const formApp = Vue.createApp({
                 id: 0,
                 name: '',
                 date: new Date(),
-                state: '',
+                state: 'draft',
                 partner_id: null,
                 user_id: null,
                 move_ids: [],
@@ -26,6 +33,9 @@ const formApp = Vue.createApp({
         }
     },
     computed: {
+        nameState() {
+            return STATES[this.picking.state];
+        },
     },
     methods: {
         async save () {
