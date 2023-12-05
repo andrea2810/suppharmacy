@@ -36,38 +36,78 @@ const formApp = Vue.createApp({
         nameState() {
             return STATES[this.sale.state];
         },
+        disabledFieldsNotDraft() {
+            return this.sale.state != 'draft';
+        }
     },
     methods: {
+        async __save() {
+            let res;
+            let data = JSON.parse(JSON.stringify(this.sale));
+
+            if (data.date) {
+                data.date = formatDateToArgs(this.sale.date);
+            }
+
+            if (this.sale.id == 0) {
+                res = await axios({
+                    url: '/dataset/sale-order',
+                    method: 'post',
+                    data,
+                });
+            } else {
+                res = await axios({
+                    url: '/dataset/sale-order',
+                    method: 'put',
+                    data,
+                })
+            }
+
+            if (res.data.ok == false) {
+                throw res.data.error;
+            }
+
+            return res.data.data.id;
+        },
         async save () {
             this.loading = true;
             try {
-                let res;
-                let data = JSON.parse(JSON.stringify(this.sale));
-
-                if (data.date) {
-                    data.date = formatDateToArgs(this.sale.date);
-                }
+                const sale_id = await this.__save();
 
                 if (this.sale.id == 0) {
-                    res = await axios({
-                        url: '/dataset/sale-order',
-                        method: 'post',
-                        data,
-                    });
+                    window.location.href = `/sale/${sale_id}`;
                 } else {
-                    res = await axios({
-                        url: '/dataset/sale-order',
-                        method: 'put',
-                        data,
-                    })
+                    this.sale.line_ids = [];
+                    this.__fetchSale();
                 }
 
-                if (res.data.ok == false) {
-                    throw res.data.error;
+            } catch (error) {
+                alert(error);
+                this.__fetchSale();
+            } finally {
+                this.loading = false;
+            }
+        },
+        async actionConfirmSale() {
+            this.loading = true;
+            try {
+                let sale_id = this.sale.id;
+
+                if (sale_id == 0) {
+                    sale_id = await this.__save();
                 }
+
+                const res = await axios({
+                    url: '/dataset/call/sale-order',
+                    method: 'post',
+                    data: {
+                        method: 'action_confirm_sale',
+                        args: [sale_id]
+                    }
+                });
 
                 if (this.sale.id == 0) {
-                    window.location.href = `/sale/${res.data.data.id}`;
+                    window.location.href = `/sale/${sale_id}`;
                 } else {
                     this.sale.line_ids = [];
                     this.__fetchSale();
@@ -315,6 +355,9 @@ formApp.component('sale-line-row', {
         }
     },
     computed: {
+        parentState() {
+            return this.$parent.sale.state;
+        }
     },
     methods: {
         updateLine() {
@@ -327,16 +370,24 @@ formApp.component('sale-line-row', {
     template: `
         <tr>
             <td style="width: 2%;">
-                <a href="#" @click="updateLine">
+                <a v-if="parentState == 'draft'" href="#" @click="updateLine">
                     <svg class="bi bi bi-pencil-fill me-2" width="16" height="16">
                         <image xlink:href="/static/img/icons/pencill-fill.svg"/>
                     </svg>
                 </a>
+                <a v-else>
+                    <svg class="me-2" width="16" height="16">
+                    </svg>
+                </a>
             </td>
             <td style="width: 2%;">
-                <a href="#" @click="deleteLine">
+                <a v-if="parentState == 'draft'" href="#" @click="deleteLine">
                     <svg class="bi bi bi-pencil-fill me-2" width="16" height="16">
                         <image xlink:href="/static/img/icons/trash-fill.svg"/>
+                    </svg>
+                </a>
+                <a v-else>
+                    <svg class="me-2" width="16" height="16">
                     </svg>
                 </a>
             </td>

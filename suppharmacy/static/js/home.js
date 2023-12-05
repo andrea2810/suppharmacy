@@ -71,6 +71,10 @@ let fieldRelationalComponent = {
         initial: {
             type: Number,
             default: 0,
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         }
     },
     methods: {
@@ -86,6 +90,10 @@ let fieldRelationalComponent = {
             }, wait);
         },
         async __getData(args) {
+            if (this.disabled) {
+                return [];
+            }
+
             try {
                 let res = await axios({
                     url: `/dataset/${this.table}`,
@@ -179,7 +187,7 @@ let fieldRelationalComponent = {
     template: `
         <div class="input-group m-3">
             <span class="input-group-text">[[ string ]]</span>
-            <input class="form-control" type="text" 
+            <input class="form-control" type="text" :disabled="disabled"
                 v-model="input"
                 :list="'data-list-' + table"
                 @keyup="keyup"

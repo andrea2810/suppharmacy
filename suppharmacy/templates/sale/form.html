@@ -26,11 +26,20 @@
     </div>
     <!-- Body -->
     <div class="form-body">
+        <div class="row ms-1">
+            <div v-if="sale.state == 'draft'" class="col-2">
+                <button type="button" class="btn btn-info m-1"
+                    @click="actionConfirmSale">
+                    Confirmar
+                </button>
+            </div>
+        </div>
         <div class="row">
             <div class="col-6">
                 <div class="input-group m-3">
                     <span class="input-group-text">Nombre</span>
-                    <input class="form-control" type="text" v-model="sale.name"/>
+                    <input class="form-control" type="text" v-model="sale.name"
+                        :disabled="disabledFieldsNotDraft"/>
                 </div>
                 <field-relational
                     string="Cliente"
@@ -38,6 +47,7 @@
                     table="partner"
                     :initial="sale.partner_id"
                     @value-changed="partnerChange"
+                    :disabled="disabledFieldsNotDraft"
                 ></field-relational>
             </div>
             <div class="col-6">
@@ -51,7 +61,8 @@
                         cancel-text="Cancelar"
                         v-model="sale.date"
                         locale="es"
-                        format="dd/MM/yyyy">
+                        format="dd/MM/yyyy"
+                        :disabled="disabledFieldsNotDraft">
                     </date-picker>
                 </div>
                 <field-relational
@@ -60,6 +71,7 @@
                     table="user"
                     :initial="sale.user_id"
                     @value-changed="userChange"
+                    :disabled="disabledFieldsNotDraft"
                 ></field-relational>
             </div>
         </div>
@@ -68,9 +80,13 @@
                 <thead class="text-bg-dark">
                     <tr style="display: block;">
                         <th style="width: 2%;">
-                            <a href="#" @click="openLine(0)">
+                            <a v-if="sale.state == 'draft'" href="#" @click="openLine(0)">
                                 <svg class="bi bi bi-plus-square me-2" width="16" height="16">
                                     <image xlink:href="{% static 'img/icons/plus-square.svg' %}"/>
+                                </svg>
+                            </a>
+                            <a v-else>
+                                <svg class="me-2" width="16" height="16">
                                 </svg>
                             </a>
                         </th>

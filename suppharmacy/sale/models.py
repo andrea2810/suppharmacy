@@ -59,6 +59,16 @@ class Sale(BaseModel):
             if operation == 2: # Delete
                 lineModel.delete([line_id])
 
+    def action_confirm_sale(self, sale_id):
+        # TODO validaciones y mover inventario
+
+        self.update({
+            'id': sale_id, 
+            'state': 'sale',
+        })
+
+        return True
+
 class SaleLine(BaseModel):
     _name = 'sale-order-line'
 
