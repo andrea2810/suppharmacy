@@ -22,6 +22,7 @@ const listApp = Vue.createApp({
             partnerFilter: "",
             dateStartFilter: null,
             dateEndFilter: null,
+            stateFilter: '',
             order: ['id', 'ASC'],
         }
     },
@@ -64,6 +65,9 @@ const listApp = Vue.createApp({
             }
             if (this.dateEndFilter) {
                 args.push(['date', '<=', formatDateToArgs(this.dateEndFilter)]);
+            }
+            if (this.stateFilter) {
+                args.push(['state', '=', this.stateFilter]);
             }
 
             return JSON.stringify(args);

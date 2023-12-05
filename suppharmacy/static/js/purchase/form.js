@@ -3,7 +3,7 @@
 const STATES = {
     draft: 'Borrador',
     purchase: 'Validado',
-    done: 'Terminado',
+    done: 'Entregado',
     cancel: 'Cancelado',
 }
 

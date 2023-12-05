@@ -11,7 +11,7 @@ class Purchase(BaseModel):
     state = {
         'draft': 'Borrador',
         'purchase': 'Validado',
-        'done': 'Terminado',
+        'done': 'Entreagado',
         'cancel': 'Cancelado',
     }
 

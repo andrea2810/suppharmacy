@@ -51,6 +51,18 @@
                 </date-picker>
             </div>
         </div>
+        <div class="col-2">
+            <div class="input-group">
+                <span class="input-group-text">Estado</span>
+                <select class="form-control" v-model="stateFilter"
+                    @change="fetchSales()">
+                    <option value=""></option>
+                    <option value="draft">Borrador</option>
+                    <option value="sale">Validado</option>
+                    <option value="cancel">Cancelado</option>
+                </select>
+            </div>
+        </div>
         <!-- Pagination -->
         <div class="col-3 ms-auto">
             <nav>
