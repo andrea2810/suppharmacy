@@ -18,5 +18,7 @@ class ResPartner(BaseModel):
             'phone': '', #Varchar
             'ref': '', #Varchar
             'rfc': '', #Varchar
-            'cp': '' #Varchar
+            'cp': '', #Varchar
+            'customer': False, #Boolean
+            'supplier': False, #Boolean
         }

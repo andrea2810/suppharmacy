@@ -16,6 +16,8 @@ const formApp = Vue.createApp({
                 ref: '',
                 rfc: '',
                 cp: '',
+                customer: false,
+                supplier: false,
             },
             loading: true,
         }
@@ -75,7 +77,7 @@ const formApp = Vue.createApp({
                     url: '/dataset/partner',
                     method: 'get',
                     params: {
-                        fields: 'name,active,city,country,email,is_company,mobile,phone,ref,rfc,cp',
+                        fields: 'name,active,city,country,email,is_company,mobile,phone,ref,rfc,cp,customer,supplier',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });

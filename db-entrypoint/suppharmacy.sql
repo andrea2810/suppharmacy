@@ -233,7 +233,9 @@ CREATE TABLE public.res_partner (
     ref character varying(100),
     rfc character varying(15),
     cp character varying(5),
-    birth_date date
+    birth_date date,
+    customer boolean,
+    supplier boolean
 );
 
 
@@ -626,7 +628,7 @@ COPY public.res_laboratory (id, active, name) FROM stdin;
 -- Data for Name: res_partner; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.res_partner (id, active, name, city, country, email, is_company, mobile, phone, ref, rfc, cp, birth_date) FROM stdin;
+COPY public.res_partner (id, active, name, city, country, email, is_company, mobile, phone, ref, rfc, cp, birth_date, customer, supplier) FROM stdin;
 \.
 
 
