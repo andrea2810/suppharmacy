@@ -152,7 +152,8 @@ CREATE TABLE public.purchase_order_line (
     price_total numeric,
     product_id integer,
     product_qty numeric,
-    taxes numeric
+    taxes numeric,
+    lot_number character varying(100)
 );
 
 
@@ -391,6 +392,7 @@ CREATE TABLE public.stock_move (
     quantity_done numeric,
     product_id integer,
     product_qty numeric,
+    lot_number character varying(100)
 );
 
 
@@ -592,7 +594,7 @@ COPY public.drug_category (id, active, name) FROM stdin;
 -- Data for Name: product_product; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.product_product (id, active, code, dealer_price, description, expiration_time, list_price, name, qty_available, sale_ok, taxes, presentation, laboratory_id, drug_category_id, is_antibiotic) FROM stdin;
+COPY public.product_product (id, active, code, dealer_price, description, list_price, name, sale_ok, taxes, presentation, laboratory_id, drug_category_id, is_antibiotic) FROM stdin;
 \.
 
 
@@ -608,7 +610,7 @@ COPY public.purchase_order (id, active, amount_total, amount_untaxed, date, name
 -- Data for Name: purchase_order_line; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.purchase_order_line (id, order_id, price_subtotal, price_unit, price_total, product_id, product_qty, taxes) FROM stdin;
+COPY public.purchase_order_line (id, order_id, price_subtotal, price_unit, price_total, product_id, product_qty, taxes, lot_number) FROM stdin;
 \.
 
 
@@ -656,7 +658,7 @@ COPY public.sale_order_line (id, order_id, price_subtotal, price_unit, price_tot
 -- Data for Name: stock_move; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.stock_move (id, date, name, origin, purchase_id, sale_id, picking_id, quantity_done, product_qty, state) FROM stdin;
+COPY public.stock_move (id, date, name, origin, picking_id, quantity_done, product_id, product_qty, lot_number) FROM stdin;
 \.
 
 
@@ -672,7 +674,7 @@ COPY public.stock_picking (id, name, date, partner_id, sale_id, purchase_id, sta
 -- Data for Name: stock_quant; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.stock_quant (id, available_quantity, in_date, product_id, quantity) FROM stdin;
+COPY public.stock_quant (id, available_quantity, expiration_time, lot_number, product_id, quantity) FROM stdin;
 \.
 
 

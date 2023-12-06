@@ -28,6 +28,7 @@ const formApp = Vue.createApp({
                 id: 0,
                 product_id: null,
                 product_qty: 1,
+                lot_number: '', // TODO Add in modal
             },
             indexMove: -1,
         }
@@ -120,7 +121,7 @@ const formApp = Vue.createApp({
                     url: '/dataset/stock-move',
                     method: 'get',
                     params: {
-                        fields: 'product_id,product_id.name,name,product_qty,quantity_done',
+                        fields: 'product_id,product_id.name,name,product_qty,lot_number',
                         args: JSON.stringify([['picking_id', '=', id]])
                     }
                 });
@@ -318,8 +319,8 @@ formApp.component('stock-move-row', {
                 </a>
             </td>
             <td style="width: 32%;">[[ move.product_name ]]</td>
+            <td style="width: 32%;">[[ move.lot_number ]]</td>
             <td style="width: 32%;">[[ move.product_qty ]]</td>
-            <td style="width: 32%;">[[ move.quantity_done ]]</td>
         </tr>
     `
 });

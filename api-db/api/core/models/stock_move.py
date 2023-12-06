@@ -11,9 +11,9 @@ class StockMove(BaseModel):
             'name': '', # Varchar
             'origin': '', # Varchar
             'picking_id': None, #Integer
-            'quantity_done': 0, # Numeric
             'product_id': None, # Integer
             'product_qty': 0, # Numeric
+            'lot_number': '', # Varchar
         }
     _relational_fields = {
             'picking_id': 'stock_picking',

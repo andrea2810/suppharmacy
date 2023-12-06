@@ -29,6 +29,7 @@ const formApp = Vue.createApp({
                 id: 0,
                 product_id: null,
                 product_qty: 1,
+                lot_number: '', // TODO Add in modal
             },
             indexLine: -1,
         }
@@ -121,7 +122,7 @@ const formApp = Vue.createApp({
                     url: '/dataset/purchase-order-line',
                     method: 'get',
                     params: {
-                        fields: 'product_id,product_id.name,product_qty,price_unit,taxes,price_subtotal,price_total',
+                        fields: 'product_id,product_id.name,product_qty,price_unit,taxes,price_subtotal,price_total,lot_number',
                         args: JSON.stringify([['order_id', '=', id]])
                     }
                 });
@@ -341,12 +342,13 @@ formApp.component('purchase-line-row', {
                     </svg>
                 </a>
             </td>
-            <td style="width: 16%;">[[ line.product_name ]]</td>
-            <td style="width: 16%;">[[ line.product_qty ]]</td>
-            <td style="width: 16%;">[[ line.price_unit ]]</td>
-            <td style="width: 16%;">[[ line.taxes ]]</td>
-            <td style="width: 16%;">[[ line.price_subtotal ]]</td>
-            <td style="width: 16%;">[[ line.price_total ]]</td>
+            <td style="width: 15%;">[[ line.product_name ]]</td>
+            <td style="width: 16%;">[[ line.lot_number ]]</td>
+            <td style="width: 13%;">[[ line.product_qty ]]</td>
+            <td style="width: 13%;">[[ line.price_unit ]]</td>
+            <td style="width: 13%;">[[ line.taxes ]]</td>
+            <td style="width: 13%;">[[ line.price_subtotal ]]</td>
+            <td style="width: 13%;">[[ line.price_total ]]</td>
         </tr>
     `
 });

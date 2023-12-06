@@ -14,6 +14,7 @@ class PurchaseOrderLine(BaseModel):
             'product_id': None, # Integer
             'product_qty': 0.0, # Numeric
             'taxes': 0.0, # Numeric
+            'lot_number': '', # Varchar
         }
     _relational_fields = {
             'order_id': 'purchase_order',

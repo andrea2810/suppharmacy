@@ -16,3 +16,4 @@ class PurchaseOrderLineSerializer(APISerializer):
     product_id = serializers.IntegerField(required=False)
     product_qty = serializers.FloatField(required=False)
     taxes = serializers.FloatField(required=False)
+    lot_number = serializers.CharField(max_length=100, required=False)

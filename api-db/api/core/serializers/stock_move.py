@@ -13,6 +13,6 @@ class StockMoveSerializer(APISerializer):
     name = serializers.CharField(max_length=100, label='Name', required=False)
     origin = serializers.CharField(max_length=100, required=False)
     picking_id = serializers.IntegerField(required=False)
-    quantity_done = serializers.IntegerField()
     product_id = serializers.IntegerField(required=False)
     product_qty = serializers.IntegerField()
+    lot_number = serializers.CharField(max_length=100, required=False)
