@@ -141,7 +141,7 @@ const formApp = Vue.createApp({
                     url: '/dataset/sale-order',
                     method: 'get',
                     params: {
-                        fields: 'name,date,state,partner_id,user_id,amount_untaxed,amount_total',
+                        fields: 'name,date,state,partner_id,partner_id.name,user_id,user_id.name,amount_untaxed,amount_total',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });

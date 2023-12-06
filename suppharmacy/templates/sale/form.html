@@ -41,7 +41,13 @@
                     <input class="form-control" type="text" v-model="sale.name"
                         :disabled="disabledFieldsNotDraft"/>
                 </div>
+                <div v-if="disabledFieldsNotDraft" class="input-group m-3">
+                    <span class="input-group-text">Cliente</span>
+                    <input class="form-control" type="text" v-model="sale.partner_name"
+                        disabled/>
+                </div>
                 <field-relational
+                    v-else
                     string="Cliente"
                     field="name"
                     table="partner"
@@ -65,7 +71,13 @@
                         :disabled="disabledFieldsNotDraft">
                     </date-picker>
                 </div>
+                <div v-if="disabledFieldsNotDraft" class="input-group m-3">
+                    <span class="input-group-text">Usuario</span>
+                    <input class="form-control" type="text" v-model="sale.user_name"
+                        disabled/>
+                </div>
                 <field-relational
+                    v-else
                     string="Usuario"
                     field="name"
                     table="user"
