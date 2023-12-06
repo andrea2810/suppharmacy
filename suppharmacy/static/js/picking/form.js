@@ -28,7 +28,7 @@ const formApp = Vue.createApp({
                 id: 0,
                 product_id: null,
                 product_qty: 1,
-                lot_number: '', // TODO Add in modal
+                lot_number: '',
             },
             indexMove: -1,
         }
@@ -174,8 +174,8 @@ const formApp = Vue.createApp({
                 this.modalMove = {
                     id: 0,
                     product_id: null,
+                    lot_number: '',
                     product_qty: 1,
-                    quantity_done: 1,
                 };
             } else {
                 this.indexMove = this.moves.findIndex(l => l.id == move_id);
@@ -190,8 +190,8 @@ const formApp = Vue.createApp({
                 this.modalMove = {
                     id: move.id,
                     product_id: move.product_id,
+                    lot_number: move.lot_number,
                     product_qty: move.product_qty,
-                    quantity_done: move.quantity_done,
                 };
             }
 
@@ -391,12 +391,12 @@ formApp.component('modal-move', {
                                 @value-changed="productChange"
                             ></field-relational>
                             <div class="input-group m-3">
-                                <span class="input-group-text">Cantidad</span>
-                                <input class="form-control" type="number" v-model="move.product_qty"/>
+                                <span class="input-group-text">Lote</span>
+                                <input class="form-control" type="text" v-model="move.lot_number"/>
                             </div>
                             <div class="input-group m-3">
-                                <span class="input-group-text">Cantidad Hecha</span>
-                                <input class="form-control" type="number" v-model="move.quantity_done"/>
+                                <span class="input-group-text">Cantidad</span>
+                                <input class="form-control" type="number" v-model="move.product_qty"/>
                             </div>
                         </div>
                     </div>

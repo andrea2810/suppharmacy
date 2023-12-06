@@ -86,8 +86,8 @@ class StockMove(BaseModel):
             'product_id': product['id'],
             'name': product['name'],
             'product_name': product['name'],
+            'lot_number': move.get('lot_number', ''),
             'product_qty': move.get('product_qty', 0),
-            'quantity_done': move.get('quantity_done', 0),
         }
 
 
