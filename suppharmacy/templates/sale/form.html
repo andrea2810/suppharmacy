@@ -53,6 +53,7 @@
                     table="partner"
                     :initial="sale.partner_id"
                     @value-changed="partnerChange"
+                    :args="['customer', '=', true]"
                     :disabled="disabledFieldsNotDraft"
                 ></field-relational>
             </div>

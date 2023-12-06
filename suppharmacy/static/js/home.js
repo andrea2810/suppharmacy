@@ -75,6 +75,10 @@ let fieldRelationalComponent = {
         disabled: {
             type: Boolean,
             default: false,
+        },
+        args: {
+            type: Array,
+            default: [],
         }
     },
     methods: {
@@ -133,8 +137,13 @@ let fieldRelationalComponent = {
                     value = `%${value}%`
                 }
     
-                const args = JSON.stringify([[this.field, this.operator, value]]);
-                const data = await this.__getData(args);
+                const args = [[this.field, this.operator, value]];
+
+                if (this.args.length) {
+                    args.push(this.args);
+                }
+
+                const data = await this.__getData(JSON.stringify(args));
                 
                 this.items = data;
                 
