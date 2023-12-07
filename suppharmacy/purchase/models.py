@@ -73,7 +73,7 @@ class Purchase(BaseModel):
         for operation, line_id, data in lines:
             if operation == 0: # Create
                 del data['id']
-                data['order_id'] = purchase_id_id
+                data['order_id'] = purchase_id
 
                 lineModel.create(data)
 
