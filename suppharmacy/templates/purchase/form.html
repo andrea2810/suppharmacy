@@ -26,17 +26,33 @@
     </div>
     <!-- Body -->
     <div class="form-body">
+        <div class="row ms-1">
+            <div v-if="purchase.state == 'draft'" class="col-2">
+                <button type="button" class="btn btn-info m-1"
+                    @click="actionConfirm">
+                    Confirmar
+                </button>
+            </div>
+        </div>
         <div class="row">
             <div class="col-6">
                 <div class="input-group m-3">
                     <span class="input-group-text">Nombre</span>
-                    <input class="form-control" type="text" v-model="purchase.name"/>
+                    <input class="form-control" type="text" v-model="purchase.name"
+                        disabled/>
+                </div>
+                <div v-if="disabledFieldsNotDraft" class="input-group m-3">
+                    <span class="input-group-text">Cliente</span>
+                    <input class="form-control" type="text" v-model="purchase.partner_name"
+                        disabled/>
                 </div>
                 <field-relational
+                    v-else
                     string="Cliente"
                     field="name"
                     table="partner"
                     :initial="purchase.partner_id"
+                    :args="['supplier', '=', true]"
                     @value-changed="partnerChange"
                 ></field-relational>
             </div>
@@ -51,15 +67,23 @@
                         cancel-text="Cancelar"
                         v-model="purchase.date"
                         locale="es"
-                        format="dd/MM/yyyy">
+                        format="dd/MM/yyyy"
+                        :disabled="disabledFieldsNotDraft">
                     </date-picker>
                 </div>
+                <div v-if="disabledFieldsNotDraft" class="input-group m-3">
+                    <span class="input-group-text">Usuario</span>
+                    <input class="form-control" type="text" v-model="purchase.user_name"
+                        disabled/>
+                </div>
                 <field-relational
+                    v-else
                     string="Usuario"
                     field="name"
                     table="user"
                     :initial="purchase.user_id"
                     @value-changed="userChange"
+                    :disabled="disabledFieldsNotDraft"
                 ></field-relational>
             </div>
         </div>
@@ -68,20 +92,28 @@
                 <thead class="text-bg-dark">
                     <tr style="display: block;">
                         <th style="width: 2%;">
-                            <a href="#" @click="openLine(0)">
+                            <a v-if="purchase.state == 'draft'" href="#" @click="openLine(0)">
                                 <svg class="bi bi bi-plus-square me-2" width="16" height="16">
                                     <image xlink:href="{% static 'img/icons/plus-square.svg' %}"/>
                                 </svg>
                             </a>
+                            <a v-else>
+                                <svg class="me-2" width="16" height="16">
+                                </svg>
+                            </a>
                         </th>
-                        <th style="width: 2%;"></th>
-                        <th style="width: 15%;">Producto</th>
-                        <th style="width: 16%;">Lote</th>
-                        <th style="width: 13%;">Cantidad</th>
-                        <th style="width: 13%;">Precio Unitario</th>
-                        <th style="width: 13%;">Impuesto</th>
-                        <th style="width: 13%;">Subtotal</th>
-                        <th style="width: 13%;">Total</th>
+                        <th style="width: 2%;">
+                            <a>
+                                <svg class="me-2" width="16" height="16">
+                                </svg>
+                            </a>
+                        </th>
+                        <th style="width: 16%;">Producto</th>
+                        <th style="width: 16%;">Cantidad</th>
+                        <th style="width: 16%;">Precio Unitario</th>
+                        <th style="width: 16%;">Impuesto</th>
+                        <th style="width: 16%;">Subtotal</th>
+                        <th style="width: 16%;">Total</th>
                     </tr>
                 </thead>
                 <tbody style="height: 50vh; overflow-y: auto; display: block;">

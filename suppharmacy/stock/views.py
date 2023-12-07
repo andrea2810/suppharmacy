@@ -13,7 +13,7 @@ def picking_form_view(request, record):
     data = {}
 
     if record != 0:
-        data = model['picking-picking'].browse(record)
+        data = model['stock-picking'].browse(record)
 
         if not data:
             return redirect('list-picking')

@@ -16,8 +16,8 @@ class StockPicking(BaseModel):
     }
 
     type_picking = {
-        'sale': 'Ingreso',
-        'purchase': 'Salida',
+        'sale': 'Salida',
+        'purchase': 'Ingreso',
         'expired': 'Expirado',
     }
 
@@ -33,6 +33,41 @@ class StockPicking(BaseModel):
     #         'amount_untaxed': amount_untaxed,
     #         'amount_total': amount_total,
     #     }
+
+    def _get_next_name(self, type_picking):
+        last_rec = self.get(args=[['state', '=', type_picking]], order="id DESC",
+            limit=1, fields=['name'])
+
+        if last_rec:
+            last_rec = last_rec[0]
+
+            seq, num = last_rec['name'].split('-')
+
+            return f"{seq}-{str(int(num) + 1).zfill(6)}"
+
+        if type_picking == 'sale':
+            return 'MV-000001'
+        if type_picking == 'purchase':
+            return 'MC-000001'
+        if type_picking == 'expired':
+            return 'ME-000001'
+
+        return ""
+
+    def _add_default_values(self, data):
+        res = super()._add_default_values(data)
+
+        if data.get('name', 'Nuevo') == 'Nuevo':
+            if not 'type_picking' in data:
+                raise Exception("El campo de tipo de movimiento es requerido")
+
+            type_picking = data['type_picking']
+
+            data.update({
+                'name': self._get_next_name(type_picking)
+            })
+
+        return data
 
     def create(self, data):
         res = super().create(data)

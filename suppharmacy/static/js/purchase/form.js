@@ -13,7 +13,7 @@ const formApp = Vue.createApp({
         return {
             purchase: {
                 id: 0,
-                name: '',
+                name: 'Nuevo',
                 date: new Date(),
                 state: 'draft',
                 partner_id: null,
@@ -29,7 +29,6 @@ const formApp = Vue.createApp({
                 id: 0,
                 product_id: null,
                 product_qty: 1,
-                lot_number: '', // TODO Add in modal
             },
             indexLine: -1,
         }
@@ -38,43 +37,83 @@ const formApp = Vue.createApp({
         nameState() {
             return STATES[this.purchase.state];
         },
+        disabledFieldsNotDraft() {
+            return this.purchase.state != 'draft';
+        }
     },
     methods: {
+        async __save() {
+            let res;
+            let data = JSON.parse(JSON.stringify(this.purchase));
+
+            if (data.date) {
+                data.date = formatDateToArgs(this.purchase.date);
+            }
+
+            if (this.purchase.id == 0) {
+                res = await axios({
+                    url: '/dataset/purchase-order',
+                    method: 'post',
+                    data,
+                });
+            } else {
+                res = await axios({
+                    url: '/dataset/purchase-order',
+                    method: 'put',
+                    data,
+                })
+            }
+
+            if (res.data.ok == false) {
+                throw res.data.error;
+            }
+
+            return res.data.data.id;
+        },
         async save () {
             this.loading = true;
             try {
-                let res;
-                let data = JSON.parse(JSON.stringify(this.purchase));
-
-                if (data.date) {
-                    data.date = formatDateToArgs(this.purchase.date);
-                }
+                const purchase_id = await this.__save();
 
                 if (this.purchase.id == 0) {
-                    res = await axios({
-                        url: '/dataset/purchase-order',
-                        method: 'post',
-                        data,
-                    });
-                } else {
-                    res = await axios({
-                        url: '/dataset/purchase-order',
-                        method: 'put',
-                        data,
-                    })
-                }
-
-                if (res.data.ok == false) {
-                    throw res.data.error;
-                }
-
-                if (this.purchase.id == 0) {
-                    window.location.href = `/purchase/${res.data.data.id}`;
+                    window.location.href = `/purchase/${purchase_id}`;
                 } else {
                     this.purchase.line_ids = [];
                     this.__fetchPurchase();
                 }
 
+            } catch (error) {
+                alert(error);
+                this.__fetchPurchase();
+            } finally {
+                this.loading = false;
+            }
+        },
+        async actionConfirm() {
+            this.loading = true;
+
+            try {
+                let purchase_id = this.purchase.id;
+
+                if (purchase_id == 0) {
+                    purchase_id = await this.__save();
+                }
+
+                const res = await axios({
+                    url: '/dataset/call/purchase-order',
+                    method: 'post',
+                    data: {
+                        method: 'action_confirm',
+                        args: [purchase_id]
+                    }
+                });
+
+                if (this.purchase.id == 0) {
+                    window.location.href = `/purchase/${purchase_id}`;
+                } else {
+                    this.purchase.line_ids = [];
+                    this.__fetchPurchase();
+                }
             } catch (error) {
                 alert(error);
                 this.__fetchPurchase();
@@ -103,7 +142,7 @@ const formApp = Vue.createApp({
                     url: '/dataset/purchase-order',
                     method: 'get',
                     params: {
-                        fields: 'name,date,state,partner_id,user_id,amount_untaxed,amount_total',
+                        fields: 'name,date,state,partner_id,partner_id.name,user_id,user_id.name,amount_untaxed,amount_total',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });
@@ -122,7 +161,7 @@ const formApp = Vue.createApp({
                     url: '/dataset/purchase-order-line',
                     method: 'get',
                     params: {
-                        fields: 'product_id,product_id.name,product_qty,price_unit,taxes,price_subtotal,price_total,lot_number',
+                        fields: 'product_id,product_id.name,product_qty,price_unit,taxes,price_subtotal,price_total',
                         args: JSON.stringify([['order_id', '=', id]])
                     }
                 });
@@ -317,6 +356,9 @@ formApp.component('purchase-line-row', {
         }
     },
     computed: {
+        parentState() {
+            return this.$parent.purchase.state;
+        }
     },
     methods: {
         updateLine() {
@@ -329,26 +371,33 @@ formApp.component('purchase-line-row', {
     template: `
         <tr>
             <td style="width: 2%;">
-                <a href="#" @click="updateLine">
+                <a v-if="parentState == 'draft'" href="#" @click="updateLine">
                     <svg class="bi bi bi-pencil-fill me-2" width="16" height="16">
                         <image xlink:href="/static/img/icons/pencill-fill.svg"/>
                     </svg>
                 </a>
+                <a v-else>
+                    <svg class="me-2" width="16" height="16">
+                    </svg>
+                </a>
             </td>
             <td style="width: 2%;">
-                <a href="#" @click="deleteLine">
+                <a v-if="parentState == 'draft'" href="#" @click="deleteLine">
                     <svg class="bi bi bi-pencil-fill me-2" width="16" height="16">
                         <image xlink:href="/static/img/icons/trash-fill.svg"/>
                     </svg>
                 </a>
+                <a v-else>
+                    <svg class="me-2" width="16" height="16">
+                    </svg>
+                </a>
             </td>
-            <td style="width: 15%;">[[ line.product_name ]]</td>
-            <td style="width: 16%;">[[ line.lot_number ]]</td>
-            <td style="width: 13%;">[[ line.product_qty ]]</td>
-            <td style="width: 13%;">[[ line.price_unit ]]</td>
-            <td style="width: 13%;">[[ line.taxes ]]</td>
-            <td style="width: 13%;">[[ line.price_subtotal ]]</td>
-            <td style="width: 13%;">[[ line.price_total ]]</td>
+            <td style="width: 16%;">[[ line.product_name ]]</td>
+            <td style="width: 16%;">[[ line.product_qty ]]</td>
+            <td style="width: 16%;">[[ line.price_unit ]]</td>
+            <td style="width: 16%;">[[ line.taxes ]]</td>
+            <td style="width: 16%;">[[ line.price_subtotal ]]</td>
+            <td style="width: 16%;">[[ line.price_total ]]</td>
         </tr>
     `
 });
