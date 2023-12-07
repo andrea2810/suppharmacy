@@ -35,7 +35,7 @@ class StockPicking(BaseModel):
     #     }
 
     def _get_next_name(self, type_picking):
-        last_rec = self.get(args=[['state', '=', type_picking]], order="id DESC",
+        last_rec = self.get(args=[['type_picking', '=', type_picking]], order="id DESC",
             limit=1, fields=['name'])
 
         if last_rec:
