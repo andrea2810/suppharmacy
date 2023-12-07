@@ -93,11 +93,7 @@ const formApp = Vue.createApp({
             this.loading = true;
 
             try {
-                let purchase_id = this.purchase.id;
-
-                if (purchase_id == 0) {
-                    purchase_id = await this.__save();
-                }
+                let purchase_id = await this.__save();
 
                 const res = await axios({
                     url: '/dataset/call/purchase-order',
