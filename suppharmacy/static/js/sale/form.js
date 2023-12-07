@@ -12,7 +12,7 @@ const formApp = Vue.createApp({
         return {
             sale: {
                 id: 0,
-                name: '',
+                name: 'Nuevo',
                 date: new Date(),
                 state: 'draft',
                 partner_id: null,
@@ -91,11 +91,7 @@ const formApp = Vue.createApp({
         async actionConfirmSale() {
             this.loading = true;
             try {
-                let sale_id = this.sale.id;
-
-                if (sale_id == 0) {
-                    sale_id = await this.__save();
-                }
+                let sale_id = await this.__save();
 
                 const res = await axios({
                     url: '/dataset/call/sale-order',

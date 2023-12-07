@@ -27,6 +27,28 @@ class Sale(BaseModel):
             'amount_total': amount_total,
         }
 
+    def _get_next_name(self):
+        last_rec = self.get(args=[], order="id DESC", limit=1, fields=['name'])
+
+        if last_rec:
+            last_rec = last_rec[0]
+
+            seq, num = last_rec['name'].split('-')
+
+            return f"{seq}-{str(int(num) + 1).zfill(6)}"
+
+        return 'V-000001'
+
+    def _add_default_values(self, data):
+        res = super()._add_default_values(data)
+
+        if data.get('name', 'Nuevo') == 'Nuevo':
+            data.update({
+                'name': self._get_next_name()
+            })
+
+        return data
+
     def create(self, data):
         res = super().create(data)
 
