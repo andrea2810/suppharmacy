@@ -152,8 +152,7 @@ CREATE TABLE public.purchase_order_line (
     price_total numeric,
     product_id integer,
     product_qty numeric,
-    taxes numeric,
-    lot_number character varying(100)
+    taxes numeric
 );
 
 
@@ -612,7 +611,7 @@ COPY public.purchase_order (id, active, amount_total, amount_untaxed, date, name
 -- Data for Name: purchase_order_line; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.purchase_order_line (id, order_id, price_subtotal, price_unit, price_total, product_id, product_qty, taxes, lot_number) FROM stdin;
+COPY public.purchase_order_line (id, order_id, price_subtotal, price_unit, price_total, product_id, product_qty, taxes) FROM stdin;
 \.
 
 
