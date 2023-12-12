@@ -101,6 +101,10 @@ const formApp = Vue.createApp({
                     }
                 });
 
+                if (res.data.ok == false) {
+                    throw res.data.error;
+                }
+
                 if (this.sale.id == 0) {
                     window.location.href = `/sale/${sale_id}`;
                 } else {
