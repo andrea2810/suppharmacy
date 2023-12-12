@@ -77,7 +77,6 @@ const formApp = Vue.createApp({
                 if (this.sale.id == 0) {
                     window.location.href = `/sale/${sale_id}`;
                 } else {
-                    this.sale.line_ids = [];
                     this.__fetchSale();
                 }
 
@@ -105,7 +104,6 @@ const formApp = Vue.createApp({
                 if (this.sale.id == 0) {
                     window.location.href = `/sale/${sale_id}`;
                 } else {
-                    this.sale.line_ids = [];
                     this.__fetchSale();
                 }
 
@@ -147,6 +145,7 @@ const formApp = Vue.createApp({
                 }
 
                 Object.assign(this.sale, res.data.data[0]);
+                this.sale.line_ids = [];
 
                 if (this.sale.date) {
                     this.sale.date = new Date(this.sale.date + " 00:00:00 GMT-0600");

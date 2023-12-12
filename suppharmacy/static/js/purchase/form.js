@@ -78,7 +78,6 @@ const formApp = Vue.createApp({
                 if (this.purchase.id == 0) {
                     window.location.href = `/purchase/${purchase_id}`;
                 } else {
-                    this.purchase.line_ids = [];
                     this.__fetchPurchase();
                 }
 
@@ -107,7 +106,6 @@ const formApp = Vue.createApp({
                 if (this.purchase.id == 0) {
                     window.location.href = `/purchase/${purchase_id}`;
                 } else {
-                    this.purchase.line_ids = [];
                     this.__fetchPurchase();
                 }
             } catch (error) {
@@ -148,6 +146,7 @@ const formApp = Vue.createApp({
                 }
 
                 Object.assign(this.purchase, res.data.data[0]);
+                this.purchase.line_ids = [];
 
                 if (this.purchase.date) {
                     this.purchase.date = new Date(this.purchase.date + " 00:00:00 GMT-0600");
