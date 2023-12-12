@@ -7,19 +7,25 @@ const STATES = {
     cancel: 'Cancelado',
 }
 
+const TYPES = {
+    sale: 'Salida',
+    purchase: 'Ingreso',
+    expired: 'Expirado',
+}
+
 const formApp = Vue.createApp({
     delimiters: ["[[", "]]"],
     data() {
         return {
             picking: {
                 id: 0,
-                name: '',
+                name: "Nuevo",
                 date: new Date(),
                 state: 'draft',
                 partner_id: null,
                 user_id: null,
                 move_ids: [],
-                type_picking: '',
+                type_picking: 'expired',
             },
             moves: [],
             loading: true,
@@ -34,46 +40,123 @@ const formApp = Vue.createApp({
         }
     },
     computed: {
+        partnerString() {
+            if (this.picking.type_picking == 'purchase') {
+                return "Proveedor"
+            }
+            if (this.picking.type_picking == 'sale') {
+                return "Cliente"
+            }
+            
+            return "";
+        },
         nameState() {
             return STATES[this.picking.state];
         },
+        nameType() {
+            return TYPES[this.picking.type_picking];
+        },
+        disabledFieldsNotDraft() {
+            return this.picking.state != 'draft';
+        },
+        disabledFieldsNotReady() {
+            return !['draft', 'ready'].includes(this.picking.state)
+        }
     },
     methods: {
+        async __save () {
+            let res;
+            let data = JSON.parse(JSON.stringify(this.picking));
+
+            if (data.date) {
+                data.date = formatDateToArgs(this.picking.date);
+            }
+
+            if (this.picking.id == 0) {
+                res = await axios({
+                    url: '/dataset/stock-picking',
+                    method: 'post',
+                    data,
+                });
+            } else {
+                res = await axios({
+                    url: '/dataset/stock-picking',
+                    method: 'put',
+                    data,
+                })
+            }
+
+            if (res.data.ok == false) {
+                throw res.data.error;
+            }
+
+            return res.data.data.id;
+        },
         async save () {
             this.loading = true;
             try {
-                let res;
-                let data = JSON.parse(JSON.stringify(this.picking));
-
-                if (data.date) {
-                    data.date = formatDateToArgs(this.picking.date);
-                }
+                const picking_id = this.__save();
 
                 if (this.picking.id == 0) {
-                    res = await axios({
-                        url: '/dataset/stock-picking',
-                        method: 'post',
-                        data,
-                    });
+                    window.location.href = `/stock/${picking_id}`;
                 } else {
-                    res = await axios({
-                        url: '/dataset/stock-picking',
-                        method: 'put',
-                        data,
-                    })
-                }
-
-                if (res.data.ok == false) {
-                    throw res.data.error;
-                }
-
-                if (this.picking.id == 0) {
-                    window.location.href = `/stock/${res.data.data.id}`;
-                } else {
-                    this.picking.move_ids = [];
                     this.__fetchPicking();
                 }
 
+            } catch (error) {
+                alert(error);
+                this.__fetchPicking();
+            } finally {
+                this.loading = false;
+            }
+        },
+        async actionConfirm() {
+            this.loading = true;
+
+            try {
+                let picking_id = await this.__save();
+
+                const res = await axios({
+                    url: '/dataset/call/stock-picking',
+                    method: 'post',
+                    data: {
+                        method: 'action_confirm',
+                        args: [picking_id]
+                    }
+                });
+
+                if (this.picking.id == 0) {
+                    window.location.href = `/stock/${picking_id}`;
+                } else {
+                    this.__fetchPicking();
+                }
+            } catch (error) {
+                alert(error);
+                this.__fetchPicking();
+            } finally {
+                this.loading = false;
+            }
+        },
+        async actionValidate() {
+            this.loading = true;
+
+            try {
+                let picking_id = await this.__save();
+
+                const res = await axios({
+                    url: '/dataset/call/stock-picking',
+                    method: 'post',
+                    data: {
+                        method: 'action_validate',
+                        args: [picking_id]
+                    }
+                });
+
+                if (this.picking.id == 0) {
+                    window.location.href = `/stock/${picking_id}`;
+                } else {
+                    this.__fetchPicking();
+                }
             } catch (error) {
                 alert(error);
                 this.__fetchPicking();
@@ -102,7 +185,7 @@ const formApp = Vue.createApp({
                     url: '/dataset/stock-picking',
                     method: 'get',
                     params: {
-                        fields: 'name,date,state,partner_id,user_id,type_picking',
+                        fields: 'name,date,state,partner_id,partner_id.name,user_id,user_id.name,type_picking',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });
@@ -112,6 +195,7 @@ const formApp = Vue.createApp({
                 }
 
                 Object.assign(this.picking, res.data.data[0]);
+                this.picking.move_ids = [];
 
                 if (this.picking.date) {
                     this.picking.date = new Date(this.picking.date + " 00:00:00 GMT-0600");
@@ -195,7 +279,6 @@ const formApp = Vue.createApp({
                 };
             }
 
-            console.log("openMove");
             this.toggleModalMove();
         },
         async createMove(move) {
@@ -293,6 +376,9 @@ formApp.component('stock-move-row', {
         }
     },
     computed: {
+        disabledFieldsNotReady() {
+            return this.$parent.disabledFieldsNotReady;
+        }
     },
     methods: {
         updateMove() {
@@ -305,14 +391,22 @@ formApp.component('stock-move-row', {
     template: `
         <tr>
             <td style="width: 2%;">
-                <a href="#" @click="updateMove">
+                <a v-if="disabledFieldsNotReady">
+                    <svg class="me-2" width="16" height="16">
+                    </svg>
+                </a>
+                <a v-else href="#" @click="updateMove">
                     <svg class="bi bi bi-pencil-fill me-2" width="16" height="16">
                         <image xlink:href="/static/img/icons/pencill-fill.svg"/>
                     </svg>
                 </a>
             </td>
             <td style="width: 2%;">
-                <a href="#" @click="deleteMove">
+                <a v-if="disabledFieldsNotReady">
+                    <svg class="me-2" width="16" height="16">
+                    </svg>
+                </a>
+                <a v-else href="#" @click="deleteMove">
                     <svg class="bi bi bi-pencil-fill me-2" width="16" height="16">
                         <image xlink:href="/static/img/icons/trash-fill.svg"/>
                     </svg>

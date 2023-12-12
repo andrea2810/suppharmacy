@@ -101,6 +101,26 @@ class StockPicking(BaseModel):
             if operation == 2: # Delete
                 moveModel.delete([move_id])
 
+    def action_confirm(self, picking_id):
+        # TODO Validaciones
+
+        self.update({
+            'id': picking_id,
+            'state': 'ready',
+        })
+
+        return True
+
+    def action_validate(self, picking_id):
+        # TODO Validaciones numero de lote, tipo, etc
+
+        self.update({
+            'id': picking_id,
+            'state': 'done',
+        })
+
+        return True
+
 class StockMove(BaseModel):
     _name = 'stock-move'
 

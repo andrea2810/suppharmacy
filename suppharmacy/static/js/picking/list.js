@@ -7,6 +7,12 @@ const STATES = {
     cancel: 'Cancelado',
 }
 
+const TYPES = {
+    sale: 'Salida',
+    purchase: 'Ingreso',
+    expired: 'Expirado',
+}
+
 const listApp = Vue.createApp({
     delimiters: ["[[", "]]"],
     data() {
@@ -247,6 +253,9 @@ listApp.component('picking-row', {
         nameState() {
             return STATES[this.picking.state];
         },
+        nameType() {
+            return TYPES[this.picking.type_picking];
+        },
     },
     methods: {
         deletePicking() {
@@ -272,7 +281,7 @@ listApp.component('picking-row', {
             <td>[[ picking.name ]]</td>
             <td>[[ displayDate ]]</td>
             <td>[[ picking.user_name ]]</td>
-            <td>[[ picking.type_picking ]]</td>
+            <td>[[ nameType ]]</td>
             <td>[[ nameState ]]</td>
         </tr>
     `
