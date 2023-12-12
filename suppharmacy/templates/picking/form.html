@@ -96,6 +96,11 @@
                     :initial="picking.user_id"
                     @value-changed="userChange"
                 ></field-relational>
+                <div v-if="picking.type_picking != 'expired'" class="input-group m-3">
+                    <span class="input-group-text">Origen</span>
+                    <input class="form-control" type="text" v-model="origin"
+                        disabled/>
+                </div>
             </div>
         </div>
         <div >

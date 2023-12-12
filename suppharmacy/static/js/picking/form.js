@@ -56,6 +56,16 @@ const formApp = Vue.createApp({
         nameType() {
             return TYPES[this.picking.type_picking];
         },
+        origin() {
+            if (this.picking.type_picking == 'sale') {
+                return this.picking.sale_name;
+            }
+            if (this.picking.type_picking == 'purchase') {
+                return this.picking.purchase_name;
+            }
+
+            return '';
+        },
         disabledFieldsNotDraft() {
             return this.picking.state != 'draft';
         },
@@ -127,9 +137,16 @@ const formApp = Vue.createApp({
 
                 if (this.picking.id == 0) {
                     window.location.href = `/stock/${picking_id}`;
-                } else {
+                }
+                
+                if (res.data.ok == false) {
+                    throw res.data.error;
+                }
+
+                if (this.picking.id != 0) {
                     this.__fetchPicking();
                 }
+
             } catch (error) {
                 alert(error);
                 this.__fetchPicking();
@@ -151,6 +168,10 @@ const formApp = Vue.createApp({
                         args: [picking_id]
                     }
                 });
+
+                if (res.data.ok == false) {
+                    throw res.data.error;
+                }
 
                 if (this.picking.id == 0) {
                     window.location.href = `/stock/${picking_id}`;
@@ -185,7 +206,9 @@ const formApp = Vue.createApp({
                     url: '/dataset/stock-picking',
                     method: 'get',
                     params: {
-                        fields: 'name,date,state,partner_id,partner_id.name,user_id,user_id.name,type_picking',
+                        fields: 'name,date,state,partner_id,partner_id.name,'
+                            + 'user_id,user_id.name,type_picking,'
+                            + 'purchase_id.name,sale_id.name',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });

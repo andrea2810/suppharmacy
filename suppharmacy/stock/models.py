@@ -101,8 +101,37 @@ class StockPicking(BaseModel):
             if operation == 2: # Delete
                 moveModel.delete([move_id])
 
+    def _check_record_confirm(self, picking):
+        if picking['state'] != 'draft':
+            raise Exception("El registro solo se puede confirmar si está en Borrador")
+
+        if not picking['user_id']:
+            raise Exception("Debe seleccionar el usuario")
+
+        if not picking['date']:
+            raise Exception("Debe seleccionar una fecha")
+
+        if picking['type_picking'] != 'expired' and not picking['partner']:
+            if picking['type_picking'] == 'purchase':
+                raise Exception("Debe seleccionar un proveedor")
+
+            if picking['type_picking'] == 'sale':
+                raise Exception("Debe seleccionar un cliente")
+
+        if picking['type_picking'] == 'sale' and not picking['sale_id']:
+            raise Exception("Los movimientos de salida deben tener relación a una venta")
+
+        if picking['type_picking'] == 'purchase' and not picking['purchase_id']:
+            raise Exception("Los movimientos de entrada deben tener relación a una compra")
+
     def action_confirm(self, picking_id):
-        # TODO Validaciones
+        picking = model['stock-picking'].browse(picking_id,
+            fields=[
+                    'state', 'type_picking', 'partner_id', 'user_id', 'date',
+                    'purchase_id', 'sale_id'
+                ])
+
+        self._check_record_confirm(picking)
 
         self.update({
             'id': picking_id,
@@ -111,8 +140,36 @@ class StockPicking(BaseModel):
 
         return True
 
+    def _check_record_validate(self, picking, lines):
+        if picking['state'] != 'ready':
+            raise Exception("El registro solo se puede validar si está Preparado")
+
+        if not lines:
+            raise Exception("Debe registrar al menos una linea en el movimiento")
+
+        for line in lines:
+            if not line['product_id']:
+                raise Exception("Todas las lineas deben tener productos")
+
+            if line['product_qty'] < 0:
+                raise Exception("No puede registrar cantidades negativas")
+
+            if not line['lot_number']:
+                raise Exception(f"El product {line['product_name']} no tiene número de lote")
+
+        # TODO validar lineas del stock-move con purchase-order-line o sale-order-line
+
     def action_validate(self, picking_id):
-        # TODO Validaciones numero de lote, tipo, etc
+        picking = model['stock-picking'].browse(picking_id,
+            fields=['state', 'type_picking', 'purchase_id', 'sale_id'])
+        lines = model['stock-move'].get([['picking_id', '=', picking_id]],
+            fields=['product_id', 'product_id.name', 'product_qty', 'lot_number'])
+
+        self._check_record_validate(picking, lines)
+        model['stock-move']._validate_moves(picking['type_picking'], lines)
+
+        if picking['type_picking'] == 'purchase':
+            model['purchase-order'].action_validate(picking['purchase_id'])
 
         self.update({
             'id': picking_id,
@@ -144,6 +201,10 @@ class StockMove(BaseModel):
             'lot_number': move.get('lot_number', ''),
             'product_qty': move.get('product_qty', 0),
         }
+
+    def _validate_moves(self, type_picking, lines):
+        # TODO Revisar inventario y moverlo
+        pass
 
 
 class StockQuant(BaseModel):

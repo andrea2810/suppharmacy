@@ -95,8 +95,10 @@ class Purchase(BaseModel):
             'date': date.today().isoformat(),
             'type_picking': 'purchase',
             'purchase_id': purchase['id'],
-            'state': 'ready',
+            'state': 'draft',
         })
+
+        picking_model.action_confirm(picking['id'])
 
         lines = model['purchase-order-line'].get(
             [['order_id', '=', purchase['id']]],
@@ -117,6 +119,12 @@ class Purchase(BaseModel):
         })
 
         return True
+
+    def action_validate(self, picking_id):
+        self.update({
+            'id': picking_id,
+            'state': 'done',
+        })
 
 class PurchaseLine(BaseModel):
     _name = 'purchase-order-line'
