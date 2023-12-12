@@ -103,13 +103,15 @@ const formApp = Vue.createApp({
                     }
                 });
 
+                if (this.purchase.id == 0) {
+                    window.location.href = `/purchase/${purchase_id}`;
+                }
+
                 if (res.data.ok == false) {
                     throw res.data.error;
                 }
 
-                if (this.purchase.id == 0) {
-                    window.location.href = `/purchase/${purchase_id}`;
-                } else {
+                if (this.purchase.id != 0) {
                     this.__fetchPurchase();
                 }
             } catch (error) {
