@@ -111,7 +111,7 @@ class StockPicking(BaseModel):
         if not picking['date']:
             raise Exception("Debe seleccionar una fecha")
 
-        if picking['type_picking'] != 'expired' and not picking['partner']:
+        if picking['type_picking'] != 'expired' and not picking['partner_id']:
             if picking['type_picking'] == 'purchase':
                 raise Exception("Debe seleccionar un proveedor")
 
