@@ -49,15 +49,25 @@
         <table class="table table-striped list_view table-reponsive" >
             <thead class="text-bg-dark sticky-top">
                 <tr>
-                    <th style="width: 50%;"
+                    <th style="width: 25%;"
                         :class="orderFieldClass.product_name"
                         @click="changeOrder('product_id.name')">
                         Producto
                     </th>
-                    <th style="width: 50%;"
+                    <th style="width: 25%;"
                         :class="orderFieldClass.quantity"
                         @click="changeOrder('quantity')">
                         Cantidad
+                    </th>
+                    <th style="width: 25%;"
+                        :class="orderFieldClass.lot_number"
+                        @click="changeOrder('lot_number')">
+                        Lote
+                    </th>
+                    <th style="width: 25%;"
+                        :class="orderFieldClass.expiration_time"
+                        @click="changeOrder('expiration_time')">
+                        Fecha Caducidad
                     </th>
                 </tr>
             </thead>

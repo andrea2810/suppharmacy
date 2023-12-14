@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from datetime import date
 from uuid import uuid4
 
 from core.models import BaseModel, model
@@ -149,13 +150,16 @@ class StockPicking(BaseModel):
 
         for line in lines:
             if not line['product_id']:
-                raise Exception("Todas las lineas deben tener productos")
+                raise Exception("Todas las lineas deben tener medicamentos")
 
             if line['product_qty'] < 0:
                 raise Exception("No puede registrar cantidades negativas")
 
             if not line['lot_number']:
-                raise Exception(f"El product {line['product_name']} no tiene número de lote")
+                raise Exception(f"El medicamento {line['product_name']} no tiene número de lote")
+
+            if picking['type_picking'] == 'purchase' and not line['expiration_time']:
+                raise Exception(f"El medicamento {line['product_name']} no tiene fecha de daducidad")
 
         # TODO validar lineas del stock-move con purchase-order-line o sale-order-line
 
@@ -163,10 +167,10 @@ class StockPicking(BaseModel):
         picking = model['stock-picking'].browse(picking_id,
             fields=['state', 'type_picking', 'purchase_id', 'sale_id'])
         lines = model['stock-move'].get([['picking_id', '=', picking_id]],
-            fields=['product_id', 'product_id.name', 'product_qty', 'lot_number'])
+            fields=['product_id', 'product_id.name', 'product_qty', 'lot_number', 'expiration_time'])
 
         self._check_record_validate(picking, lines)
-        model['stock-move']._validate_moves(picking['type_picking'], lines)
+        model['stock-move'].validate_moves(picking['type_picking'], lines)
 
         if picking['type_picking'] == 'purchase':
             model['purchase-order'].action_validate(picking['purchase_id'])
@@ -200,15 +204,65 @@ class StockMove(BaseModel):
             'product_name': product['name'],
             'lot_number': move.get('lot_number', ''),
             'product_qty': move.get('product_qty', 0),
+            'expiration_time': move.get('expiration_time', 0),
         }
 
-    def _validate_moves(self, type_picking, lines):
-        # TODO Revisar inventario y moverlo
-        pass
+    def validate_moves(self, type_picking, lines):
+        # TODO Revisar inventario y moverlo dependiendo del tipo
+        quant = model['stock-quant']
+
+        if type_picking == 'purchase':
+            for line in lines:
+                quant.update_qty(line['product_id'], line['product_qty'],
+                    line['lot_number'], line['expiration_time'])
 
 
 class StockQuant(BaseModel):
     _name = 'stock-quant'
+
+    def available_qty_by_lot(self, product_id):
+        return self.get([
+                ['quantity', '=', 0],
+                ['product_id', '=', product_id],
+                ['expiration_time', '>', date.today().isoformat()],
+            ], fields=['quantity', 'lot_number'], order='expiration_time ASC, id ASC')
+
+    def available_qty(self, product_id):
+        quants = self.get([
+                ['quantity', '>', 0],
+                ['product_id', '=', product_id],
+                ['expiration_time', '>', date.today().isoformat()],
+            ], fields=['quantity'])
+
+        return sum((quant['quantity'] for quant in quants))
+
+    def update_qty(self, product_id, qty, lot_number, expiration_time=None):
+        quant = self.get([
+                ['product_id', '=', product_id],
+                ['lot_number', '=', lot_number],
+            ], fields=['quantity', 'expiration_time'])
+        
+        if quant:
+            quant = quant[0]
+
+            if expiration_time and expiration_time != quant['expiration_time']:
+                raise Exception("No puede cambiar la fecha de expiración de un lote ya definido")
+        else:
+            if not expiration_time:
+                raise Exception("Falta la fecha de expiración")
+
+            quant = self.create({
+                'product_id': product_id,
+                'lot_number': lot_number,
+                'quantity': 0,
+                'expiration_time': expiration_time,
+            })
+
+        self.update({
+            'id': quant['id'],
+            'quantity': quant['quantity'] + qty,
+        })
+            
 
 model._add_class('stock-picking', StockPicking)
 model._add_class('stock-move', StockMove)

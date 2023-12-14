@@ -305,7 +305,8 @@ const formApp = Vue.createApp({
                 
             } catch (error) {
                 alert(error);
-                return {};
+
+                return null;
             } finally {
                 this.loading = false;
             }

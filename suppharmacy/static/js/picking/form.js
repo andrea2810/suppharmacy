@@ -35,6 +35,7 @@ const formApp = Vue.createApp({
                 product_id: null,
                 product_qty: 1,
                 lot_number: '',
+                expiration_time: null,
             },
             indexMove: -1,
         }
@@ -71,7 +72,17 @@ const formApp = Vue.createApp({
         },
         disabledFieldsNotReady() {
             return !['draft', 'ready'].includes(this.picking.state)
-        }
+        },
+        isTypePurchase() {
+            return this.picking.type_picking == 'purchase';
+        },
+        colSize() {
+            if (this.picking.type_picking == 'purchase') {
+                return '24';
+            }
+            
+            return '32';
+        },
     },
     methods: {
         async __save () {
@@ -105,7 +116,7 @@ const formApp = Vue.createApp({
         async save () {
             this.loading = true;
             try {
-                const picking_id = this.__save();
+                const picking_id = await this.__save();
 
                 if (this.picking.id == 0) {
                     window.location.href = `/stock/${picking_id}`;
@@ -228,7 +239,7 @@ const formApp = Vue.createApp({
                     url: '/dataset/stock-move',
                     method: 'get',
                     params: {
-                        fields: 'product_id,product_id.name,name,product_qty,lot_number',
+                        fields: 'product_id,product_id.name,name,product_qty,lot_number,expiration_time',
                         args: JSON.stringify([['picking_id', '=', id]])
                     }
                 });
@@ -281,8 +292,9 @@ const formApp = Vue.createApp({
                 this.modalMove = {
                     id: 0,
                     product_id: null,
-                    lot_number: '',
                     product_qty: 1,
+                    lot_number: '',
+                    expiration_time: null,
                 };
             } else {
                 this.indexMove = this.moves.findIndex(l => l.id == move_id);
@@ -297,8 +309,9 @@ const formApp = Vue.createApp({
                 this.modalMove = {
                     id: move.id,
                     product_id: move.product_id,
-                    lot_number: move.lot_number,
                     product_qty: move.product_qty,
+                    lot_number: move.lot_number,
+                    expiration_time: new Date(move.expiration_time + " 00:00:00 GMT-0600"),
                 };
             }
 
@@ -373,7 +386,8 @@ const formApp = Vue.createApp({
                 
             } catch (error) {
                 alert(error);
-                return {};
+
+                return null;
             } finally {
                 this.loading = false;
             }
@@ -399,9 +413,22 @@ formApp.component('stock-move-row', {
         }
     },
     computed: {
+        isTypePurchase() {
+            return this.$parent.isTypePurchase;
+        },
+        colSize() {
+            return this.$parent.colSize;
+        },
         disabledFieldsNotReady() {
             return this.$parent.disabledFieldsNotReady;
-        }
+        },
+        displayDate() {
+            if (this.move.expiration_time) {
+                return moment(this.move.expiration_time).format('DD/MM/YYYY');
+            }
+
+            return '';
+        },
     },
     methods: {
         updateMove() {
@@ -435,9 +462,10 @@ formApp.component('stock-move-row', {
                     </svg>
                 </a>
             </td>
-            <td style="width: 32%;">[[ move.product_name ]]</td>
-            <td style="width: 32%;">[[ move.lot_number ]]</td>
-            <td style="width: 32%;">[[ move.product_qty ]]</td>
+            <td :style="\`width: \${colSize}%;\`">[[ move.product_name ]]</td>
+            <td :style="\`width: \${colSize}%;\`">[[ move.lot_number ]]</td>
+            <td v-if="isTypePurchase" :style="\`width: \${colSize}%;\`">[[ displayDate ]]</td>
+            <td :style="\`width: \${colSize}%;\`">[[ move.product_qty ]]</td>
         </tr>
     `
 });
@@ -459,6 +487,11 @@ formApp.component('modal-move', {
             required: true,
         },
     },
+    computed: {
+        isTypePurchase() {
+            return this.$parent.isTypePurchase;
+        },
+    },
     methods: {
         productChange(data) {
             this.move.product_id = data.id;
@@ -472,6 +505,10 @@ formApp.component('modal-move', {
             if (!this.move.product_qty < 0) {
                 alert("Al menos debe registrar un medicamento");
                 return;
+            }
+
+            if (this.move.expiration_time) {
+                this.move.expiration_time = formatDateToArgs(this.move.expiration_time);
             }
 
             if (this.move.id) {
@@ -514,6 +551,21 @@ formApp.component('modal-move', {
                             <div class="input-group m-3">
                                 <span class="input-group-text">Cantidad</span>
                                 <input class="form-control" type="number" v-model="move.product_qty"/>
+                            </div>
+                            <div v-if="isTypePurchase">
+                                <div class="input-group input-group-date m-3">
+                                    <span class="input-group-text">Fecha</span>
+                                    <date-picker 
+                                        @update:model-value="(date) => {move.expiration_time = date}"
+                                        :enable-time-picker="false"
+                                        select-text="Seleccionar"
+                                        cancel-text="Cancelar"
+                                        v-model="move.expiration_time"
+                                        locale="es"
+                                        format="dd/MM/yyyy">
+                                    </date-picker>
+                                </div>
+                                <div style="height: 350px;"/>
                             </div>
                         </div>
                     </div>

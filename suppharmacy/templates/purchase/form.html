@@ -42,13 +42,13 @@
                         disabled/>
                 </div>
                 <div v-if="disabledFieldsNotDraft" class="input-group m-3">
-                    <span class="input-group-text">Cliente</span>
+                    <span class="input-group-text">Proveedor</span>
                     <input class="form-control" type="text" v-model="purchase.partner_name"
                         disabled/>
                 </div>
                 <field-relational
                     v-else
-                    string="Cliente"
+                    string="Proveedor"
                     field="name"
                     table="partner"
                     :initial="purchase.partner_id"

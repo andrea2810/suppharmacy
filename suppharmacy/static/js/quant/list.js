@@ -5,7 +5,7 @@ const listApp = Vue.createApp({
     data() {
         return {
             quants: [],
-            fields: 'product_id.name,quantity',
+            fields: 'product_id.name,quantity,lot_number,expiration_time',
             loading: true,
             limit: 10,
             count: 0,
@@ -190,6 +190,8 @@ listApp.component('quant-row', {
         <tr>
             <td>[[ quant.product_name ]]</td>
             <td>[[ quant.quantity ]]</td>
+            <td>[[ quant.lot_number ]]</td>
+            <td>[[ quant.expiration_time ]]</td>
         </tr>
     `
 })

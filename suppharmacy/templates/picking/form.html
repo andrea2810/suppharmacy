@@ -124,9 +124,10 @@
                                 </svg>
                             </a>
                         </th>
-                        <th style="width: 32%;">Producto</th>
-                        <th style="width: 32%;">Lote</th>
-                        <th style="width: 32%;">Cantidad</th>
+                        <th :style="`width: ${colSize}%;`">Producto</th>
+                        <th :style="`width: ${colSize}%;`">Lote</th>
+                        <th v-if="isTypePurchase" :style="`width: ${colSize}%;`">Fecha Caducidad</th>
+                        <th :style="`width: ${colSize}%;`">Cantidad</th>
                     </tr>
                 </thead>
                 <tbody style="height: 50vh; overflow-y: auto; display: block;">
