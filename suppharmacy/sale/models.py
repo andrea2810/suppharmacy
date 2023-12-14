@@ -106,7 +106,11 @@ class SaleLine(BaseModel):
         if not product:
             raise Exception("Medicamento no encontrado")
 
-        # TODO Verificar disponibilidad
+        available_qty = model['stock-quant'].available_qty(product['id'])
+
+        if available_qty < line.get('product_qty', 0):
+            raise Exception(f"No hay suficiente medicamento\n"
+                f"Sólo hay {int(available_qty)} piezas disponibles")
 
         price_subtotal = line.get('product_qty', 0) * product['list_price']
         price_total = price_subtotal
