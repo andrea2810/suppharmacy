@@ -393,7 +393,8 @@ CREATE TABLE public.stock_move (
     quantity_done numeric,
     product_id integer,
     product_qty numeric,
-    lot_number character varying(100)
+    lot_number character varying(100),
+    expiration_time date
 );
 
 
@@ -659,7 +660,7 @@ COPY public.sale_order_line (id, order_id, price_subtotal, price_unit, price_tot
 -- Data for Name: stock_move; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.stock_move (id, date, name, origin, picking_id, quantity_done, product_id, product_qty, lot_number) FROM stdin;
+COPY public.stock_move (id, date, name, origin, picking_id, quantity_done, product_id, product_qty, lot_number, expiration_time) FROM stdin;
 \.
 
 

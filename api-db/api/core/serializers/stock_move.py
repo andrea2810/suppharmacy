@@ -16,3 +16,4 @@ class StockMoveSerializer(APISerializer):
     product_id = serializers.IntegerField(required=False)
     product_qty = serializers.IntegerField()
     lot_number = serializers.CharField(max_length=100, required=False)
+    expiration_time = serializers.DateField(required=False)

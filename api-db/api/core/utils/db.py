@@ -73,7 +73,7 @@ class DB:
                 except:
                     raise PGError(f"The relational field {order} has to be separated by 1 dot")
 
-        return f' \
+        query = f' \
                 SELECT \
                     {", ".join(field for field in instance._get_read_fields(fields))} \
                 FROM {instance._table} \
@@ -82,7 +82,9 @@ class DB:
                 ORDER BY {order} \
                 LIMIT {limit} \
                 OFFSET {offset} \
-            ', params
+            '
+        print(query, params)
+        return query, params
 
     def _create_query(self, instance, fields):
         vals = instance._get_values(fields)

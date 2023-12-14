@@ -14,6 +14,7 @@ class StockMove(BaseModel):
             'product_id': None, # Integer
             'product_qty': 0, # Numeric
             'lot_number': '', # Varchar
+            'expiration_time': '', # Date
         }
     _relational_fields = {
             'picking_id': 'stock_picking',
