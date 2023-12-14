@@ -106,8 +106,8 @@ ALTER SEQUENCE public.product_product_id_seq OWNED BY public.product_product.id;
 CREATE TABLE public.purchase_order (
     id integer NOT NULL,
     active boolean NOT NULL,
-    amount_total numeric,
-    amount_untaxed numeric,
+    amount_total numeric(8,2),
+    amount_untaxed numeric(8,2),
     date date,
     name character varying(100) NOT NULL,
     partner_id integer,
@@ -147,12 +147,12 @@ ALTER SEQUENCE public.purchase_order_id_seq OWNED BY public.purchase_order.id;
 CREATE TABLE public.purchase_order_line (
     id integer NOT NULL,
     order_id integer,
-    price_subtotal numeric,
-    price_unit numeric,
-    price_total numeric,
+    price_subtotal numeric(8,2),
+    price_unit numeric(8,2),
+    price_total numeric(8,2),
     product_id integer,
     product_qty numeric,
-    taxes numeric
+    taxes numeric(8,2)
 );
 
 
@@ -306,8 +306,8 @@ ALTER SEQUENCE public.res_users_id_seq OWNED BY public.res_users.id;
 CREATE TABLE public.sale_order (
     id integer NOT NULL,
     active boolean NOT NULL,
-    amount_total numeric,
-    amount_untaxed numeric,
+    amount_total numeric(8,2),
+    amount_untaxed numeric(8,2),
     date date,
     name character varying(100) NOT NULL,
     partner_id integer,
@@ -347,12 +347,12 @@ ALTER SEQUENCE public.sale_order_id_seq OWNED BY public.sale_order.id;
 CREATE TABLE public.sale_order_line (
     id integer NOT NULL,
     order_id integer,
-    price_subtotal numeric,
-    price_unit numeric,
-    price_total numeric,
+    price_subtotal numeric(8,2),
+    price_unit numeric(8,2),
+    price_total numeric(8,2),
     product_id integer,
     product_qty numeric,
-    taxes numeric
+    taxes numeric(8,2)
 );
 
 

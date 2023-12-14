@@ -25,8 +25,8 @@ class Purchase(BaseModel):
             amount_total += line.get('price_total', 0)
 
         return {
-            'amount_untaxed': amount_untaxed,
-            'amount_total': amount_total,
+            'amount_untaxed': round(amount_untaxed, 2),
+            'amount_total': round(amount_total, 2),
         }
 
     def _get_next_name(self):
@@ -149,10 +149,10 @@ class PurchaseLine(BaseModel):
             'product_id': product['id'],
             'product_name': product['name'],
             'product_qty': line.get('product_qty', 0),
-            'price_unit': product['dealer_price'],
-            'taxes': 0,
-            'price_subtotal': price_subtotal,
-            'price_total': price_total,
+            'price_unit': round(product['dealer_price'], 2),
+            'taxes': round(0, 2),
+            'price_subtotal': round(price_subtotal, 2),
+            'price_total': round(price_total, 2),
         }
 
 model._add_class('purchase-order', Purchase)
