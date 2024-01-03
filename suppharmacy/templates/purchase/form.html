@@ -55,7 +55,7 @@
                     :args="['supplier', '=', true]"
                     @value-changed="partnerChange"
                 ></field-relational>
-                <div v-if="purchase.state == 'done'" class="input-group m-3">
+                <div v-if="purchase.state == 'done' || purchase.state == 'purchase'" class="input-group m-3">
                     <span class="input-group-text">Movimiento Inventario</span>
                     <input class="form-control" type="text" v-model="purchase.picking_name"
                         disabled/>
