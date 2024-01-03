@@ -20,6 +20,8 @@ const formApp = Vue.createApp({
                 line_ids: [],
                 amount_untaxed: 0,
                 amount_total: 0,
+                picking_id: 0,
+                picking_name: '',
             },
             lines: [],
             loading: true,
@@ -141,7 +143,7 @@ const formApp = Vue.createApp({
                     url: '/dataset/sale-order',
                     method: 'get',
                     params: {
-                        fields: 'name,date,state,partner_id,partner_id.name,user_id,user_id.name,amount_untaxed,amount_total',
+                        fields: 'name,date,state,partner_id,partner_id.name,user_id,user_id.name,amount_untaxed,amount_total,picking',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });
