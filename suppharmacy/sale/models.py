@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from collections import defaultdict
 from datetime import date
 from uuid import uuid4
 
@@ -131,8 +132,9 @@ class Sale(BaseModel):
             if not line['product_id']:
                 raise Exception("Todas las lineas deben tener medicamentos")
 
-            if line['product_qty'] < 0:
-                raise Exception("No puede registrar cantidades negativas")
+            if line['product_qty'] <= 0:
+                raise Exception("Debe registrar al menos 1 en la cantidad del "
+                    f"medicamento {line['product_name']}")
 
     def action_confirm_sale(self, sale_id):
         picking_model = model['stock-picking']
@@ -152,7 +154,7 @@ class Sale(BaseModel):
             'type_picking': 'sale',
             'sale_id': sale['id'],
             'state': 'draft',
-            'move_ids': moves
+            'move_ids': [(0, 0, move) for move in moves]
         })
 
         picking_model.action_confirm(picking['id'])
@@ -163,7 +165,58 @@ class Sale(BaseModel):
             'state': 'sale',
         })
 
-        return True
+        return self._get_message_confirm(moves)
+
+    def _get_message_confirm(self, moves):
+        grouped_moves = defaultdict(list)
+
+        for move in moves:
+            grouped_moves[move['name']].append((move['lot_number'], move['product_qty']))
+
+        msg = '''
+            <h5>
+                Favor de tomar los siguientes lotes de los medicamentos
+            </h5>
+        '''
+
+        for product_name, lots in grouped_moves.items():
+            msg += f'''
+                <div class="row">
+                    <div class="col-12">
+                        {product_name}
+                    </div>
+                </div>
+            '''
+
+            msg += '''
+                <div class="row">
+                    <div class="col-6">
+                        Lote
+                    </div>
+                    <div class="col-6">
+                        Cantidad
+                    </div>
+                </div>
+            '''
+
+            for lot, qty in lots:
+                msg += f'''
+                    <div class="row">
+                        <div class="col-6">
+                            {lot}
+                        </div>
+                        <div class="col-6">
+                            {int(qty)}
+                        </div>
+                    </div>
+                '''
+
+            msg += '<br/>'
+
+        return {
+            'title': 'Atención',
+            'msg': msg,
+        }
 
 class SaleLine(BaseModel):
     _name = 'sale-order-line'
@@ -180,20 +233,25 @@ class SaleLine(BaseModel):
         if not product:
             raise Exception("Medicamento no encontrado")
 
+        product_qty = line.get('product_qty', 0)
+
+        if product_qty <= 0:
+            raise Exception("Debe registrar al menos 1 en la cantidad")
+
         available_qty = model['stock-quant'].available_qty(product['id'])
 
-        if available_qty < line.get('product_qty', 0):
+        if available_qty < product_qty:
             raise Exception(f"No hay suficiente medicamento\n"
                 f"Sólo hay {int(available_qty)} piezas disponibles")
 
-        price_subtotal = line.get('product_qty', 0) * product['list_price']
+        price_subtotal = product_qty * product['list_price']
         price_total = price_subtotal
 
         return {
             'id': str(uuid4()) if not line.get('id', 0) else line['id'],
             'product_id': product['id'],
             'product_name': product['name'],
-            'product_qty': line.get('product_qty', 0),
+            'product_qty': product_qty,
             'price_unit': round(product['list_price'], 2),
             'taxes': round(0, 2),
             'price_subtotal': round(price_subtotal, 2),
@@ -208,12 +266,12 @@ class SaleLine(BaseModel):
             quants = quant.supply_product(line['product_id'], line['product_qty'])
 
             for quant_id, lot_number, quantity in quants:
-                res.append((0, 0, {
+                res.append({
                     'name': line['product_name'],
                     'product_id': line['product_id'],
                     'product_qty': quantity,
                     'lot_number': lot_number,
-                }))
+                })
 
         return res
 

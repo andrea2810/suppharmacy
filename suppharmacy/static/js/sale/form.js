@@ -32,6 +32,9 @@ const formApp = Vue.createApp({
                 product_qty: 1,
             },
             indexLine: -1,
+            visibleModalConfirmation: false,
+            msgConfirmation: {},
+            msgCallback: null,
         }
     },
     computed: {
@@ -103,17 +106,25 @@ const formApp = Vue.createApp({
                     }
                 });
 
-                if (this.sale.id == 0) {
-                    window.location.href = `/sale/${sale_id}`;
-                }
-
                 if (res.data.ok == false) {
+                    if (this.sale_id == 0) {
+                        window.location.href = `/sale/${sale_id}`;
+                    }
+
                     throw res.data.error;
                 }
 
-                if (this.sale.id != 0) {
-                    this.__fetchSale();
+                this.msgConfirmation = res.data.data;
+                this.msgCallback = () => {
+                    if (this.sale.id == 0) {
+                        window.location.href = `/sale/${sale_id}`;
+                    } else {
+                        this.__fetchSale();
+                    }
+
+                    this.msgCallback = null;
                 }
+                this.toggleModalConfirmation();
 
             } catch (error) {
                 alert(error);
@@ -335,6 +346,9 @@ const formApp = Vue.createApp({
         },
         toggleModalLine() {
             this.visibleModalLine = !this.visibleModalLine;
+        },
+        toggleModalConfirmation() {
+            this.visibleModalConfirmation = !this.visibleModalConfirmation;
         }
         
     },
@@ -484,6 +498,60 @@ formApp.component('modal-line', {
                             <span v-if="line.id == 0">Agregar</span>
                             <span v-else>Actualizar</span>
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+});
+
+formApp.component('modal-msg', {
+    delimiters: ["[[", "]]"],
+    data() {
+        return {
+            
+        }
+    },
+    props: {
+        visible: {
+            type: Boolean,
+            required: true
+        },
+        msg: {
+            type: Object,
+            required: true,
+        },
+        callback: {
+            type: Function,
+            default: () => {}, 
+        }
+    },
+    methods: {
+        close() {
+            this.callback();
+            this.$parent.toggleModalConfirmation();
+        }
+    },
+    mounted() {
+
+    },
+    template: `
+        <div v-if="visible" class="modal fade show" tabindex="-1" aria-modal="true" 
+            role="dialog">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">[[ msg.title ]]</h5>
+                        <button type="button" class="btn-close" aria-label="Close"
+                            @click="close"/>
+                    </div>
+                    <div class="modal-body">
+                    <div class="container-fluid text-center">
+                        <div v-html="msg.msg"></div>
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="close">OK</button>
                     </div>
                 </div>
             </div>
