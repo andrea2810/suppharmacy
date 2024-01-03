@@ -550,7 +550,7 @@ formApp.component('modal-move', {
                     <div class="container-fluid">
                         <div class="row">
                             <field-relational
-                                string="Producto"
+                                string="Medicamento"
                                 field="name"
                                 table="product"
                                 :initial="move.product_id"

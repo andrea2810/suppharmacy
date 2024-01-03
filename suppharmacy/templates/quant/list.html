@@ -12,7 +12,7 @@
         <!-- Filters -->
         <div class="col-2">
             <div class="input-group">
-                <span class="input-group-text">Producto</span>
+                <span class="input-group-text">Medicamento</span>
                 <input class="form-control" type="text" v-model="productFilter"
                     @change="fetchQuants()"/>
             </div>
@@ -52,7 +52,7 @@
                     <th style="width: 25%;"
                         :class="orderFieldClass.product_name"
                         @click="changeOrder('product_id.name')">
-                        Producto
+                        Medicamento
                     </th>
                     <th style="width: 25%;"
                         :class="orderFieldClass.quantity"

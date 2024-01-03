@@ -466,7 +466,7 @@ formApp.component('modal-line', {
                     <div class="container-fluid">
                         <div class="row">
                             <field-relational
-                                string="Producto"
+                                string="Medicamento"
                                 field="name"
                                 table="product"
                                 :initial="line.product_id"
