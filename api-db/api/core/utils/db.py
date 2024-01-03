@@ -73,6 +73,11 @@ class DB:
                 except:
                     raise PGError(f"The relational field {order} has to be separated by 1 dot")
 
+        limit_clause = ""
+
+        if limit > 0:
+            limit_clause = f'LIMIT {limit}'
+
         query = f' \
                 SELECT \
                     {", ".join(field for field in instance._get_read_fields(fields))} \
@@ -80,10 +85,9 @@ class DB:
                 {instance._get_joins()} \
                 {where} \
                 ORDER BY {order} \
-                LIMIT {limit} \
+                {limit_clause} \
                 OFFSET {offset} \
             '
-        print(query, params)
         return query, params
 
     def _create_query(self, instance, fields):
