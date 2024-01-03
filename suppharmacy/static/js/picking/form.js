@@ -67,6 +67,16 @@ const formApp = Vue.createApp({
 
             return '';
         },
+        urlOrigin() {
+            if (this.picking.type_picking == 'sale') {
+                return `/sale/${this.picking.sale_id}`;
+            }
+            if (this.picking.type_picking == 'purchase') {
+                return `/purchase/${this.picking.purchase_id}`;
+            }
+
+            return '#';
+        },
         disabledFieldsNotDraft() {
             return this.picking.state != 'draft';
         },
@@ -219,7 +229,8 @@ const formApp = Vue.createApp({
                     params: {
                         fields: 'name,date,state,partner_id,partner_id.name,'
                             + 'user_id,user_id.name,type_picking,'
-                            + 'purchase_id.name,sale_id.name',
+                            + 'purchase_id,purchase_id.name,'
+                            + 'sale_id,sale_id.name',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });
