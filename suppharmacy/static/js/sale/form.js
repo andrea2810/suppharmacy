@@ -162,7 +162,8 @@ const formApp = Vue.createApp({
                     method: 'get',
                     params: {
                         fields: 'product_id,product_id.name,product_qty,price_unit,taxes,price_subtotal,price_total',
-                        args: JSON.stringify([['order_id', '=', id]])
+                        args: JSON.stringify([['order_id', '=', id]]),
+                        limit: 0,
                     }
                 });
 

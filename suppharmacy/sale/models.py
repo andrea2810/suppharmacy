@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from datetime import date
 from uuid import uuid4
 
 from core.models import BaseModel, model
@@ -70,7 +71,7 @@ class Sale(BaseModel):
 
         for operation, line_id, data in lines:
             if operation == 0: # Create
-                del data['id']
+                data.pop('id', None)
                 data['order_id'] = sale_id
 
                 lineModel.create(data)
@@ -81,8 +82,55 @@ class Sale(BaseModel):
             if operation == 2: # Delete
                 lineModel.delete([line_id])
 
+    def _check_confirm(self, sale, lines):
+        if sale['state'] != 'draft':
+            raise Exception("El registro solo se puede confirmar si está en Borrador")
+
+        if not sale['partner_id']:
+            raise Exception("Debe seleccionar el cliente")
+
+        if not sale['user_id']:
+            raise Exception("Debe seleccionar el usuario")
+
+        if not sale['date']:
+            raise Exception("Debe seleccionar una fecha")
+
+        distinct_products = len(set((line['product_id'] for line in lines)))
+
+        if distinct_products != len(lines):
+            raise Exception("Hay medicamentos duplicados, solo debe existir un "
+                "medicamento por linea")
+
+        for line in lines:
+            if not line['product_id']:
+                raise Exception("Todas las lineas deben tener medicamentos")
+
+            if line['product_qty'] < 0:
+                raise Exception("No puede registrar cantidades negativas")
+
     def action_confirm_sale(self, sale_id):
-        # TODO validaciones y mover inventario
+        picking_model = model['stock-picking']
+        sale_line_model = model['sale-order-line']
+
+        sale = self.browse(sale_id, fields=['partner_id', 'user_id', 'date', 'state'])
+        lines = sale_line_model.get([('order_id', '=', sale_id)],
+            fields=['product_id', 'product_id.name', 'product_qty'], limit=0)
+
+        self._check_confirm(sale, lines)
+        moves = sale_line_model._get_lines_stock_move(lines)
+
+        picking = picking_model.create({
+            'partner_id': sale['partner_id'],
+            'user_id': sale['user_id'],
+            'date': date.today().isoformat(),
+            'type_picking': 'sale',
+            'sale_id': sale['id'],
+            'state': 'draft',
+            'move_ids': moves
+        })
+
+        picking_model.action_confirm(picking['id'])
+        picking_model.action_validate(picking['id'])
 
         self.update({
             'id': sale_id, 
@@ -125,6 +173,23 @@ class SaleLine(BaseModel):
             'price_subtotal': round(price_subtotal, 2),
             'price_total': round(price_total, 2)
         }
+
+    def _get_lines_stock_move(self, lines):
+        res = []
+        quant = model['stock-quant']
+
+        for line in lines:
+            quants = quant.supply_product(line['product_id'], line['product_qty'])
+
+            for quant_id, lot_number, quantity in quants:
+                res.append((0, 0, {
+                    'name': line['product_name'],
+                    'product_id': line['product_id'],
+                    'product_qty': quantity,
+                    'lot_number': lot_number,
+                }))
+
+        return res
 
 model._add_class('sale-order', Sale)
 model._add_class('sale-order-line', SaleLine)

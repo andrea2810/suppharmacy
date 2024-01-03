@@ -22,19 +22,6 @@ class StockPicking(BaseModel):
         'expired': 'Expirado',
     }
 
-    # def onchange_lines(self, lines):
-    #     amount_untaxed = 0
-    #     amount_total = 0
-
-    #     for line in lines:
-    #         amount_untaxed += line.get('price_subtotal', 0)
-    #         amount_total += line.get('price_total', 0)
-
-    #     return {
-    #         'amount_untaxed': amount_untaxed,
-    #         'amount_total': amount_total,
-    #     }
-
     def _get_next_name(self, type_picking):
         last_rec = self.get(args=[['type_picking', '=', type_picking]], order="id DESC",
             limit=1, fields=['name'])
@@ -91,7 +78,7 @@ class StockPicking(BaseModel):
 
         for operation, move_id, data in moves:
             if operation == 0: # Create
-                del data['id']
+                data.pop('id', None)
                 data['picking_id'] = picking_id
 
                 moveModel.create(data)
@@ -167,7 +154,8 @@ class StockPicking(BaseModel):
         picking = model['stock-picking'].browse(picking_id,
             fields=['state', 'type_picking', 'purchase_id', 'sale_id'])
         lines = model['stock-move'].get([['picking_id', '=', picking_id]],
-            fields=['product_id', 'product_id.name', 'product_qty', 'lot_number', 'expiration_time'])
+            fields=['product_id', 'product_id.name', 'product_qty', 'lot_number', 'expiration_time'],
+            limit=0)
 
         self._check_record_validate(picking, lines)
         model['stock-move'].validate_moves(picking['type_picking'], lines)
@@ -215,6 +203,10 @@ class StockMove(BaseModel):
             for line in lines:
                 quant.update_qty(line['product_id'], line['product_qty'],
                     line['lot_number'], line['expiration_time'])
+        elif type_picking == 'sale' or type_picking == 'expired':
+            for line in lines:
+                quant.update_qty(line['product_id'], -line['product_qty'],
+                    line['lot_number'])
 
 
 class StockQuant(BaseModel):
@@ -222,19 +214,46 @@ class StockQuant(BaseModel):
 
     def available_qty_by_lot(self, product_id):
         return self.get([
-                ['quantity', '=', 0],
+                ['quantity', '>', 0],
                 ['product_id', '=', product_id],
                 ['expiration_time', '>', date.today().isoformat()],
-            ], fields=['quantity', 'lot_number'], order='expiration_time ASC, id ASC')
+            ], fields=['quantity', 'lot_number'], 
+            order='expiration_time ASC, id ASC', limit=0)
 
     def available_qty(self, product_id):
         quants = self.get([
                 ['quantity', '>', 0],
                 ['product_id', '=', product_id],
                 ['expiration_time', '>', date.today().isoformat()],
-            ], fields=['quantity'])
+            ], fields=['quantity'], limit=0)
 
         return sum((quant['quantity'] for quant in quants))
+
+    def supply_product(self, product_id, quantity):
+        res = []
+
+        product = model['product'].browse(product_id, fields=['name'])
+        quants = self.available_qty_by_lot(product['id'])
+
+        for quant in quants:
+            if quantity > quant['quantity']:
+                res.append((quant['id'], quant['lot_number'], quant['quantity']))
+                
+                quantity -= quant['quantity']
+            else:
+                res.append((quant['id'], quant['lot_number'], quantity))
+
+                quantity = 0
+
+                break
+
+        if quantity > 0:
+            available_qty = sum((quant['quantity'] for quant in quants))
+            raise Exception(f"No hay suficiente medicamento {product['name']}"
+                f"Sólo hay {int(available_qty)} piezas disponibles")
+
+
+        return res
 
     def update_qty(self, product_id, qty, lot_number, expiration_time=None):
         quant = self.get([
