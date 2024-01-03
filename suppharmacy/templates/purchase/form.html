@@ -55,6 +55,13 @@
                     :args="['supplier', '=', true]"
                     @value-changed="partnerChange"
                 ></field-relational>
+                <div v-if="purchase.state == 'done'" class="input-group m-3">
+                    <span class="input-group-text">Movimiento Inventario</span>
+                    <input class="form-control" type="text" v-model="purchase.picking_name"
+                        disabled/>
+                    <a :href="`/stock/${purchase.picking_id}`" class="btn btn-outline-secondary"
+                        @click="toggleModalPassword">Ver</a>
+                </div>
             </div>
             <div class="col-6">
                 <div class="input-group input-group-date m-3">

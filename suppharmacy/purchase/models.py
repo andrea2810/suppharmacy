@@ -16,6 +16,15 @@ class Purchase(BaseModel):
         'cancel': 'Cancelado',
     }
 
+    def _get_related_picking(self, purchase_id):
+        picking = model['stock-picking'].get([['purchase_id', '=', purchase_id]],
+            fields=['name'], limit=1)
+
+        return {
+            'picking_id': picking and picking[0]['id'] or 0,
+            'picking_name': picking and picking[0]['name'] or 0,
+        }
+
     def onchange_lines(self, lines):
         amount_untaxed = 0
         amount_total = 0
@@ -50,6 +59,23 @@ class Purchase(BaseModel):
             })
 
         return data
+
+    def get(self, args=[], count=False, order="id ASC", limit=80, offset=0, fields=[]):
+        picking = False
+
+        if 'picking' in fields:
+            picking = True
+            fields.remove('picking')
+
+        res = super().get(args, count, order, limit, offset, fields)
+
+        if not count and picking:
+            for purchase in res:
+                picking_vals = self._get_related_picking(purchase['id']) 
+
+                purchase.update(picking_vals)
+
+        return res
 
     def create(self, data):
         res = super().create(data)
