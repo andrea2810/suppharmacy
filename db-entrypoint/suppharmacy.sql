@@ -312,7 +312,9 @@ CREATE TABLE public.sale_order (
     name character varying(100) NOT NULL,
     partner_id integer,
     state character varying(15),
-    user_id integer
+    user_id integer,
+    requires_prescription boolean default FALSE,
+    prescription boolean default FALSE
 );
 
 
@@ -644,7 +646,7 @@ COPY public.res_users (id, active, name, username, password) FROM stdin;
 -- Data for Name: sale_order; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.sale_order (id, active, amount_total, amount_untaxed, date, name, partner_id, state, user_id) FROM stdin;
+COPY public.sale_order (id, active, amount_total, amount_untaxed, date, name, partner_id, state, user_id, requires_prescription, prescription) FROM stdin;
 \.
 
 

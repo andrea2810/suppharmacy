@@ -15,6 +15,8 @@ class SaleOrder(BaseModel):
             'partner_id': None, #Integer
             'state': '', #Varchar
             'user_id': None, #Integer
+            'requires_prescription': False,
+            'prescription': False,
         }
     _relational_fields = {
             'partner_id': 'res_partner',

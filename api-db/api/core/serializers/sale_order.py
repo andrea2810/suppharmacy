@@ -21,3 +21,5 @@ class SaleOrderSerializer(APISerializer):
         required=False,
         max_length=20)
     user_id = serializers.IntegerField(required=False)
+    requires_prescription = serializers.BooleanField(required=False)
+    prescription = serializers.BooleanField(required=False)
