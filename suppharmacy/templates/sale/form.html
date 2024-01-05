@@ -93,6 +93,12 @@
                     @value-changed="userChange"
                     :disabled="disabledFieldsNotDraft"
                 ></field-relational>
+                <div v-if="sale.requires_prescription" class="input-group m-3">
+                    <span class="input-group-text">Receta</span>
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="checkbox" v-model="sale.prescription" >
+                    </div>
+                </div>
             </div>
         </div>
         <div >

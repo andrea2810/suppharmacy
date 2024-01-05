@@ -22,6 +22,8 @@ const formApp = Vue.createApp({
                 amount_total: 0,
                 picking_id: 0,
                 picking_name: '',
+                requires_prescription: false,
+                prescription: false,
             },
             lines: [],
             loading: true,
@@ -107,7 +109,7 @@ const formApp = Vue.createApp({
                 });
 
                 if (res.data.ok == false) {
-                    if (this.sale_id == 0) {
+                    if (this.sale.id == 0) {
                         window.location.href = `/sale/${sale_id}`;
                     }
 
@@ -154,7 +156,9 @@ const formApp = Vue.createApp({
                     url: '/dataset/sale-order',
                     method: 'get',
                     params: {
-                        fields: 'name,date,state,partner_id,partner_id.name,user_id,user_id.name,amount_untaxed,amount_total,picking',
+                        fields: 'name,date,state,partner_id,partner_id.name,'
+                            + 'user_id,user_id.name,amount_untaxed,amount_total,'
+                            + 'requires_prescription,prescription,picking',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });
@@ -174,7 +178,8 @@ const formApp = Vue.createApp({
                     url: '/dataset/sale-order-line',
                     method: 'get',
                     params: {
-                        fields: 'product_id,product_id.name,product_qty,price_unit,taxes,price_subtotal,price_total',
+                        fields: 'product_id,product_id.name,product_qty,price_unit,'
+                            + 'taxes,price_subtotal,price_total',
                         args: JSON.stringify([['order_id', '=', id]]),
                         limit: 0,
                     }

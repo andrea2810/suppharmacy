@@ -28,14 +28,24 @@ class Sale(BaseModel):
     def onchange_lines(self, lines):
         amount_untaxed = 0
         amount_total = 0
+        requires_prescription = False
 
         for line in lines:
             amount_untaxed += line.get('price_subtotal', 0)
             amount_total += line.get('price_total', 0)
 
+            product_id = line.get('product_id', 0)
+
+            if product_id and not requires_prescription:
+                product = model['product'].browse(product_id, fields=['is_antibiotic'])
+
+                if product.get('is_antibiotic'):
+                    requires_prescription = True
+
         return {
             'amount_untaxed': round(amount_untaxed, 2),
             'amount_total': round(amount_total, 2),
+            'requires_prescription': requires_prescription
         }
 
     def _get_next_name(self):
@@ -122,6 +132,9 @@ class Sale(BaseModel):
         if not sale['date']:
             raise Exception("Debe seleccionar una fecha")
 
+        if sale['requires_prescription'] and not sale['prescription']:
+            raise Exception("Alguno de los medicamentos es antibiótico, por lo que debe solicitar la receta")
+
         distinct_products = len(set((line['product_id'] for line in lines)))
 
         if distinct_products != len(lines):
@@ -140,7 +153,10 @@ class Sale(BaseModel):
         picking_model = model['stock-picking']
         sale_line_model = model['sale-order-line']
 
-        sale = self.browse(sale_id, fields=['partner_id', 'user_id', 'date', 'state'])
+        sale = self.browse(sale_id, fields=[
+            'partner_id', 'user_id', 'date', 'state', 'requires_prescription',
+            'prescription'
+        ])
         lines = sale_line_model.get([('order_id', '=', sale_id)],
             fields=['product_id', 'product_id.name', 'product_qty'], limit=0)
 
