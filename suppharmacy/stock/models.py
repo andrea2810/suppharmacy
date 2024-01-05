@@ -154,8 +154,7 @@ class StockPicking(BaseModel):
         picking = model['stock-picking'].browse(picking_id,
             fields=['state', 'type_picking', 'purchase_id', 'sale_id'])
         lines = model['stock-move'].get([['picking_id', '=', picking_id]],
-            fields=['product_id', 'product_id.name', 'product_qty', 'lot_number', 'expiration_time'],
-            limit=0)
+            fields=['product_id', 'product_id.name', 'product_qty', 'lot_number', 'expiration_time'])
 
         self._check_record_validate(picking, lines)
         model['stock-move'].validate_moves(picking['type_picking'], lines)
@@ -218,14 +217,14 @@ class StockQuant(BaseModel):
                 ['product_id', '=', product_id],
                 ['expiration_time', '>', date.today().isoformat()],
             ], fields=['quantity', 'lot_number'], 
-            order='expiration_time ASC, id ASC', limit=0)
+            order='expiration_time ASC, id ASC')
 
     def available_qty(self, product_id):
         quants = self.get([
                 ['quantity', '>', 0],
                 ['product_id', '=', product_id],
                 ['expiration_time', '>', date.today().isoformat()],
-            ], fields=['quantity'], limit=0)
+            ], fields=['quantity'])
 
         return sum((quant['quantity'] for quant in quants))
 

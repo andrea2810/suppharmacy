@@ -46,7 +46,7 @@ class DB:
         where_params = args.get('where_params', [])
         count = args.get('count', False)
         order = args.get('order', 'id ASC')
-        limit = args.get('limit', 80)
+        limit = args.get('limit', 0)
         offset = args.get('offset', 0)
         fields = set(args.get('fields', []))
 

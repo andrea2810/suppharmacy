@@ -60,7 +60,7 @@ class Purchase(BaseModel):
 
         return data
 
-    def get(self, args=[], count=False, order="id ASC", limit=80, offset=0, fields=[]):
+    def get(self, args=[], count=False, order="id ASC", limit=0, offset=0, fields=[]):
         picking = False
 
         if 'picking' in fields:

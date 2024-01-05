@@ -70,7 +70,7 @@ class Sale(BaseModel):
 
         return data
 
-    def get(self, args=[], count=False, order="id ASC", limit=80, offset=0, fields=[]):
+    def get(self, args=[], count=False, order="id ASC", limit=0, offset=0, fields=[]):
         picking = False
 
         if 'picking' in fields:
@@ -158,7 +158,7 @@ class Sale(BaseModel):
             'prescription'
         ])
         lines = sale_line_model.get([('order_id', '=', sale_id)],
-            fields=['product_id', 'product_id.name', 'product_qty'], limit=0)
+            fields=['product_id', 'product_id.name', 'product_qty'])
 
         self._check_confirm(sale, lines)
         moves = sale_line_model._get_lines_stock_move(lines)

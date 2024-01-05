@@ -252,7 +252,6 @@ const formApp = Vue.createApp({
                     params: {
                         fields: 'product_id,product_id.name,name,product_qty,lot_number,expiration_time',
                         args: JSON.stringify([['picking_id', '=', id]]),
-                        limit: 0,
                     }
                 });
 

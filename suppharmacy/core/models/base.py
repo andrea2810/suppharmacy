@@ -58,7 +58,7 @@ class BaseModel:
     def _format_values(self, data):
         return data
 
-    def get(self, args=[], count=False, order="id ASC", limit=80, offset=0, fields=[]):
+    def get(self, args=[], count=False, order="id ASC", limit=0, offset=0, fields=[]):
         reqm = RequestManager()
 
         with reqm as _:
