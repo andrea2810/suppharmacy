@@ -114,7 +114,7 @@ class BaseModel:
         with reqm as _:
             response = None
 
-            response = requests.post(f'{self._URL}{self._name}', data=data)
+            response = requests.post(f'{self._URL}{self._name}', json=data)
             response.raise_for_status()
 
             return response.json()
@@ -136,7 +136,7 @@ class BaseModel:
             response = None
 
             response = requests.put(f'{self._URL}{self._name}/{data["id"]}',
-                data=data)
+                json=data)
             response.raise_for_status()
 
             return response.json()

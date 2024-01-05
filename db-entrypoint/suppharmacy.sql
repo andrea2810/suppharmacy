@@ -26,7 +26,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.drug_category (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     name character varying(100) NOT NULL
 );
 
@@ -60,7 +60,7 @@ ALTER SEQUENCE public.drug_category_id_seq OWNED BY public.drug_category.id;
 
 CREATE TABLE public.product_product (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     code character varying(15),
     dealer_price numeric,
     description character varying(150),
@@ -105,7 +105,7 @@ ALTER SEQUENCE public.product_product_id_seq OWNED BY public.product_product.id;
 
 CREATE TABLE public.purchase_order (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     amount_total numeric(8,2),
     amount_untaxed numeric(8,2),
     date date,
@@ -186,7 +186,7 @@ ALTER SEQUENCE public.purchase_order_line_id_seq OWNED BY public.purchase_order_
 
 CREATE TABLE public.res_laboratory (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     name character varying(100) NOT NULL
 );
 
@@ -221,7 +221,7 @@ ALTER SEQUENCE public.res_laboratory_id_seq OWNED BY public.res_laboratory.id;
 
 CREATE TABLE public.res_partner (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     name character varying(100) NOT NULL,
     city character varying(100),
     country character varying(100),
@@ -268,7 +268,7 @@ ALTER SEQUENCE public.res_partner_id_seq OWNED BY public.res_partner.id;
 
 CREATE TABLE public.res_users (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     name character varying(100) NOT NULL,
     username character varying(50) NOT NULL UNIQUE,
     password character varying(131) NOT NULL
@@ -305,7 +305,7 @@ ALTER SEQUENCE public.res_users_id_seq OWNED BY public.res_users.id;
 
 CREATE TABLE public.sale_order (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     amount_total numeric(8,2),
     amount_untaxed numeric(8,2),
     date date,
