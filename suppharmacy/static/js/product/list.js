@@ -5,7 +5,7 @@ const listApp = Vue.createApp({
     data() {
         return {
             products: [],
-            fields: 'name,code,presentation,is_antibiotic',
+            fields: 'name,code,presentation,is_antibiotic,quant',
             loading: true,
             limit: 10,
             count: 0,
@@ -261,6 +261,7 @@ listApp.component('product-row', {
             <td>[[ product.name ]]</td>
             <td>[[ product.code ]]</td>
             <td>[[ product.presentation ]]</td>
+            <td>[[ product.quantity ]]</td>
             <td>
                 <input type="checkbox" v-model="product.is_antibiotic" disabled>
             </td>

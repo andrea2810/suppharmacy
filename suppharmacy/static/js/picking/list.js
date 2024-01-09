@@ -30,6 +30,7 @@ const listApp = Vue.createApp({
             dateStartFilter: null,
             dateEndFilter: null,
             stateFilter: '',
+            typeFilter: '',
             order: ['id', 'ASC'],
         }
     },
@@ -75,6 +76,9 @@ const listApp = Vue.createApp({
             }
             if (this.stateFilter) {
                 args.push(['state', '=', this.stateFilter]);
+            }
+            if (this.typeFilter) {
+                args.push(['type_picking', '=', this.typeFilter]);
             }
 
             return JSON.stringify(args);
