@@ -313,6 +313,33 @@ const formApp = Vue.createApp({
                 this.loading = false;
             }
         },
+        async predictPurchaseQty(product_id) {
+            this.loading = true;
+
+            try {
+                const res = await axios({
+                    url: '/dataset/call/purchase-order-line',
+                    method: 'post',
+                    data: {
+                        method: 'predict_purchase_qty',
+                        args: [product_id]
+                    }
+                });
+
+                if (res.data.ok == false) {
+                    throw res.data.error;
+                }
+
+                return res.data.data.product_qty;
+                
+            } catch (error) {
+                alert(error);
+
+                return null;
+            } finally {
+                this.loading = false;
+            }
+        },
         async _onchangeLines() {
             try {
                 const res = await axios({
@@ -446,6 +473,15 @@ formApp.component('modal-line', {
         },
         close() {
             this.$parent.toggleModalLine();
+        },
+        async predictPurchaseQty() {
+            if (!this.line.product_id) {
+                alert("Debe seleccionar un medicamento.");
+                return;
+            }
+
+            this.line.product_qty = await this.$parent.predictPurchaseQty(
+                this.line.product_id);
         }
     },
     mounted() {
@@ -474,6 +510,7 @@ formApp.component('modal-line', {
                             <div class="input-group m-3">
                                 <span class="input-group-text">Cantidad</span>
                                 <input class="form-control" type="number" v-model="line.product_qty"/>
+                                <a href="#" class="btn btn-outline-secondary" @click="predictPurchaseQty">Pronosticar</a>
                             </div>
                         </div>
                     </div>

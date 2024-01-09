@@ -2,6 +2,7 @@
 
 from uuid import uuid4
 from datetime import date
+from random import randint
 
 from core.models import BaseModel, model
 
@@ -154,6 +155,18 @@ class Purchase(BaseModel):
 
 class PurchaseLine(BaseModel):
     _name = 'purchase-order-line'
+
+    def predict_purchase_qty(self, product_id):
+        product =  model['product'].browse(product_id)
+
+        if not product:
+            raise Exception("Medicamento no encontrado")
+
+        # TODO IA.prediction
+
+        return {
+            'product_qty': randint(2, 9)
+        }
 
     def onchange_line(self, line):
         if not isinstance(line, dict):
