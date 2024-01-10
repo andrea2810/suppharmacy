@@ -8,12 +8,10 @@ class PurchaseOrderLine(BaseModel):
     _fields = {
             'id': 0, # Integer
             'order_id': None, # Integer
-            'price_subtotal': 0.0, # Numeric
             'price_unit': 0.0, # Numeric
             'price_total': 0.0, # Numeric
             'product_id': None, # Integer
             'product_qty': 0.0, # Numeric
-            'taxes': 0.0, # Numeric
         }
     _relational_fields = {
             'order_id': 'purchase_order',

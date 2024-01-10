@@ -27,15 +27,12 @@ class Purchase(BaseModel):
         }
 
     def onchange_lines(self, lines):
-        amount_untaxed = 0
         amount_total = 0
 
         for line in lines:
-            amount_untaxed += line.get('price_subtotal', 0)
             amount_total += line.get('price_total', 0)
 
         return {
-            'amount_untaxed': round(amount_untaxed, 2),
             'amount_total': round(amount_total, 2),
         }
 
@@ -180,8 +177,7 @@ class PurchaseLine(BaseModel):
         if not product:
             raise Exception("Medicamento no encontrado")
 
-        price_subtotal = line.get('product_qty', 0) * product['dealer_price']
-        price_total = price_subtotal
+        price_total = line.get('product_qty', 0) * product['dealer_price']
 
         return {
             'id': str(uuid4()) if not line.get('id', 0) else line['id'],
@@ -189,8 +185,6 @@ class PurchaseLine(BaseModel):
             'product_name': product['name'],
             'product_qty': line.get('product_qty', 0),
             'price_unit': round(product['dealer_price'], 2),
-            'taxes': round(0, 2),
-            'price_subtotal': round(price_subtotal, 2),
             'price_total': round(price_total, 2),
         }
 

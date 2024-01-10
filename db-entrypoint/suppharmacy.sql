@@ -107,7 +107,6 @@ CREATE TABLE public.purchase_order (
     id integer NOT NULL,
     active boolean NOT NULL default TRUE,
     amount_total numeric(8,2),
-    amount_untaxed numeric(8,2),
     date date,
     name character varying(100) NOT NULL,
     partner_id integer,
@@ -147,12 +146,10 @@ ALTER SEQUENCE public.purchase_order_id_seq OWNED BY public.purchase_order.id;
 CREATE TABLE public.purchase_order_line (
     id integer NOT NULL,
     order_id integer,
-    price_subtotal numeric(8,2),
     price_unit numeric(8,2),
     price_total numeric(8,2),
     product_id integer,
-    product_qty numeric,
-    taxes numeric(8,2)
+    product_qty numeric
 );
 
 
@@ -351,7 +348,7 @@ CREATE TABLE public.sale_order_line (
     price_unit numeric(8,2),
     price_total numeric(8,2),
     product_id integer,
-    product_qty numeric,
+    product_qty numeric
 );
 
 
@@ -603,7 +600,7 @@ COPY public.product_product (id, active, code, dealer_price, description, list_p
 -- Data for Name: purchase_order; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.purchase_order (id, active, amount_total, amount_untaxed, date, name, partner_id, state, user_id) FROM stdin;
+COPY public.purchase_order (id, active, amount_total, date, name, partner_id, state, user_id) FROM stdin;
 \.
 
 
@@ -611,7 +608,7 @@ COPY public.purchase_order (id, active, amount_total, amount_untaxed, date, name
 -- Data for Name: purchase_order_line; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.purchase_order_line (id, order_id, price_subtotal, price_unit, price_total, product_id, product_qty, taxes) FROM stdin;
+COPY public.purchase_order_line (id, order_id, price_unit, price_total, product_id, product_qty) FROM stdin;
 \.
 
 
@@ -643,7 +640,7 @@ COPY public.res_users (id, active, name, username, password) FROM stdin;
 -- Data for Name: sale_order; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.sale_order (id, active, amount_total, amount_untaxed, date, name, partner_id, state, user_id, requires_prescription, prescription) FROM stdin;
+COPY public.sale_order (id, active, amount_total, date, name, partner_id, state, user_id, requires_prescription, prescription) FROM stdin;
 \.
 
 
@@ -651,7 +648,7 @@ COPY public.sale_order (id, active, amount_total, amount_untaxed, date, name, pa
 -- Data for Name: sale_order_line; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.sale_order_line (id, order_id, price_subtotal, price_unit, price_total, product_id, product_qty, taxes) FROM stdin;
+COPY public.sale_order_line (id, order_id, price_unit, price_total, product_id, product_qty) FROM stdin;
 \.
 
 

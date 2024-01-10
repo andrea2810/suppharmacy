@@ -19,7 +19,6 @@ const formApp = Vue.createApp({
                 partner_id: null,
                 user_id: null,
                 line_ids: [],
-                amount_untaxed: 0,
                 amount_total: 0,
                 picking_id: 0,
                 picking_name: '',
@@ -144,7 +143,8 @@ const formApp = Vue.createApp({
                     url: '/dataset/purchase-order',
                     method: 'get',
                     params: {
-                        fields: 'name,date,state,partner_id,partner_id.name,user_id,user_id.name,amount_untaxed,amount_total,picking',
+                        fields: 'name,date,state,partner_id,partner_id.name,'
+                            + 'user_id,user_id.name,amount_total,picking',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });
@@ -164,7 +164,8 @@ const formApp = Vue.createApp({
                     url: '/dataset/purchase-order-line',
                     method: 'get',
                     params: {
-                        fields: 'product_id,product_id.name,product_qty,price_unit,taxes,price_subtotal,price_total',
+                        fields: 'product_id,product_id.name,product_qty,'
+                            + 'price_unit,price_total',
                         args: JSON.stringify([['order_id', '=', id]]),
                     }
                 });
@@ -423,12 +424,10 @@ formApp.component('purchase-line-row', {
                     </svg>
                 </a>
             </td>
-            <td style="width: 16%;">[[ line.product_name ]]</td>
-            <td style="width: 16%;">[[ line.product_qty ]]</td>
-            <td style="width: 16%;">[[ line.price_unit ]]</td>
-            <td style="width: 16%;">[[ line.taxes ]]</td>
-            <td style="width: 16%;">[[ line.price_subtotal ]]</td>
-            <td style="width: 16%;">[[ line.price_total ]]</td>
+            <td style="width: 24%;">[[ line.product_name ]]</td>
+            <td style="width: 24%;">[[ line.product_qty ]]</td>
+            <td style="width: 24%;">[[ line.price_unit ]]</td>
+            <td style="width: 24%;">[[ line.price_total ]]</td>
         </tr>
     `
 });
