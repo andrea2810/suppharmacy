@@ -14,7 +14,6 @@ class ProductProduct(BaseModel):
             'list_price': 0.0, # Numeric
             'name': '', # Varchar
             'sale_ok': True, #Boolean
-            'taxes': 0.0, # Numeric
             'presentation': '', #Varchar
             'laboratory_id': None, #Integer
             'drug_category_id': None, #Integer

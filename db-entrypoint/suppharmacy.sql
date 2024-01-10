@@ -67,7 +67,6 @@ CREATE TABLE public.product_product (
     list_price numeric,
     name character varying(100) NOT NULL,
     sale_ok boolean NOT NULL,
-    taxes numeric,
     presentation character varying(100),
     laboratory_id integer,
     drug_category_id integer,
@@ -592,7 +591,7 @@ COPY public.drug_category (id, active, name) FROM stdin;
 -- Data for Name: product_product; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.product_product (id, active, code, dealer_price, description, list_price, name, sale_ok, taxes, presentation, laboratory_id, drug_category_id, is_antibiotic) FROM stdin;
+COPY public.product_product (id, active, code, dealer_price, description, list_price, name, sale_ok, presentation, laboratory_id, drug_category_id, is_antibiotic) FROM stdin;
 \.
 
 

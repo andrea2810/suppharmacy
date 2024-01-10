@@ -11,7 +11,6 @@ const formApp = Vue.createApp({
                 description: '',
                 list_price: 0.0,
                 name: '',
-                taxes: 0.0,
                 presentation: '',
                 laboratory_id: null,
                 drug_category_id: null,
@@ -81,7 +80,9 @@ const formApp = Vue.createApp({
                     url: '/dataset/product',
                     method: 'get',
                     params: {
-                        fields: 'code,dealer_price,description,list_price,name,taxes,presentation,laboratory_id,drug_category_id,is_antibiotic',
+                        fields: 'code,dealer_price,description,list_price,name,'
+                            + 'presentation,laboratory_id,drug_category_id,'
+                            + 'is_antibiotic',
                         args: JSON.stringify([['id', '=', id]])
                     },
                 });
