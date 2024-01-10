@@ -18,7 +18,6 @@ const formApp = Vue.createApp({
                 partner_id: null,
                 user_id: null,
                 line_ids: [],
-                amount_untaxed: 0,
                 amount_total: 0,
                 picking_id: 0,
                 picking_name: '',
@@ -157,7 +156,7 @@ const formApp = Vue.createApp({
                     method: 'get',
                     params: {
                         fields: 'name,date,state,partner_id,partner_id.name,'
-                            + 'user_id,user_id.name,amount_untaxed,amount_total,'
+                            + 'user_id,user_id.name,amount_total,'
                             + 'requires_prescription,prescription,picking',
                         args: JSON.stringify([['id', '=', id]])
                     },
@@ -179,7 +178,7 @@ const formApp = Vue.createApp({
                     method: 'get',
                     params: {
                         fields: 'product_id,product_id.name,product_qty,price_unit,'
-                            + 'taxes,price_subtotal,price_total',
+                            + 'price_total',
                         args: JSON.stringify([['order_id', '=', id]]),
                     }
                 });
@@ -414,12 +413,10 @@ formApp.component('sale-line-row', {
                     </svg>
                 </a>
             </td>
-            <td style="width: 16%;">[[ line.product_name ]]</td>
-            <td style="width: 16%;">[[ line.product_qty ]]</td>
-            <td style="width: 16%;">[[ line.price_unit ]]</td>
-            <td style="width: 16%;">[[ line.taxes ]]</td>
-            <td style="width: 16%;">[[ line.price_subtotal ]]</td>
-            <td style="width: 16%;">[[ line.price_total ]]</td>
+            <td style="width: 24%;">[[ line.product_name ]]</td>
+            <td style="width: 24%;">[[ line.product_qty ]]</td>
+            <td style="width: 24%;">[[ line.price_unit ]]</td>
+            <td style="width: 24%;">[[ line.price_total ]]</td>
         </tr>
     `
 });

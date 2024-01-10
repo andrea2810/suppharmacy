@@ -9,7 +9,6 @@ class SaleOrder(BaseModel):
             'id': 0, # Integer
             'active': True, #Boolean
             'amount_total': 0.0, #Numeric
-            'amount_untaxed': 0.0, #Numeric
             'date': '', #Date
             'name': '', # Varchar
             'partner_id': None, #Integer

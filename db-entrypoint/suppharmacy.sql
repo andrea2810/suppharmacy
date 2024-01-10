@@ -307,7 +307,6 @@ CREATE TABLE public.sale_order (
     id integer NOT NULL,
     active boolean NOT NULL default TRUE,
     amount_total numeric(8,2),
-    amount_untaxed numeric(8,2),
     date date,
     name character varying(100) NOT NULL,
     partner_id integer,
@@ -349,12 +348,10 @@ ALTER SEQUENCE public.sale_order_id_seq OWNED BY public.sale_order.id;
 CREATE TABLE public.sale_order_line (
     id integer NOT NULL,
     order_id integer,
-    price_subtotal numeric(8,2),
     price_unit numeric(8,2),
     price_total numeric(8,2),
     product_id integer,
     product_qty numeric,
-    taxes numeric(8,2)
 );
 
 
