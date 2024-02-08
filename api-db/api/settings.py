@@ -74,6 +74,12 @@ WSGI_APPLICATION = 'api.wsgi.application'
 
 DATABASES = {}
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [],
+    'UNAUTHENTICATED_USER': None,
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 

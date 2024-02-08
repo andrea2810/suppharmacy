@@ -8,7 +8,11 @@ class StockQuant(BaseModel):
     _fields = {
             'id': 0, # Integer
             'available_quantity': 0, # Numeric
-            'in_date': '', #Date
-            'product_id': 0, #Integer
+            'expiration_time': '', #Date
+            'lot_number': '', #Varchar
+            'product_id': None, #Integer
             'quantity': 0, # Numeric
+        }
+    _relational_fields = {
+            'product_id': 'product_product'
         }

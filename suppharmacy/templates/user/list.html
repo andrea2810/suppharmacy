@@ -1,0 +1,85 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% block view %}
+
+<div id="vue-list" >
+    <loading :loading="loading"></loading>
+    <div class="row m-3">
+        <!-- Filters -->
+        <div class="col-3">
+            <div class="input-group">
+                <span class="input-group-text">Nombre</span>
+                <input class="form-control" type="text" v-model="nameFilter"
+                    @change="fetchUsers()"/>
+            </div>
+        </div>
+        <!-- Pagination -->
+        <div class="col-3 ms-auto">
+            <nav>
+                <ul class="pagination justify-content-end">
+                    <li class="page-item" :class="paginationEnableClass">
+                        <a class="page-link" @click="changePage(-1)" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link">[[ pagination ]]</a>
+                    </li>
+                    <li class="page-item" :class="paginationEnableClass">
+                        <a class="page-link" @click="changePage(1)" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <select v-model="limit" class="form-select" @change="fetchUsers">
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </li>
+                </ul>
+              </nav>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="table table-striped list_view table-reponsive" >
+            <thead class="text-bg-dark sticky-top">
+                <tr>
+                    <th style="width: 20px;">
+                        <a href="user/0">
+                            <svg class="bi bi bi-plus-square me-2" width="16" height="16">
+                                <image xlink:href="{% static 'img/icons/plus-square.svg' %}"/>
+                            </svg>
+                        </a>
+                    </th>
+                    <th style="width: 20px;"></th>
+                    <th :class="orderFieldClass.name"
+                        style="width: 47%;"
+                        @click="changeOrder('name')">
+                        Nombre
+                    </th>
+                    <th :class="orderFieldClass.username"
+                        style="width: 47%;"
+                        @click="changeOrder('username')">
+                        Usuario
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr is="vue:user-row" v-for="user in users" :key="user.id" :user="user"></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/user/list.js' %}"></script>
+{% endblock %}
+
+

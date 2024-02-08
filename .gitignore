@@ -1,6 +1,9 @@
 # Postgres Data
 pg-data
 
+# Session Data
+sessions
+
 # Django #
 *.log
 *.pot
@@ -59,7 +62,7 @@ dist/
 downloads/ 
 eggs/ 
 .eggs/ 
-lib/ 
+# lib/
 lib64/ 
 parts/ 
 sdist/ 

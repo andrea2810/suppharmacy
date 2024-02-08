@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Suppharmacy{% endblock %}
+
+{% block content %}
+
+<div class="sidebar d-flex flex-nowrap">
+    {% csrf_token %}
+    <div id="vue-sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 15%;">
+        <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <!-- <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg> -->
+            <span class="fs-4">Suppharmacy</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="/sale" class="nav-link text-white" aria-current="page">
+                    <svg class="bi bi-person-badge me-2 text-white" width="16" height="16">
+                        <image xlink:href="{% static 'img/icons/receipt.svg' %}"/>
+                    </svg>
+                    Ventas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/purchase" class="nav-link text-white" aria-current="page">
+                    <svg class="bi bi-person-badge me-2 text-white" width="16" height="16">
+                        <image xlink:href="{% static 'img/icons/receipt.svg' %}"/>
+                    </svg>
+                    Compras
+                </a>
+            </li>
+            <hr>
+            <li class="nav-item">
+                <a href="/stock" class="nav-link text-white" aria-current="page">
+                    <!-- <svg class="bi bi-person-badge me-2 text-white" width="16" height="16">
+                        <image xlink:href="{% static 'img/icons/receipt.svg' %}"/>
+                    </svg> -->
+                    Movimientos Inventario
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/stock/quant" class="nav-link text-white" aria-current="page">
+                    <!-- <svg class="bi bi-person-badge me-2 text-white" width="16" height="16">
+                        <image xlink:href="{% static 'img/icons/receipt.svg' %}"/>
+                    </svg> -->
+                    Inventario
+                </a>
+            </li>
+            <hr>
+            <li class="nav-item">
+                <a href="/product" class="nav-link text-white" aria-current="page">
+                    <svg class="bi bi-person-badge me-2 text-white" width="16" height="16">
+                        <image xlink:href="{% static 'img/icons/capsule-pill.svg' %}"/>
+                    </svg>
+                    Medicamentos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/laboratory" class="nav-link text-white" aria-current="page">
+                    <!-- <svg class="bi bi-person-badge me-2 text-white" width="16" height="16">
+                        <image xlink:href="{% static 'img/icons/person-badge.svg' %}"/>
+                    </svg> -->
+                    Laboratorios
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/drug-category" class="nav-link text-white" aria-current="page">
+                    <svg class="bi bi-person-badge me-2 text-white" width="16" height="16">
+                        <image xlink:href="{% static 'img/icons/tag-fill.svg' %}"/>
+                    </svg>
+                    Categorías
+                </a>
+            </li>
+            <hr>
+            <li class="nav-item">
+                <a href="/user" class="nav-link text-white" aria-current="page">
+                    <svg class="bi bi-person-badge me-2 text-white" width="16" height="16">
+                        <image xlink:href="{% static 'img/icons/person-badge.svg' %}"/>
+                    </svg>
+                    Usuarios
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/partner" class="nav-link text-white" aria-current="page">
+                    <svg class="bi bi-person-badge me-2 text-white" width="16" height="16">
+                        <image xlink:href="{% static 'img/icons/person-badge.svg' %}"/>
+                    </svg>
+                    Clientes/Proveedores
+                </a>
+            </li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+          <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <!-- <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2"> -->
+            <strong>{{ request.session.user_name }}</strong>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" @click="logout">Sign out</a></li>
+          </ul>
+        </div>
+    </div>
+    <div class="d-flex flex-column flex-shrink-0 text-bg-white" style="width: 85%;">
+        <div class="container" style="padding: 0!important;">
+            {% block view %}
+                BIENVENIDO AL SISTEMA
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/home.js' %}"></script>
+{% block javascript-view %}{% endblock %}
+
+{% endblock %}

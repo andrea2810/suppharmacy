@@ -8,7 +8,7 @@ class APISerializer(serializers.Serializer):
 
     def create(self, validated_data):
         instance = self._model(**validated_data)
-        instance.create()
+        instance.create(validated_data.keys())
 
         return instance
 

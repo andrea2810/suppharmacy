@@ -21,3 +21,5 @@ class ResPartnerSerializer(APISerializer):
     ref = serializers.CharField(max_length=100, required=False)
     rfc = serializers.CharField(max_length=15, required=False)
     cp = serializers.CharField(max_length=5, required=False)
+    customer = serializers.BooleanField(required=False)
+    supplier = serializers.BooleanField(required=False)

@@ -1,0 +1,148 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %} {{ name|default:"Nuevo" }} {% endblock %}
+
+{% block view %}
+
+<div id="vue-form" rec-id="{{id}}">
+    <loading :loading="loading"></loading>
+    <!-- Header -->
+    <div class="row sticky-top bg-body align-items-center form-header">
+        <div class="col-3">
+            <button type="button" class="btn btn-info m-1" @click="save">
+                <span v-if="picking.id != 0">Guardar</span>
+                <span v-else>Crear</span>
+            </button>
+            <a href="#" class="btn btn-outline-info m-1" @click="discard">Descartar</a>
+        </div>
+        <div class="col-1 ms-auto text-center fs-4">
+            <span class="badge text-bg-secondary">[[ nameState ]]</span>
+        </div>
+        <div class="col-1">
+            <a v-if="picking.id != 0" href="#" class="btn btn-danger m-1" @click="deletePicking">Borrar</a>
+        </div>
+    </div>
+    <!-- Body -->
+    <div class="form-body">
+        <div class="row ms-1">
+            <div v-if="picking.state == 'draft'" class="col-2">
+                <button type="button" class="btn btn-info m-1"
+                    @click="actionConfirm">
+                    Confirmar
+                </button>
+            </div>
+            <div v-if="picking.state == 'ready'" class="col-2">
+                <button type="button" class="btn btn-info m-1"
+                    @click="actionValidate">
+                    Validar
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Nombre</span>
+                    <input class="form-control" type="text" v-model="picking.name"
+                        disabled/>
+                </div>
+                <div v-if="picking.type_picking != 'expired'">
+                    <div v-if="disabledFieldsNotDraft" class="input-group m-3">
+                        <span class="input-group-text">[[ partnerString ]]</span>
+                        <input class="form-control" type="text" v-model="picking.partner_name"
+                            disabled/>
+                    </div>
+                    <field-relational
+                        v-else
+                        :string="partnerString"
+                        field="name"
+                        table="partner"
+                        :initial="picking.partner_id"
+                        @value-changed="partnerChange"
+                    ></field-relational>
+                </div>
+                <div class="input-group m-3">
+                    <span class="input-group-text">Tipo</span>
+                    <input class="form-control" type="text" v-model="nameType"
+                        disabled/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group input-group-date m-3">
+                    <span class="input-group-text">Fecha</span>
+                    <date-picker 
+                        @update:model-value="(date) => {picking.date = date}"
+                        :enable-time-picker="false"
+                        :max-date="new Date()"
+                        select-text="Seleccionar"
+                        cancel-text="Cancelar"
+                        v-model="picking.date"
+                        locale="es"
+                        format="dd/MM/yyyy"
+                        :disabled="disabledFieldsNotDraft">
+                    </date-picker>
+                </div>
+                <div v-if="disabledFieldsNotDraft" class="input-group m-3">
+                    <span class="input-group-text">Usuario</span>
+                    <input class="form-control" type="text" v-model="picking.user_name"
+                        disabled/>
+                </div>
+                <field-relational
+                    v-else
+                    string="Usuario"
+                    field="name"
+                    table="user"
+                    :initial="picking.user_id"
+                    @value-changed="userChange"
+                ></field-relational>
+                <div v-if="picking.type_picking != 'expired'" class="input-group m-3">
+                    <span class="input-group-text">Origen</span>
+                    <input class="form-control" type="text" v-model="origin"
+                        disabled/>
+                    <a :href="urlOrigin" class="btn btn-outline-secondary"
+                        @click="toggleModalPassword">Ver</a>
+                </div>
+            </div>
+        </div>
+        <div >
+            <table class="table table-striped list_view table-reponsive">
+                <thead class="text-bg-dark">
+                    <tr style="display: block;">
+                        <th style="width: 2%;">
+                            <a v-if="!disabledFieldsNotReady" href="#" @click="openMove(0)">
+                                <svg class="bi bi bi-plus-square me-2" width="16" height="16">
+                                    <image xlink:href="{% static 'img/icons/plus-square.svg' %}"/>
+                                </svg>
+                            </a>
+                            <a v-else>
+                                <svg class="me-2" width="16" height="16">
+                                </svg>
+                            </a>
+                        </th>
+                        <th style="width: 2%;">
+                            <a>
+                                <svg class="me-2" width="16" height="16">
+                                </svg>
+                            </a>
+                        </th>
+                        <th :style="`width: ${colSize}%;`">Medicamento</th>
+                        <th :style="`width: ${colSize}%;`">Lote</th>
+                        <th v-if="isTypePurchase" :style="`width: ${colSize}%;`">Fecha Caducidad</th>
+                        <th :style="`width: ${colSize}%;`">Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody style="height: 50vh; overflow-y: auto; display: block;">
+                    <tr is="vue:stock-move-row" v-for="move in moves" :key="move.id" :move="move"></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <modal-move :visible="visibleModalMove" :move="modalMove"></modal-move>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/picking/form.js' %}"></script>
+{% endblock %}

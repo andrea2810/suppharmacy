@@ -26,7 +26,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.drug_category (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     name character varying(100) NOT NULL
 );
 
@@ -54,58 +54,19 @@ ALTER TABLE public.drug_category_id_seq OWNER TO suppharmacy;
 
 ALTER SEQUENCE public.drug_category_id_seq OWNED BY public.drug_category.id;
 
-
---
--- Name: partner; Type: TABLE; Schema: public; Owner: suppharmacy
---
-
-CREATE TABLE public.partner (
-    id integer NOT NULL,
-    name character varying(100),
-    last_name character varying(100)
-);
-
-
-ALTER TABLE public.partner OWNER TO suppharmacy;
-
---
--- Name: partner_id_seq; Type: SEQUENCE; Schema: public; Owner: suppharmacy
---
-
-CREATE SEQUENCE public.partner_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.partner_id_seq OWNER TO suppharmacy;
-
---
--- Name: partner_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: suppharmacy
---
-
-ALTER SEQUENCE public.partner_id_seq OWNED BY public.partner.id;
-
-
 --
 -- Name: product_product; Type: TABLE; Schema: public; Owner: suppharmacy
 --
 
 CREATE TABLE public.product_product (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     code character varying(15),
     dealer_price numeric,
     description character varying(150),
-    expiration_time date,
     list_price numeric,
     name character varying(100) NOT NULL,
-    qty_available integer,
-    sale_ok boolean NOT NULL,
-    taxes numeric,
+    sale_ok boolean NOT NULL default TRUE,
     presentation character varying(100),
     laboratory_id integer,
     drug_category_id integer,
@@ -143,9 +104,8 @@ ALTER SEQUENCE public.product_product_id_seq OWNED BY public.product_product.id;
 
 CREATE TABLE public.purchase_order (
     id integer NOT NULL,
-    active boolean NOT NULL,
-    amount_total numeric,
-    amount_untaxed numeric,
+    active boolean NOT NULL default TRUE,
+    amount_total numeric(8,2),
     date date,
     name character varying(100) NOT NULL,
     partner_id integer,
@@ -185,12 +145,10 @@ ALTER SEQUENCE public.purchase_order_id_seq OWNED BY public.purchase_order.id;
 CREATE TABLE public.purchase_order_line (
     id integer NOT NULL,
     order_id integer,
-    price_subtotal numeric,
-    price_unit numeric,
-    price_total numeric,
+    price_unit numeric(8,2),
+    price_total numeric(8,2),
     product_id integer,
-    product_qty numeric,
-    taxes numeric
+    product_qty numeric
 );
 
 
@@ -224,7 +182,7 @@ ALTER SEQUENCE public.purchase_order_line_id_seq OWNED BY public.purchase_order_
 
 CREATE TABLE public.res_laboratory (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     name character varying(100) NOT NULL
 );
 
@@ -259,7 +217,7 @@ ALTER SEQUENCE public.res_laboratory_id_seq OWNED BY public.res_laboratory.id;
 
 CREATE TABLE public.res_partner (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     name character varying(100) NOT NULL,
     city character varying(100),
     country character varying(100),
@@ -270,7 +228,9 @@ CREATE TABLE public.res_partner (
     ref character varying(100),
     rfc character varying(15),
     cp character varying(5),
-    birth_date date
+    birth_date date,
+    customer boolean,
+    supplier boolean
 );
 
 
@@ -304,10 +264,10 @@ ALTER SEQUENCE public.res_partner_id_seq OWNED BY public.res_partner.id;
 
 CREATE TABLE public.res_users (
     id integer NOT NULL,
-    active boolean NOT NULL,
+    active boolean NOT NULL default TRUE,
     name character varying(100) NOT NULL,
-    username character varying(50) NOT NULL,
-    password character varying(50) NOT NULL
+    username character varying(50) NOT NULL UNIQUE,
+    password character varying(131) NOT NULL
 );
 
 
@@ -341,14 +301,15 @@ ALTER SEQUENCE public.res_users_id_seq OWNED BY public.res_users.id;
 
 CREATE TABLE public.sale_order (
     id integer NOT NULL,
-    active boolean NOT NULL,
-    amount_total numeric,
-    amount_untaxed numeric,
+    active boolean NOT NULL default TRUE,
+    amount_total numeric(8,2),
     date date,
     name character varying(100) NOT NULL,
     partner_id integer,
     state character varying(15),
-    user_id integer
+    user_id integer,
+    requires_prescription boolean default FALSE,
+    prescription boolean default FALSE
 );
 
 
@@ -383,12 +344,10 @@ ALTER SEQUENCE public.sale_order_id_seq OWNED BY public.sale_order.id;
 CREATE TABLE public.sale_order_line (
     id integer NOT NULL,
     order_id integer,
-    price_subtotal numeric,
-    price_unit numeric,
-    price_total numeric,
+    price_unit numeric(8,2),
+    price_total numeric(8,2),
     product_id integer,
-    product_qty numeric,
-    taxes numeric
+    product_qty numeric
 );
 
 
@@ -425,12 +384,12 @@ CREATE TABLE public.stock_move (
     date date,
     name character varying(100) NOT NULL,
     origin character varying(100),
-    purchase_id integer,
-    sale_id integer,
     picking_id integer,
     quantity_done numeric,
+    product_id integer,
     product_qty numeric,
-    state character varying(15)
+    lot_number character varying(100),
+    expiration_time date
 );
 
 
@@ -506,7 +465,8 @@ ALTER SEQUENCE public.stock_picking_id_seq OWNED BY public.stock_picking.id;
 CREATE TABLE public.stock_quant (
     id integer NOT NULL,
     available_quantity numeric,
-    in_date date,
+    expiration_time date,
+    lot_number character varying(100),
     product_id integer,
     quantity numeric
 );
@@ -541,14 +501,6 @@ ALTER SEQUENCE public.stock_quant_id_seq OWNED BY public.stock_quant.id;
 --
 
 ALTER TABLE ONLY public.drug_category ALTER COLUMN id SET DEFAULT nextval('public.drug_category_id_seq'::regclass);
-
-
---
--- Name: partner id; Type: DEFAULT; Schema: public; Owner: suppharmacy
---
-
-ALTER TABLE ONLY public.partner ALTER COLUMN id SET DEFAULT nextval('public.partner_id_seq'::regclass);
-
 
 --
 -- Name: product_product id; Type: DEFAULT; Schema: public; Owner: suppharmacy
@@ -636,18 +588,10 @@ COPY public.drug_category (id, active, name) FROM stdin;
 
 
 --
--- Data for Name: partner; Type: TABLE DATA; Schema: public; Owner: suppharmacy
---
-
-COPY public.partner (id, name, last_name) FROM stdin;
-\.
-
-
---
 -- Data for Name: product_product; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.product_product (id, active, code, dealer_price, description, expiration_time, list_price, name, qty_available, sale_ok, taxes, presentation, laboratory_id, drug_category_id, is_antibiotic) FROM stdin;
+COPY public.product_product (id, active, code, dealer_price, description, list_price, name, sale_ok, presentation, laboratory_id, drug_category_id, is_antibiotic) FROM stdin;
 \.
 
 
@@ -655,7 +599,7 @@ COPY public.product_product (id, active, code, dealer_price, description, expira
 -- Data for Name: purchase_order; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.purchase_order (id, active, amount_total, amount_untaxed, date, name, partner_id, state, user_id) FROM stdin;
+COPY public.purchase_order (id, active, amount_total, date, name, partner_id, state, user_id) FROM stdin;
 \.
 
 
@@ -663,7 +607,7 @@ COPY public.purchase_order (id, active, amount_total, amount_untaxed, date, name
 -- Data for Name: purchase_order_line; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.purchase_order_line (id, order_id, price_subtotal, price_unit, price_total, product_id, product_qty, taxes) FROM stdin;
+COPY public.purchase_order_line (id, order_id, price_unit, price_total, product_id, product_qty) FROM stdin;
 \.
 
 
@@ -679,7 +623,7 @@ COPY public.res_laboratory (id, active, name) FROM stdin;
 -- Data for Name: res_partner; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.res_partner (id, active, name, city, country, email, is_company, mobile, phone, ref, rfc, cp, birth_date) FROM stdin;
+COPY public.res_partner (id, active, name, city, country, email, is_company, mobile, phone, ref, rfc, cp, birth_date, customer, supplier) FROM stdin;
 \.
 
 
@@ -695,7 +639,7 @@ COPY public.res_users (id, active, name, username, password) FROM stdin;
 -- Data for Name: sale_order; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.sale_order (id, active, amount_total, amount_untaxed, date, name, partner_id, state, user_id) FROM stdin;
+COPY public.sale_order (id, active, amount_total, date, name, partner_id, state, user_id, requires_prescription, prescription) FROM stdin;
 \.
 
 
@@ -703,7 +647,7 @@ COPY public.sale_order (id, active, amount_total, amount_untaxed, date, name, pa
 -- Data for Name: sale_order_line; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.sale_order_line (id, order_id, price_subtotal, price_unit, price_total, product_id, product_qty, taxes) FROM stdin;
+COPY public.sale_order_line (id, order_id, price_unit, price_total, product_id, product_qty) FROM stdin;
 \.
 
 
@@ -711,7 +655,7 @@ COPY public.sale_order_line (id, order_id, price_subtotal, price_unit, price_tot
 -- Data for Name: stock_move; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.stock_move (id, date, name, origin, purchase_id, sale_id, picking_id, quantity_done, product_qty, state) FROM stdin;
+COPY public.stock_move (id, date, name, origin, picking_id, quantity_done, product_id, product_qty, lot_number, expiration_time) FROM stdin;
 \.
 
 
@@ -727,7 +671,7 @@ COPY public.stock_picking (id, name, date, partner_id, sale_id, purchase_id, sta
 -- Data for Name: stock_quant; Type: TABLE DATA; Schema: public; Owner: suppharmacy
 --
 
-COPY public.stock_quant (id, available_quantity, in_date, product_id, quantity) FROM stdin;
+COPY public.stock_quant (id, available_quantity, expiration_time, lot_number, product_id, quantity) FROM stdin;
 \.
 
 
@@ -736,13 +680,6 @@ COPY public.stock_quant (id, available_quantity, in_date, product_id, quantity) 
 --
 
 SELECT pg_catalog.setval('public.drug_category_id_seq', 1, false);
-
-
---
--- Name: partner_id_seq; Type: SEQUENCE SET; Schema: public; Owner: suppharmacy
---
-
-SELECT pg_catalog.setval('public.partner_id_seq', 1, false);
 
 
 --
@@ -828,15 +765,6 @@ SELECT pg_catalog.setval('public.stock_quant_id_seq', 1, false);
 
 ALTER TABLE ONLY public.drug_category
     ADD CONSTRAINT drug_category_pkey PRIMARY KEY (id);
-
-
---
--- Name: partner partner_pkey; Type: CONSTRAINT; Schema: public; Owner: suppharmacy
---
-
-ALTER TABLE ONLY public.partner
-    ADD CONSTRAINT partner_pkey PRIMARY KEY (id);
-
 
 --
 -- Name: product_product product_product_pkey; Type: CONSTRAINT; Schema: public; Owner: suppharmacy
@@ -955,7 +883,7 @@ ALTER TABLE ONLY public.product_product
 --
 
 ALTER TABLE ONLY public.purchase_order_line
-    ADD CONSTRAINT purchase_order_line_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.purchase_order(id);
+    ADD CONSTRAINT purchase_order_line_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.purchase_order(id) ON DELETE CASCADE;
 
 
 --
@@ -987,7 +915,7 @@ ALTER TABLE ONLY public.purchase_order
 --
 
 ALTER TABLE ONLY public.sale_order_line
-    ADD CONSTRAINT sale_order_line_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.purchase_order(id);
+    ADD CONSTRAINT sale_order_line_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.sale_order(id) ON DELETE CASCADE;
 
 
 --
@@ -1019,24 +947,15 @@ ALTER TABLE ONLY public.sale_order
 --
 
 ALTER TABLE ONLY public.stock_move
-    ADD CONSTRAINT stock_move_picking_id_fkey FOREIGN KEY (picking_id) REFERENCES public.stock_picking(id);
+    ADD CONSTRAINT stock_move_picking_id_fkey FOREIGN KEY (picking_id) REFERENCES public.stock_picking(id) ON DELETE CASCADE;
 
 
 --
--- Name: stock_move stock_move_purchase_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: suppharmacy
---
-
-ALTER TABLE ONLY public.stock_move
-    ADD CONSTRAINT stock_move_purchase_id_fkey FOREIGN KEY (purchase_id) REFERENCES public.purchase_order(id);
-
-
---
--- Name: stock_move stock_move_sale_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: suppharmacy
+-- Name: stock_move stock_move_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: suppharmacy
 --
 
 ALTER TABLE ONLY public.stock_move
-    ADD CONSTRAINT stock_move_sale_id_fkey FOREIGN KEY (sale_id) REFERENCES public.sale_order(id);
-
+    ADD CONSTRAINT stock_move_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.product_product(id);
 
 --
 -- Name: stock_picking stock_picking_partner_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: suppharmacy

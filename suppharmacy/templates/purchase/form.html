@@ -1,0 +1,144 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %} {{ name|default:"Nuevo" }} {% endblock %}
+
+{% block view %}
+
+<div id="vue-form" rec-id="{{id}}">
+    <loading :loading="loading"></loading>
+    <!-- Header -->
+    <div class="row sticky-top bg-body align-items-center form-header">
+        <div class="col-3">
+            <button type="button" class="btn btn-info m-1" @click="save">
+                <span v-if="purchase.id != 0">Guardar</span>
+                <span v-else>Crear</span>
+            </button>
+            <a href="#" class="btn btn-outline-info m-1" @click="discard">Descartar</a>
+        </div>
+        <div class="col-1 ms-auto text-center fs-4">
+            <span class="badge text-bg-secondary">[[ nameState ]]</span>
+        </div>
+        <div class="col-1">
+            <a v-if="purchase.id != 0" href="#" class="btn btn-danger m-1" @click="deletePurchase">Borrar</a>
+        </div>
+    </div>
+    <!-- Body -->
+    <div class="form-body">
+        <div class="row ms-1">
+            <div v-if="purchase.state == 'draft'" class="col-2">
+                <button type="button" class="btn btn-info m-1"
+                    @click="actionConfirm">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Nombre</span>
+                    <input class="form-control" type="text" v-model="purchase.name"
+                        disabled/>
+                </div>
+                <div v-if="disabledFieldsNotDraft" class="input-group m-3">
+                    <span class="input-group-text">Proveedor</span>
+                    <input class="form-control" type="text" v-model="purchase.partner_name"
+                        disabled/>
+                </div>
+                <field-relational
+                    v-else
+                    string="Proveedor"
+                    field="name"
+                    table="partner"
+                    :initial="purchase.partner_id"
+                    :args="['supplier', '=', true]"
+                    @value-changed="partnerChange"
+                ></field-relational>
+                <div v-if="purchase.state == 'done' || purchase.state == 'purchase'" class="input-group m-3">
+                    <span class="input-group-text">Movimiento Inventario</span>
+                    <input class="form-control" type="text" v-model="purchase.picking_name"
+                        disabled/>
+                    <a :href="`/stock/${purchase.picking_id}`" class="btn btn-outline-secondary">Ver</a>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group input-group-date m-3">
+                    <span class="input-group-text">Fecha</span>
+                    <date-picker 
+                        @update:model-value="(date) => {purchase.date = date}"
+                        :enable-time-picker="false"
+                        :max-date="new Date()"
+                        select-text="Seleccionar"
+                        cancel-text="Cancelar"
+                        v-model="purchase.date"
+                        locale="es"
+                        format="dd/MM/yyyy"
+                        :disabled="disabledFieldsNotDraft">
+                    </date-picker>
+                </div>
+                <div v-if="disabledFieldsNotDraft" class="input-group m-3">
+                    <span class="input-group-text">Usuario</span>
+                    <input class="form-control" type="text" v-model="purchase.user_name"
+                        disabled/>
+                </div>
+                <field-relational
+                    v-else
+                    string="Usuario"
+                    field="name"
+                    table="user"
+                    :initial="purchase.user_id"
+                    @value-changed="userChange"
+                    :disabled="disabledFieldsNotDraft"
+                ></field-relational>
+            </div>
+        </div>
+        <div >
+            <table class="table table-striped list_view table-reponsive">
+                <thead class="text-bg-dark">
+                    <tr style="display: block;">
+                        <th style="width: 2%;">
+                            <a v-if="purchase.state == 'draft'" href="#" @click="openLine(0)">
+                                <svg class="bi bi bi-plus-square me-2" width="16" height="16">
+                                    <image xlink:href="{% static 'img/icons/plus-square.svg' %}"/>
+                                </svg>
+                            </a>
+                            <a v-else>
+                                <svg class="me-2" width="16" height="16">
+                                </svg>
+                            </a>
+                        </th>
+                        <th style="width: 2%;">
+                            <a>
+                                <svg class="me-2" width="16" height="16">
+                                </svg>
+                            </a>
+                        </th>
+                        <th style="width: 24%;">Medicamento</th>
+                        <th style="width: 24%;">Cantidad</th>
+                        <th style="width: 24%;">Precio Unitario</th>
+                        <th style="width: 24%;">Total</th>
+                    </tr>
+                </thead>
+                <tbody style="height: 50vh; overflow-y: auto; display: block;">
+                    <tr is="vue:purchase-line-row" v-for="line in lines" :key="line.id" :line="line"></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-3 ms-auto">
+                <div class="input-group m-3">
+                    <span class="input-group-text">Total</span>
+                    <input class="form-control" type="text" v-model="purchase.amount_total" disabled/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <modal-line :visible="visibleModalLine" :line="modalLine"></modal-line>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/purchase/form.js' %}"></script>
+{% endblock %}

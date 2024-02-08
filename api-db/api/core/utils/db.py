@@ -13,18 +13,6 @@ def _connect(config_params):
     return pool.ThreadedConnectionPool(config_params['minconn'],
         config_params['maxconn'], **config_params['params'])
 
-BOOLEAN_OPERATORS = ('AND', 'OR')
-LOGICAL_OPERATORS = (
-    '=',
-    '!=',
-    'like',
-    '>',
-    '>=',
-    '<',
-    '<=',
-    'in'
-)
-
 
 class DB:
     _read_pool = None
@@ -36,48 +24,6 @@ class DB:
 
         if self._write_pool is None:
             DB._write_pool = _connect(settings.POSTGRES['master'])
-
-    def _format_where_params(self, instance, args):
-        res = ''
-        params = {}
-
-        if not isinstance(args, list):
-            raise PGError(f"The where_params must be a list")
-
-        for arg in args:
-            if isinstance(arg, str):
-                if arg not in BOOLEAN_OPERATORS:
-                    raise PGError(f"The argument '{arg}' is not a valid operator")
-
-                res += f'{arg} '
-
-            elif isinstance(arg, list):
-                field = None
-                operator = None
-                value = None
-
-                try:
-                    field, operator, value = arg
-                except:
-                    raise PGError("The list of parameters must have 3 elements")
-
-                if not field in instance._fields:
-                    raise PGError(f"The field {field} is not declared in "\
-                        f"the table {instance._table}")
-
-                if not operator in LOGICAL_OPERATORS:
-                    raise PGError(f"The operator {operator} is not valid")
-
-                res += f'{field} {operator} {"%({})s".format(field)} '
-                params.update({field: value})
-
-            else:
-                raise PGError(f"The argument '{arg}' is unknown")
-
-        if res:
-            res = f'WHERE {res}'
-
-        return res, params
 
     @contextmanager
     def get_cursor(self, pool_name):
@@ -100,31 +46,52 @@ class DB:
         where_params = args.get('where_params', [])
         count = args.get('count', False)
         order = args.get('order', 'id ASC')
-        limit = args.get('limit', 80)
+        limit = args.get('limit', 0)
         offset = args.get('offset', 0)
+        fields = set(args.get('fields', []))
 
-        where, params = self._format_where_params(instance, where_params)
+        where, params = instance._format_where_params(where_params)
 
         if count:
             return f' \
                     SELECT \
                         COUNT(1) \
                     FROM {instance._table} \
+                    {instance._get_joins()} \
                     {where} \
                 ', params
 
-        return f' \
+        if instance._relational_fields and order:
+            if not '.' in order:
+                order = f'{instance._table}.{order}'
+            else:
+                try: 
+                    relational_field, join_field = order.split('.')
+
+                    if relational_field in instance._relational_fields:
+                        order = f'{instance._relational_fields[relational_field]}.{join_field}'
+                except:
+                    raise PGError(f"The relational field {order} has to be separated by 1 dot")
+
+        limit_clause = ""
+
+        if limit > 0:
+            limit_clause = f'LIMIT {limit}'
+
+        query = f' \
                 SELECT \
-                    {", ".join(field for field in instance._fields)} \
+                    {", ".join(field for field in instance._get_read_fields(fields))} \
                 FROM {instance._table} \
+                {instance._get_joins()} \
                 {where} \
                 ORDER BY {order} \
-                LIMIT {limit} \
+                {limit_clause} \
                 OFFSET {offset} \
-            ', params
+            '
+        return query, params
 
-    def _create_query(self, instance):
-        vals = instance._get_values()
+    def _create_query(self, instance, fields):
+        vals = instance._get_values(fields)
         fields = vals.keys()
 
         return f'\
@@ -136,17 +103,16 @@ class DB:
 
     def _update_query(self, instance, data):
         fields = data.keys()
-        where, params = self._format_where_params(instance, [['id', '=', instance.id]])
 
         return f'\
                 UPDATE \
                     {instance._table} \
                 SET {", ".join("{0} = %({0})s".format(field) for field in fields)} \
-                {where} \
-            ', {**data, **params}
+                WHERE id = %(id)s \
+            ', {'id': instance.id, **data}
 
     def _delete_query(self, instance):
-        where, params = self._format_where_params(instance, [['id', '=', instance.id]])
+        where, params = instance._format_where_params([['id', '=', instance.id]])
 
         return f'\
                 DELETE FROM \
@@ -161,33 +127,27 @@ class DB:
             cur.execute(*self._read_query(instance, args))
 
             if not args.get('count'):
-                res = [instance.__class__(**rec) for rec in cur.fetchall()]
+                res = [{ k:v for k,v in rec.items() } for rec in cur.fetchall()]
             else:
                 res = {'count': cur.fetchone()[0]}
 
         return res
 
-    def create_from_instance(self, instance):
+    def create_from_instance(self, instance, fields):
         with self.get_cursor('_write_pool') as cur:
-            query, params = self._create_query(instance)
-
-            cur.execute(query, params)
+            cur.execute(*self._create_query(instance, fields))
             instance.id = cur.fetchone()['id']
 
         return True
 
     def update_from_instance(self, instance, data):
         with self.get_cursor('_write_pool') as cur:
-            query, params = self._update_query(instance, data)
-
-            cur.execute(query, params)
+            cur.execute(*self._update_query(instance, data))
 
         return True
 
     def delete_from_instance(self, instance):
         with self.get_cursor('_write_pool') as cur:
-            query, params = self._delete_query(instance)
-
-            cur.execute(query, params)
+            cur.execute(*self._delete_query(instance))
 
         return True

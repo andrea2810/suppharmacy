@@ -11,14 +11,15 @@ class ProductProduct(BaseModel):
             'code': '', # Varchar
             'dealer_price': 0.0, # Numeric
             'description': '', # Varchar
-            'expiration_time': '', #Date
             'list_price': 0.0, # Numeric
             'name': '', # Varchar
-            'qty_available': 0.0, # Numeric
             'sale_ok': True, #Boolean
-            'taxes': 0.0, # Numeric
             'presentation': '', #Varchar
-            'laboratory_id': 0, #Integer
-            'drug_category_id': 0, #Integer
+            'laboratory_id': None, #Integer
+            'drug_category_id': None, #Integer
             'is_antibiotic': False #Boolean
+        }
+    _relational_fields = {
+            'laboratory_id': 'res_laboratory',
+            'drug_category_id': 'drug_category'
         }

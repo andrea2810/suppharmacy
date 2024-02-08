@@ -1,0 +1,87 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}Inventario{% endblock %}
+
+{% block view %}
+
+<div id="vue-list" >
+    <loading :loading="loading"></loading>
+    <div class="row m-3">
+        <!-- Filters -->
+        <div class="col-2">
+            <div class="input-group">
+                <span class="input-group-text">Medicamento</span>
+                <input class="form-control" type="text" v-model="productFilter"
+                    @change="fetchQuants()"/>
+            </div>
+        </div>
+        <!-- Pagination -->
+        <div class="col-3 ms-auto">
+            <nav>
+                <ul class="pagination justify-content-end">
+                    <li class="page-item" :class="paginationEnableClass">
+                        <a class="page-link" @click="changePage(-1)" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link">[[ pagination ]]</a>
+                    </li>
+                    <li class="page-item" :class="paginationEnableClass">
+                        <a class="page-link" @click="changePage(1)" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <select v-model="limit" class="form-select" @change="fetchQuants">
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </li>
+                </ul>
+              </nav>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="table table-striped list_view table-reponsive" >
+            <thead class="text-bg-dark sticky-top">
+                <tr>
+                    <th style="width: 25%;"
+                        :class="orderFieldClass.product_name"
+                        @click="changeOrder('product_id.name')">
+                        Medicamento
+                    </th>
+                    <th style="width: 25%;"
+                        :class="orderFieldClass.quantity"
+                        @click="changeOrder('quantity')">
+                        Cantidad
+                    </th>
+                    <th style="width: 25%;"
+                        :class="orderFieldClass.lot_number"
+                        @click="changeOrder('lot_number')">
+                        Lote
+                    </th>
+                    <th style="width: 25%;"
+                        :class="orderFieldClass.expiration_time"
+                        @click="changeOrder('expiration_time')">
+                        Fecha Caducidad
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr is="vue:quant-row" v-for="quant in quants" :key="quant.id" :quant="quant"></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/quant/list.js' %}"></script>
+{% endblock %}
+
+

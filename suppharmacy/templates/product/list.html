@@ -1,0 +1,104 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}Medicamentos{% endblock %}
+
+{% block view %}
+
+<div id="vue-list" >
+    <loading :loading="loading"></loading>
+    <div class="row m-3">
+        <!-- Filters -->
+        <div class="col-2">
+            <div class="input-group">
+                <span class="input-group-text">Nombre</span>
+                <input class="form-control" type="text" v-model="nameFilter"
+                    @change="fetchProducts()"/>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="input-group">
+                <span class="input-group-text">Código</span>
+                <input class="form-control" type="text" v-model="codeFilter"
+                    @change="fetchProducts()"/>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="input-group">
+                <span class="input-group-text">Presentación</span>
+                <input class="form-control" type="text" v-model="presentationFilter"
+                    @change="fetchProducts()"/>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="input-group">
+                <span class="input-group-text">Antibiótico</span>
+                <select class="form-control form-select" v-model="antibioticFilter" @change="fetchProducts()">
+                    <option value="-1" selected></option> 
+                    <option value="0">No</option>
+                    <option value="1">Si</option>
+                </select>
+            </div>
+        </div>
+        <!-- Pagination -->
+        <div class="col-3 ms-auto">
+            <nav>
+                <ul class="pagination justify-content-end">
+                    <li class="page-item" :class="paginationEnableClass">
+                        <a class="page-link" @click="changePage(-1)" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link">[[ pagination ]]</a>
+                    </li>
+                    <li class="page-item" :class="paginationEnableClass">
+                        <a class="page-link" @click="changePage(1)" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <select v-model="limit" class="form-select" @change="fetchProductss">
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </li>
+                </ul>
+              </nav>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="table table-striped list_view table-reponsive" >
+            <thead class="text-bg-dark sticky-top">
+                <tr>
+                    <th style="width: 20px;">
+                        <a href="product/0">
+                            <svg class="bi bi bi-plus-square me-2" width="16" height="16">
+                                <image xlink:href="{% static 'img/icons/plus-square.svg' %}"/>
+                            </svg>
+                        </a>
+                    </th>
+                    <th style="width: 20px;"></th>
+                    <th :class="orderFieldClass.name" @click="changeOrder('name')">Nombre</th>
+                    <th :class="orderFieldClass.code" @click="changeOrder('code')">Código</th>
+                    <th :class="orderFieldClass.presentation" @click="changeOrder('presentation')">Presentación</th>
+                    <th :class="orderFieldClass.quantity">Cantidad</th>
+                    <th :class="orderFieldClass.is_antibiotic" @click="changeOrder('is_antibiotic')">Antibiótico</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr is="vue:product-row" v-for="product in products" :key="product.id" :product="product"></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript-view %}
+<script src="{% static 'js/product/list.js' %}"></script>
+{% endblock %}
+
+

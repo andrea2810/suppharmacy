@@ -1,12 +1,26 @@
 version: '3.3'
 services:
+  web:
+    build: ./docker/web
+    container_name: suppharmacy
+    depends_on:
+      - api-db
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./suppharmacy:/app"
+
+    # For testing only
+    stdin_open: true
+    tty: true 
+  
   api-db:
     build: ./docker/api
     container_name: api-db  
     depends_on:
       - db-master
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - "./api-db:/app"
 

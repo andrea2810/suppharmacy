@@ -38,8 +38,8 @@ urlpatterns = [
     path('sale-order-line/<int:pk>', views.SaleOrderLineDetail.as_view()),
     path('stock-picking', views.StockPickingList.as_view()),
     path('stock-picking/<int:pk>', views.StockPickingDetail.as_view()),
-    path('stock-move', views.StockPickingList.as_view()),
-    path('stock-move/<int:pk>', views.StockPickingDetail.as_view()),
+    path('stock-move', views.StockMoveList.as_view()),
+    path('stock-move/<int:pk>', views.StockMoveDetail.as_view()),
     path('stock-quant', views.StockQuantList.as_view()),
     path('stock-quant/<int:pk>', views.StockQuantDetail.as_view()),
 ]

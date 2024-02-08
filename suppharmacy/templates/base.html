@@ -1,0 +1,47 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/icons/favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+    <!-- CSS Libs -->
+    <!-- Boostrap -->
+    <link rel="stylesheet" href="{% static 'css/lib/bootstrap.css' %}">
+   <!-- Vue Datepicker -->
+    <link rel="stylesheet" href="{% static 'css/lib/vuejs-datepicker.css' %}">
+
+    <!-- JS Libs  -->
+    <!-- Axios -->
+    <script src="{% static 'js/lib/axios.js' %}"></script>
+    <!-- Vue JS -->
+    <script src="{% static 'js/lib/vue.js' %}"></script>
+    <!-- Moment JS -->
+    <script src="{% static 'js/lib/moment.js' %}"></script>
+    <!-- Vue Datepicker -->
+    <script src="{% static 'js/lib/vuejs-datepicker.js' %}"></script>
+
+    <title>{% block title %}Home{% endblock %}</title>
+
+    {% block stylesheet %}{% endblock %}
+</head>
+<body>
+    {% block body %}
+        {% block content %}
+            BIENVENIDO A SUPPHARMACY
+        {% endblock %}
+    {% endblock body %}
+    
+    <!-- CSRF Axios -->
+    <script>
+        axios.defaults.xsrfCookieName = 'csrftoken';
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    </script>
+
+    {% block javascript %}{% endblock %}
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'js/lib/bootstrap.js' %}"></script>
+</body>
+</html>
