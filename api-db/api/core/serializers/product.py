@@ -17,7 +17,6 @@ class ProductProductSerializer(APISerializer):
     list_price = serializers.FloatField(required=False)
     name = serializers.CharField(max_length=100, required=False)
     sale_ok = serializers.BooleanField(required=False)
-    taxes = serializers.FloatField(required=False)
     presentation = serializers.CharField(max_length=100, required=False)
     laboratory_id = serializers.IntegerField(required=False)
     drug_category_id = serializers.IntegerField(required=False)

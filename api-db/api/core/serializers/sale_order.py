@@ -11,7 +11,6 @@ class SaleOrderSerializer(APISerializer):
     id = serializers.IntegerField(read_only=True)
     active = serializers.BooleanField(required=False)
     amount_total = serializers.FloatField(required=False)
-    amount_untaxed = serializers.FloatField(required=False)
     date = serializers.DateField(required=False)
     name = serializers.CharField(
         required=False,
