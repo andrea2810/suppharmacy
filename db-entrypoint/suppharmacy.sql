@@ -66,7 +66,7 @@ CREATE TABLE public.product_product (
     description character varying(150),
     list_price numeric,
     name character varying(100) NOT NULL,
-    sale_ok boolean NOT NULL,
+    sale_ok boolean NOT NULL default TRUE,
     presentation character varying(100),
     laboratory_id integer,
     drug_category_id integer,

@@ -13,7 +13,7 @@ class ProductProductSerializer(APISerializer):
     active = serializers.BooleanField(required=False)
     code = serializers.CharField(max_length=15, required=False)
     dealer_price = serializers.FloatField(required=False)
-    description = serializers.CharField(max_length=150, required=False)
+    description = serializers.CharField(max_length=150, allow_blank=True, required=False)
     list_price = serializers.FloatField(required=False)
     name = serializers.CharField(max_length=100, required=False)
     sale_ok = serializers.BooleanField(required=False)
